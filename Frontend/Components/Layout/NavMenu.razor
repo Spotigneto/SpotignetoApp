@@ -1,30 +1,43 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Frontend</a>
+﻿<div class="sidebar">
+    <div class="logo-section">
+        <div class="logo">SpotiGneto</div>
     </div>
-</div>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
+    <nav class="nav-menu">
+        <div class="nav-section">
+            <div class="nav-item">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-text">Home</span>
+                </NavLink>
+            </div>
+            <div class="nav-item">
+                <NavLink class="nav-link" href="search">
+                    <span class="nav-icon">🔍</span>
+                    <span class="nav-text">Search</span>
+                </NavLink>
+            </div>
+            <div class="nav-item">
+                <NavLink class="nav-link" href="library">
+                    <span class="nav-icon">🎵</span>
+                    <span class="nav-text">Your Library</span>
+                </NavLink>
+            </div>
+            <div class="nav-item">
+                <NavLink class="nav-link" href="playlist-create">
+                    <span class="nav-icon">➕</span>
+                    <span class="nav-text">Create Playlist</span>
+                </NavLink>
+            </div>
         </div>
     </nav>
-</div>
 
+    <div class="profile-section">
+        <div class="nav-item">
+            <NavLink class="nav-link" href="profile">
+                <span class="nav-icon">👤</span>
+                <span class="nav-text">My Account</span>
+            </NavLink>
+        </div>
+    </div>
+</div>
