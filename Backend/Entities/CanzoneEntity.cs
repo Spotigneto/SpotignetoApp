@@ -12,7 +12,7 @@ namespace Backend.Entities
 
         [Required]
         [Column("ca_nome")]
-        [StringLength(255)]
+        [StringLength(100)]
         public string CaNome { get; set; } = string.Empty;
 
         [Required]
