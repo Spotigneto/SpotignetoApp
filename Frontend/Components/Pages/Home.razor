@@ -1,7 +1,463 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Spotigneto - Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="home-page">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <h1 class="hero-title">
+            IT'S YOUR FRIEND <span class="highlight">CANDICE</span>'S BIRTHDAY!
+        </h1>
+        <p class="hero-subtitle">Let's celebrate by listening to some of his favourite music</p>
 
-Welcome to your new app.
+        <div class="album-carousel">
+            <div class="carousel-item">
+                <div class="album-art" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+            </div>
+            <div class="carousel-item">
+                <div class="album-art" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);"></div>
+            </div>
+            <div class="carousel-item featured">
+                <div class="album-art" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);">
+                    <div class="album-overlay">
+                        <div class="album-label">ODESZA</div>
+                        <div class="album-title-carousel">Late Night</div>
+                    </div>
+                    <div class="play-overlay">
+                        <button class="play-button-large">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="album-art" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);"></div>
+            </div>
+            <div class="carousel-item">
+                <div class="album-art" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recently Played Section -->
+    <section class="section recently-played">
+        <h2 class="section-title">Recently Played</h2>
+
+        <div class="albums-grid">
+            <div class="album-card">
+                <div class="album-cover" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="album-cover-overlay">
+                        <button class="play-btn">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M6 4v12l10-6z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="album-info">
+                    <div class="album-name">True Life</div>
+                    <div class="album-artist">Avicii</div>
+                </div>
+            </div>
+
+            <div class="album-card">
+                <div class="album-cover" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <div class="album-cover-overlay">
+                        <button class="play-btn playing">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M6 4v12l10-6z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="album-info">
+                    <div class="album-name">Loyal</div>
+                    <div class="album-artist">ODESZA</div>
+                </div>
+            </div>
+
+            <div class="album-card">
+                <div class="album-cover" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <div class="album-cover-overlay">
+                        <button class="play-btn">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M6 4v12l10-6z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="album-info">
+                    <div class="album-name">Super Max</div>
+                    <div class="album-artist">Pitstop Boys</div>
+                </div>
+            </div>
+
+            <div class="album-card">
+                <div class="album-cover" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                    <div class="album-cover-overlay">
+                        <button class="play-btn">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M6 4v12l10-6z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="album-info">
+                    <div class="album-name">Mama</div>
+                    <div class="album-artist">Clean Bandit</div>
+                </div>
+            </div>
+
+            <div class="album-card">
+                <div class="album-cover" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                    <div class="album-cover-overlay">
+                        <button class="play-btn playing">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M6 4v12l10-6z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="album-info">
+                    <div class="album-name">Futura</div>
+                    <div class="album-artist">Don Diablo</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Discover Section -->
+    <section class="section discover-section">
+        <h2 class="section-title">Discover Something New</h2>
+
+        <div class="albums-grid">
+            <div class="album-card">
+                <div class="album-cover" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+                    <div class="album-cover-overlay">
+                        <button class="play-btn">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M6 4v12l10-6z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="album-info">
+                    <div class="album-name">New Release</div>
+                    <div class="album-artist">Artist Name</div>
+                </div>
+            </div>
+
+            <div class="album-card">
+                <div class="album-cover" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">
+                    <div class="album-cover-overlay">
+                        <button class="play-btn">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M6 4v12l10-6z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="album-info">
+                    <div class="album-name">Trending</div>
+                    <div class="album-artist">Various Artists</div>
+                </div>
+            </div>
+
+            <div class="album-card">
+                <div class="album-cover" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);">
+                    <div class="album-cover-overlay">
+                        <button class="play-btn">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M6 4v12l10-6z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="album-info">
+                    <div class="album-name">Discover</div>
+                    <div class="album-artist">Playlist</div>
+                </div>
+            </div>
+
+            <div class="album-card">
+                <div class="album-cover" style="background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);">
+                    <div class="album-cover-overlay">
+                        <button class="play-btn">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M6 4v12l10-6z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="album-info">
+                    <div class="album-name">Mix</div>
+                    <div class="album-artist">Curated</div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+    .home-page {
+        color: #fff;
+    }
+
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(180deg, rgba(64, 64, 64, 0.6) 0%, rgba(18, 18, 18, 0) 100%);
+        padding: 32px;
+        border-radius: 8px;
+        margin-bottom: 40px;
+    }
+
+    .hero-title {
+        font-size: 40px;
+        font-weight: 900;
+        margin-bottom: 8px;
+        color: #fff;
+        letter-spacing: -0.5px;
+    }
+
+        .hero-title .highlight {
+            color: #1db954;
+        }
+
+    .hero-subtitle {
+        font-size: 14px;
+        color: #b3b3b3;
+        margin-bottom: 32px;
+        font-weight: 400;
+    }
+
+    .album-carousel {
+        display: flex;
+        gap: 16px;
+        overflow-x: auto;
+        padding: 8px 0;
+        scroll-behavior: smooth;
+    }
+
+    .carousel-item {
+        flex-shrink: 0;
+        transition: transform 0.3s ease, filter 0.3s ease;
+        cursor: pointer;
+    }
+
+        .carousel-item:hover {
+            transform: scale(1.05);
+        }
+
+        .carousel-item.featured {
+            transform: scale(1.15);
+            z-index: 10;
+        }
+
+            .carousel-item.featured:hover {
+                transform: scale(1.2);
+            }
+
+        .carousel-item .album-art {
+            width: 200px;
+            height: 200px;
+            background-color: #333;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+
+    .album-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 16px;
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+        z-index: 1;
+    }
+
+    .album-label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #b3b3b3;
+        margin-bottom: 4px;
+    }
+
+    .album-title-carousel {
+        font-size: 16px;
+        font-weight: 700;
+        color: #fff;
+    }
+
+    .play-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        transition: opacity 0.3s;
+        z-index: 2;
+    }
+
+    .carousel-item:hover .play-overlay {
+        opacity: 1;
+    }
+
+    .play-button-large {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background-color: #1db954;
+        border: none;
+        color: #000;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    }
+
+        .play-button-large:hover {
+            transform: scale(1.06);
+            background-color: #1ed760;
+        }
+
+    /* Sections */
+    .section {
+        margin-bottom: 48px;
+    }
+
+    .section-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #fff;
+        letter-spacing: -0.5px;
+    }
+
+    .albums-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 24px;
+    }
+
+    .album-card {
+        background-color: #181818;
+        border-radius: 8px;
+        padding: 16px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+        .album-card:hover {
+            background-color: #282828;
+        }
+
+    .album-cover {
+        width: 100%;
+        aspect-ratio: 1;
+        background-color: #333;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    .album-cover-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        padding: 12px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .album-card:hover .album-cover-overlay {
+        opacity: 1;
+    }
+
+    .play-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background-color: #1db954;
+        border: none;
+        color: #000;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        transform: translateY(8px);
+    }
+
+    .album-card:hover .play-btn {
+        transform: translateY(0);
+    }
+
+    .play-btn:hover {
+        transform: scale(1.04);
+        background-color: #1ed760;
+    }
+
+    .play-btn.playing {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .album-info {
+        padding-top: 0;
+    }
+
+    .album-name {
+        font-size: 16px;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 8px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .album-artist {
+        font-size: 14px;
+        color: #b3b3b3;
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Scrollbar for carousel */
+    .album-carousel::-webkit-scrollbar {
+        height: 12px;
+    }
+
+    .album-carousel::-webkit-scrollbar-track {
+        background: transparent;
+        margin: 0 20px;
+    }
+
+    .album-carousel::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.3);
+        border-radius: 6px;
+        border: 3px solid transparent;
+        background-clip: content-box;
+    }
+
+        .album-carousel::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+</style>
