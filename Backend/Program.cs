@@ -1,8 +1,18 @@
+using Microsoft.EntityFrameworkCore;
+using Backend.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+// Add Entity Framework
+builder.Services.AddDbContext<SpotigneteDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Add controllers
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -13,6 +23,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Map controllers
+app.MapControllers();
 
 var summaries = new[]
 {
