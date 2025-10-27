@@ -38,6 +38,7 @@ CREATE TABLE Utente(
 ut_id BIGINT IDENTITY(1,1) PRIMARY KEY,
 ut_nome VARCHAR(100) NOT NULL,
 );
+
 GO
 
 CREATE TABLE Artista(
@@ -81,16 +82,17 @@ CREATE TABLE Canzone(
 ca_id BIGINT IDENTITY(1,1) PRIMARY KEY,
 ca_nome VARCHAR(100) NOT NULL,
 ca_file VARCHAR(500) NOT NULL,
-ca_genere BIGINT NOT NULL,
-ca_sottogenere BIGINT NOT NULL,
-ca_durata INT NOT NULL,
-CONSTRAINT FK_Canzone_Genere FOREIGN KEY (ca_genere) REFERENCES Genere_tp(gtp_id),
-CONSTRAINT FK_Canzone_Sottogenere FOREIGN KEY (ca_sottogenere) REFERENCES Sottogenere_tp(stp_id)
+ca_genere_fk BIGINT NOT NULL,
+ca_sottogenere_fk BIGINT NOT NULL,
+ca_durata VARCHAR(10) NOT NULL,
+ca_secondi INT NOT NULL,
+CONSTRAINT FK_Canzone_Genere FOREIGN KEY (ca_genere_fk) REFERENCES Genere_tp(gtp_id),
+CONSTRAINT FK_Canzone_Sottogenere FOREIGN KEY (ca_sottogenere_fk) REFERENCES Sottogenere_tp(stp_id)
 );
 
 GO
 
-| QUERY CREAZIONE ASSOCIATIVE
+| Query per Tabelle Associative
 
 CREATE TABLE as_utente_playlist(
 asup_id BIGINT IDENTITY(1,1) PRIMARY KEY,

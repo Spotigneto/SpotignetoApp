@@ -1,80 +1,81 @@
 using Microsoft.AspNetCore.Mvc;
-using SpotignetoApp.Data;
-using SpotignetoApp.Models;
+using Backend.Models;
+using Backend.Services;
 
-namespace SpotignetoApp.Controllers
+namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class CanzoneController : ControllerBase
     {
-        private readonly SpotigneteDbContext _context;
-
-        public CanzoneController(SpotigneteDbContext context)
+        private readonly ICanzoneService _service;
+        public CanzoneController(ICanzoneService service)
         {
-            _context = context;
+            _service = service;
         }
 
-        // POST: api/Records/canzone
+        // POST: api/Canzone/canzone
         [HttpPost("canzone")]
-        public ActionResult<CanzoneEntity> PostCanzone(CanzoneEntity canzone)
+        public async Task<ActionResult<CanzoneModel>> PostCanzone(CanzoneModel canzone)
         {
-            _context.Canzoni.Add(canzone);
-            _context.SaveChanges();
-
-            return CreatedAtAction("GetCanzone", new { id = canzone.CId }, canzone);
+            var created = await _service.CreateAsync(canzone);
+            return CreatedAtAction(nameof(GetCanzone), new { id = created.Id }, created);
         }
 
-        // GET: api/Records/canzoni
+        // GET: api/Canzone/canzoni
         [HttpGet("canzoni")]
-        public ActionResult<IEnumerable<CanzoneEntity>> GetCanzoni()
+        public async Task<ActionResult<IEnumerable<CanzoneModel>>> GetCanzoni()
         {
-            return _context.Canzoni.ToList();
+            var items = await _service.GetAllAsync();
+            return Ok(items);
         }
 
-        // GET: api/Records/canzone/{id}
-        [HttpGet("canzone/{id}")]
-        public ActionResult<CanzoneEntity> GetCanzone(int id)
+        // GET: api/Canzone/canzone/{id}
+        [HttpGet("canzone/{id:long}")]
+        public async Task<ActionResult<CanzoneModel>> GetCanzone(long id)
         {
-            var canzone = _context.Canzoni.Find(id);
-
+            var canzone = await _service.GetByIdAsync(id);
             if (canzone == null)
             {
                 return NotFound();
             }
-
-            return canzone;
+            return Ok(canzone);
         }
 
-        // PUT: api/Records/canzone/{id}
-        [HttpPut("canzone/{id}")]
-        public ActionResult<CanzoneEntity> PutCanzone(int id, CanzoneEntity canzone)
+        // GET: api/Canzone/canzone/{name}
+        [HttpGet("canzone/by-name/{name}")]
+        public async Task<ActionResult<CanzoneModel>> GetCanzoneByName(string name)
         {
-            if (id != canzone.CId)
+            var canzone = await _service.GetByNameAsync(name);
+            if (canzone == null)
             {
-                return BadRequest();
+                return NotFound();
             }
+            return Ok(canzone);
+        }
 
-            _context.Entry(canzone).State = EntityState.Modified;
-            _context.SaveChanges();
-
+        // PUT: api/Canzone/canzone/{id}
+        [HttpPut("canzone/{id}")]
+        public async Task<IActionResult> PutCanzone(long id, CanzoneModel canzone)
+        {
+            var ok = await _service.UpdateAsync(id, canzone);
+            if (!ok)
+            {
+                return NotFound();
+            }
             return NoContent();
         }
 
-        // DELETE: api/Records/canzone/{id}
+        // DELETE: api/Canzone/canzone/{id}
         [HttpDelete("canzone/{id}")]
-        public ActionResult<CanzoneEntity> DeleteCanzone(int id)
+        public async Task<IActionResult> DeleteCanzone(long id)
         {
-            var canzone = _context.Canzoni.Find(id);
-            if (canzone == null)
+            var ok = await _service.DeleteAsync(id);
+            if (!ok)
             {
                 return NotFound();
             }
-
-            _context.Canzoni.Remove(canzone);
-            _context.SaveChanges();
-
-            return canzone;
+            return NoContent();
         }
     }
 }

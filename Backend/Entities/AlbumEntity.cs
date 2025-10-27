@@ -12,14 +12,13 @@ namespace Backend.Entities
 
         [Required]
         [Column("al_nome")]
-        [StringLength(255)]
+        [StringLength(100)]
         public string AlNome { get; set; } = string.Empty;
 
-        [Column("al_anno")]
-        public int AlAnno { get; set; }
+        [Column("al_pubblica")]
+        public bool AlPubblica { get; set; }
 
-        [Column("al_copertina")]
-        [StringLength(500)]
-        public string? AlCopertina { get; set; }
+        [Column("al_release_date")]
+        public DateTime? AlReleaseDate { get; set; }
     }
 }

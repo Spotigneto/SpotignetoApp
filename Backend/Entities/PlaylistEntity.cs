@@ -12,7 +12,7 @@ namespace Backend.Entities
 
         [Required]
         [Column("pl_nome")]
-        [StringLength(255)]
+        [StringLength(100)]
         public string PlNome { get; set; } = string.Empty;
 
         [Column("pl_privata")]
