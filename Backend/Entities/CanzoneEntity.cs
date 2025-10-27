@@ -27,6 +27,9 @@ namespace Backend.Entities
         public long CaSottogenere { get; set; }
 
         [Column("ca_durata")]
-        public int CaDurata { get; set; }
+        public string CaDurata { get; set; } = string.Empty;
+
+        [Column("ca_secondi")]
+        public int CaSecondi { get; set; }
     }
 }

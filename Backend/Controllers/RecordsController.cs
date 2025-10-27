@@ -15,11 +15,38 @@ namespace Backend.Controllers
             _context = context;
         }
 
-        // GET: api/Records/canzoni
-        [HttpGet("canzoni")]
-        public ActionResult<IEnumerable<CanzoneEntity>> GetCanzoni()
+        // POST: api/Records/playlist
+        [HttpPost("playlist")]
+        public ActionResult<Record> PostPlaylist(PlaylistEntity playlist)
         {
-            return _context.Canzoni.ToList();
+            _context.Playlists.Add(playlist);
+            _context.SaveChanges();
+
+            return CreatedAtAction("GetPlaylist", new { id = playlist.PlId }, playlist);
+        }
+
+        // POST: api/Records/album
+        [HttpPost("album")]
+        public ActionResult<Record> PostAlbum(AlbumEntity album)
+        {
+            _context.Albums.Add(album);
+            _context.SaveChanges();
+
+            return CreatedAtAction("GetAlbum", new { id = album.AlId }, album);
+        }
+
+        // GET: api/Records/playlist/canzoni
+        [HttpGet("playlist/canzoni")]
+        public ActionResult<IEnumerable<AsCanzonePlaylistEntity>> GetPlaylistCanzoni()
+        {
+            return _context.PlaylistCanzoni.ToList();
+        }
+
+        // GET: api/Records/album/canzoni
+        [HttpGet("album/canzoni")]
+        public ActionResult<IEnumerable<AsAlbumCanzoneEntity>> GetAlbumCanzoni()
+        {
+            return _context.AlbumCanzoni.ToList();
         }
 
         // GET: api/Records/playlists
@@ -35,5 +62,7 @@ namespace Backend.Controllers
         {
             return _context.Albums.ToList();
         }
+
+        
     }
 }
