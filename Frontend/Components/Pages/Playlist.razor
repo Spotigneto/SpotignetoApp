@@ -1,1 +1,80 @@
 @page "/playlist-create"
+
+<h2 class="text-3xl font-bold mb-6">🎵 Crea una nuova Playlist</h2>
+
+<!-- SEZIONE: Creazione nuova playlist -->
+<div class="bg-white rounded-2xl shadow p-6 mb-8">
+    <h3 class="text-2xl font-semibold mb-4">➕ Nuova Playlist</h3>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+            <label class="block font-medium mb-1">Nome Playlist</label>
+            <input @bind="nomePlaylist" type="text" placeholder="Inserisci il nome" class="w-full border rounded-lg p-2" />
+        </div>
+        <div>
+            <label class="block font-medium mb-1">Descrizione</label>
+            <input @bind="descrizionePlaylist" type="text" placeholder="Descrizione facoltativa" class="w-full border rounded-lg p-2" />
+        </div>
+    </div>
+
+    <button class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+            @onclick="CreaPlaylist">
+        Crea Playlist
+    </button>
+</div>
+
+@if (playlistSelezionata != null)
+{
+    <!-- SEZIONE: Aggiungi brani alla playlist appena creata -->
+    <div class="bg-white rounded-2xl shadow p-6">
+        <h3 class="text-2xl font-semibold mb-4">
+            ➕ Aggiungi brani a <span class="text-blue-600">@playlistSelezionata.Nome</span>
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+                <label class="block font-medium mb-1">Titolo Brano</label>
+                <input type="text" placeholder="Inserisci titolo" class="w-full border rounded-lg p-2" />
+            </div>
+            <div>
+                <label class="block font-medium mb-1">Artista</label>
+                <input type="text" placeholder="Inserisci artista" class="w-full border rounded-lg p-2" />
+            </div>
+        </div>
+
+        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+            Aggiungi Brano
+        </button>
+    </div>
+}
+
+@code {
+    private PlaylistMock? playlistSelezionata;
+    private string nomePlaylist = string.Empty;
+    private string descrizionePlaylist = string.Empty;
+
+    private void CreaPlaylist()
+    {
+        if (string.IsNullOrWhiteSpace(nomePlaylist))
+            return;
+
+        var nuovaPlaylist = new PlaylistMock
+        {
+            Nome = nomePlaylist,
+            Descrizione = descrizionePlaylist,
+            NumeroBrani = 0
+        };
+
+        playlistSelezionata = nuovaPlaylist;
+
+        nomePlaylist = string.Empty;
+        descrizionePlaylist = string.Empty;
+    }
+
+    public class PlaylistMock
+    {
+        public string Nome { get; set; } = string.Empty;
+        public string Descrizione { get; set; } = string.Empty;
+        public int NumeroBrani { get; set; }
+    }
+}
