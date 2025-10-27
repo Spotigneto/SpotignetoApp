@@ -83,7 +83,7 @@ ca_nome VARCHAR(100) NOT NULL,
 ca_file VARCHAR(500) NOT NULL,
 ca_genere BIGINT NOT NULL,
 ca_sottogenere BIGINT NOT NULL,
-ca_durata INT NOT NULL,
+ca_durata VARCHAR(10) NOT NULL,
 CONSTRAINT FK_Canzone_Genere FOREIGN KEY (ca_genere) REFERENCES Genere_tp(gtp_id),
 CONSTRAINT FK_Canzone_Sottogenere FOREIGN KEY (ca_sottogenere) REFERENCES Sottogenere_tp(stp_id)
 );
