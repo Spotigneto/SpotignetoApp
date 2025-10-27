@@ -1,121 +1,114 @@
 ﻿<nav class="nav-menu">
-    <div class="nav-header">
-        <div class="logo">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                <path d="M16 4C9.373 4 4 9.373 4 16s5.373 12 12 12 12-5.373 12-12S22.627 4 16 4zm5.5 17.313c-.2.312-.625.406-.937.218-2.563-1.562-5.782-1.918-9.563-1.063-.375.094-.75-.125-.844-.5-.094-.375.125-.75.5-.844 4.156-.937 7.75-.531 10.594 1.218.312.188.438.625.25.97zm1.343-2.968c-.25.375-.781.5-1.156.25-2.937-1.813-7.407-2.344-10.875-1.282-.437.125-.907-.094-1.031-.531-.125-.438.094-.907.531-1.032 3.97-1.218 8.938-.625 12.282 1.469.375.25.5.781.25 1.125zm.125-3.094c-3.531-2.093-9.344-2.281-12.719-1.281-.531.156-1.093-.156-1.25-.687-.156-.532.156-1.094.688-1.25 3.875-1.157 10.406-.938 14.5 1.469.468.281.625.906.343 1.375-.281.469-.906.625-1.375.343z" />
-            </svg>
+ <div class="nav-scrollable">
+      <div class="nav-header">
+     <div class="logo">
+         <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+  <path d="M16 4C9.373 4 4 9.373 4 16s5.373 12 12 12 12-5.373 12-12S22.627 4 16 4zm5.5 17.313c-.2.312-.625.406-.937.218-2.563-1.562-5.782-1.918-9.563-1.063-.375.094-.75-.125-.844-.5-.094-.375.125-.75.5-.844 4.156-.937 7.75-.531 10.594 1.218.312.188.438.625.25.97zm1.343-2.968c-.25.375-.781.5-1.156.25-2.937-1.813-7.407-2.344-10.875-1.282-.437.125-.907-.094-1.031-.531-.125-.438.094-.907.531-1.032 3.97-1.218 8.938-.625 12.282 1.469.375.25.5.781.25 1.125zm.125-3.094c-3.531-2.093-9.344-2.281-12.719-1.281-.531.156-1.093-.156-1.25-.687-.156-.532.156-1.094.688-1.25 3.875-1.157 10.406-.938 14.5 1.469.468.281.625.906.343 1.375-.281.469-.906.625-1.375.343z" />
+    </svg>
+  </div>
         </div>
-    </div>
 
-    <div class="nav-main">
-        <a href="/" class="nav-link active">
-            <span class="nav-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z" />
-                </svg>
-            </span>
-            <span class="nav-label">Home</span>
-        </a>
+      <div class="nav-main">
+            <a href="/" class="nav-link active">
+    <span class="nav-icon">
+           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+         <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z" />
+ </svg>
+   </span>
+      <span class="nav-label">Home</span>
+         </a>
 
-        <a href="/search" class="nav-link">
-            <span class="nav-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none" />
-                    <path d="M16 16l5 5" stroke="currentColor" stroke-width="2" />
-                </svg>
-            </span>
-            <span class="nav-label">Search</span>
-        </a>
+            <a href="/search" class="nav-link">
+          <span class="nav-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+         <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none" />
+              <path d="M16 16l5 5" stroke="currentColor" stroke-width="2" />
+        </svg>
+    </span>
+           <span class="nav-label">Search</span>
+     </a>
 
-        <a href="/library" class="nav-link">
-            <span class="nav-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <rect x="3" y="3" width="7" height="9" rx="1" stroke-width="2" />
-                    <rect x="14" y="3" width="7" height="5" rx="1" stroke-width="2" />
-                    <rect x="14" y="12" width="7" height="9" rx="1" stroke-width="2" />
-                    <rect x="3" y="16" width="7" height="5" rx="1" stroke-width="2" />
-                </svg>
-            </span>
-            <span class="nav-label">Your Library</span>
-        </a>
-    </div>
-
-    <div class="nav-divider"></div>
-
-    <div class="nav-actions">
-        <a href="/create-playlist" class="nav-link">
-            <span class="nav-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <rect x="3" y="11" width="18" height="2" rx="1" />
-                    <rect x="11" y="3" width="2" height="18" rx="1" />
-                </svg>
-            </span>
-            <span class="nav-label">Create Playlist</span>
-        </a>
-
-        <a href="/liked" class="nav-link liked-songs">
-            <span class="nav-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                </svg>
-            </span>
-            <span class="nav-label">Liked Songs</span>
-        </a>
-    </div>
+            <a href="/library" class="nav-link">
+     <span class="nav-icon">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+     <rect x="3" y="3" width="7" height="9" rx="1" stroke-width="2" />
+       <rect x="14" y="3" width="7" height="5" rx="1" stroke-width="2" />
+       <rect x="14" y="12" width="7" height="9" rx="1" stroke-width="2" />
+ <rect x="3" y="16" width="7" height="5" rx="1" stroke-width="2" />
+     </svg>
+      </span>
+             <span class="nav-label">Your Library</span>
+            </a>
+     </div>
 
     <div class="nav-divider"></div>
 
-    <div class="nav-playlists">
-        <a href="/playlist/gaming" class="playlist-link">
-            <span class="playlist-name">Gaming</span>
-            <span class="pin-icon">
+        <div class="nav-actions">
+            <a href="/create-playlist" class="nav-link">
+       <span class="nav-icon">
+ <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="3" y="11" width="18" height="2" rx="1" />
+            <rect x="11" y="3" width="2" height="18" rx="1" />
+       </svg>
+     </span>
+              <span class="nav-label">Create Playlist</span>
+            </a>
+
+     <a href="/liked" class="nav-link liked-songs">
+       <span class="nav-icon">
+ <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+   </svg>
+      </span>
+  <span class="nav-label">Liked Songs</span>
+    </a>
+    </div>
+
+        <div class="nav-divider"></div>
+
+        <div class="nav-playlists">
+            <a href="/playlist/gaming" class="playlist-link">
+     <span class="playlist-name">Gaming</span>
+        <span class="pin-icon">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-                    <path d="M7 2L8 6h4l-3 3 1 4-3-2-3 2 1-4-3-3h4l1-4z" />
-                </svg>
-            </span>
-        </a>
-        <a href="/playlist/study" class="playlist-link">
+        <path d="M7 2L8 6h4l-3 3 1 4-3-2-3 2 1-4-3-3h4l1-4z" />
+    </svg>
+       </span>
+       </a>
+            <a href="/playlist/study" class="playlist-link">
             <span class="playlist-name">Study Music</span>
+       </a>
+            <a href="/playlist/minecraft" class="playlist-link">
+          <span class="playlist-name">Minecraft Vibes</span>
+                <span class="pin-icon">
+ <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+           <path d="M7 2L8 6h4l-3 3 1 4-3-2-3 2 1-4-3-3h4l1-4z" />
+    </svg>
+                </span>
+       </a>
+            <a href="/playlist/discover" class="playlist-link">
+  <span class="playlist-name">Discover Weekly</span>
         </a>
-        <a href="/playlist/minecraft" class="playlist-link">
-            <span class="playlist-name">Minecraft Vibes</span>
-            <span class="pin-icon">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-                    <path d="M7 2L8 6h4l-3 3 1 4-3-2-3 2 1-4-3-3h4l1-4z" />
-                </svg>
+    <a href="/playlist/odesza" class="playlist-link active">
+                <span class="playlist-name">This is ODESZA</span>
+    <span class="playing-badge">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+   <circle cx="7" cy="7" r="1.5" />
+           <path d="M7 2v3M7 9v3M2 7h3M9 7h3" stroke="currentColor" stroke-width="1.5" />
+                 </svg>
             </span>
-        </a>
-        <a href="/playlist/discover" class="playlist-link">
-            <span class="playlist-name">Discover Weekly</span>
-        </a>
-        <a href="/playlist/odesza" class="playlist-link active">
-            <span class="playlist-name">This is ODESZA</span>
-            <span class="playing-badge">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-                    <circle cx="7" cy="7" r="1.5" />
-                    <path d="M7 2v3M7 9v3M2 7h3M9 7h3" stroke="currentColor" stroke-width="1.5" />
-                </svg>
-            </span>
-        </a>
+       </a>
+        </div>
     </div>
 
     <div class="nav-footer">
-        <div class="friends-bar">
-            <span class="friends-label">Friends</span>
-            <div class="friends-avatars">
-                <div class="friend-avatar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
-                <div class="friend-avatar" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
-                <div class="friend-avatar" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"></div>
-            </div>
-        </div>
-
-        <a href="/account" class="nav-link account-link">
+        <a href="/account" class="nav-link">
             <span class="nav-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <circle cx="12" cy="8" r="4" />
-                    <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
-                </svg>
-            </span>
+   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <circle cx="12" cy="8" r="4" />
+       <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
+    </svg>
+     </span>
             <span class="nav-label">My Account</span>
         </a>
     </div>
@@ -123,12 +116,19 @@
 
 <style>
     .nav-menu {
-        display: flex;
+ display: flex;
         flex-direction: column;
         height: 100%;
-        background-color: #000000;
-        padding: 24px 12px;
+   background-color: #000000;
         color: #b3b3b3;
+    }
+
+    .nav-scrollable {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+    padding: 24px 12px 12px 12px;
+        min-height: 0;
     }
 
     .nav-header {
@@ -136,56 +136,55 @@
         padding: 0 12px;
     }
 
-    .logo {
+  .logo {
         display: flex;
         align-items: center;
-        justify-content: center;
-        color: #fff;
+        justify-content: flex-start;
+color: #fff;
     }
 
     .nav-main, .nav-actions {
         display: flex;
         flex-direction: column;
-        gap: 4px;
+ gap: 4px;
     }
 
     .nav-link {
         display: flex;
         align-items: center;
-        gap: 16px;
-        padding: 12px 16px;
+      gap: 16px;
+        padding: 8px 12px;
         color: #b3b3b3;
-        text-decoration: none;
-        border-radius: 6px;
+    text-decoration: none;
+        border-radius: 4px;
         transition: all 0.2s;
         font-size: 14px;
         font-weight: 700;
         position: relative;
     }
 
-        .nav-link:hover {
-            color: #fff;
-        }
+.nav-link:hover {
+        color: #fff;
+  }
 
-        .nav-link.active {
-            color: #fff;
-            background-color: #282828;
-        }
+    .nav-link.active {
+        color: #fff;
+    }
 
-        .nav-link.liked-songs .nav-icon {
-            background: linear-gradient(135deg, #450af5 0%, #c4efd9 100%);
-            border-radius: 2px;
-            padding: 4px;
-        }
+  .nav-link.liked-songs .nav-icon {
+        background: linear-gradient(135deg, #450af5 0%, #c4efd9 100%);
+        border-radius: 2px;
+        padding: 6px;
+    }
 
-            .nav-link.liked-songs .nav-icon svg {
-                width: 16px;
-                height: 16px;
-            }
+    .nav-link.liked-songs .nav-icon svg {
+        width: 12px;
+        height: 12px;
+ }
 
     .nav-icon {
-        width: 24px;
-        height: 24px;
+   width: 24px;
+  height: 24px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -193,122 +192,86 @@
     }
 
     .nav-label {
-        flex: 1;
+ flex: 1;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
 
     .nav-divider {
-        height: 1px;
+  height: 1px;
         background-color: #282828;
-        margin: 16px 0;
-    }
+        margin: 12px 0;
+ }
 
-    .nav-playlists {
-        flex: 1;
-        overflow-y: auto;
+ .nav-playlists {
         display: flex;
-        flex-direction: column;
-        gap: 0;
+   flex-direction: column;
+      gap: 0;
     }
 
     .playlist-link {
         display: flex;
-        align-items: center;
+      align-items: center;
         justify-content: space-between;
-        padding: 8px 16px;
-        color: #b3b3b3;
+        padding: 8px 12px;
+     color: #b3b3b3;
         text-decoration: none;
         border-radius: 4px;
         transition: all 0.2s;
         font-size: 14px;
-        font-weight: 500;
+        font-weight: 400;
     }
 
-        .playlist-link:hover {
-            color: #fff;
-        }
+  .playlist-link:hover {
+      color: #fff;
+    }
 
-        .playlist-link.active {
-            color: #fff;
-        }
+    .playlist-link.active {
+     color: #fff;
+    }
 
     .playlist-name {
-        flex: 1;
-        white-space: nowrap;
-        overflow: hidden;
+  flex: 1;
+ white-space: nowrap;
+   overflow: hidden;
         text-overflow: ellipsis;
     }
 
     .pin-icon {
         opacity: 0.7;
-        flex-shrink: 0;
+      flex-shrink: 0;
         margin-left: 8px;
     }
 
-    .playing-badge {
+  .playing-badge {
         color: #1db954;
         flex-shrink: 0;
-        margin-left: 8px;
+     margin-left: 8px;
     }
 
     .nav-footer {
-        margin-top: auto;
-        padding-top: 16px;
-        border-top: 1px solid #282828;
+        flex-shrink: 0;
+        padding: 12px;
+      border-top: 1px solid #282828;
+  background-color: #000000;
     }
 
-    .friends-bar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 8px 16px;
-        margin-bottom: 8px;
+    /* Scrollbar for scrollable section */
+    .nav-scrollable::-webkit-scrollbar {
+    width: 8px;
     }
 
-    .friends-label {
-        font-size: 14px;
-        font-weight: 700;
-        color: #b3b3b3;
+    .nav-scrollable::-webkit-scrollbar-track {
+    background: transparent;
     }
 
-    .friends-avatars {
-        display: flex;
-    }
-
-    .friend-avatar {
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        background-color: #333;
-        border: 2px solid #000;
-        margin-left: -10px;
-    }
-
-        .friend-avatar:first-child {
-            margin-left: 0;
-        }
-
-    .account-link {
-        margin-top: 4px;
-    }
-
-    /* Scrollbar for playlists */
-    .nav-playlists::-webkit-scrollbar {
-        width: 8px;
-    }
-
-    .nav-playlists::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    .nav-playlists::-webkit-scrollbar-thumb {
+ .nav-scrollable::-webkit-scrollbar-thumb {
         background-color: #282828;
         border-radius: 4px;
     }
 
-        .nav-playlists::-webkit-scrollbar-thumb:hover {
-            background-color: #3e3e3e;
-        }
+    .nav-scrollable::-webkit-scrollbar-thumb:hover {
+    background-color: #3e3e3e;
+ }
 </style>
