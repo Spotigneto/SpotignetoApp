@@ -64,7 +64,33 @@
     private string SelectedSubgenre { get; set; } = string.Empty;
 
     // Sottogeneri usati solo nel filtro a tendina 'Sottogenere'
-    private List<string> Subgenres = new() { "Hardcore", "Indie Pop", "Classic Rock" };
+    private List<string> Subgenres { get; set; } = new()
+{
+    "Dance Pop",
+    "Post-Teen Pop",
+    "Electropop",
+    "Indie Poptimism",
+    "Hip Hop",
+    "Southern Hip Hop",
+    "Gangster Rap",
+    "Trap",
+    "Album Rock",
+    "Classic Rock",
+    "Permanent Wave",
+    "Hard Rock",
+    "Tropical",
+    "Latin Pop",
+    "Reggaeton",
+    "Latin Hip Hop",
+    "Urban Contemporary",
+    "Hip Pop",
+    "New Jack Swing",
+    "Neo Soul",
+    "Electro House",
+    "Big Room",
+    "Pop Edm",
+    "Progressive Electro House"
+};
 
     // CLASSE MODELLO PER I DATI
     public class Genre
@@ -84,7 +110,6 @@
         new Genre { Name = "EDM", Image = "/images/edm.jpg", ColorClass = "edm-gradient" }
     };
     
-    // METODI DI LOGICA
     
     private void SelectGenre(Genre genre)
     {
