@@ -46,7 +46,7 @@
         {
             <div class="genre-card @genre.ColorClass">
                 <h3 class="genre-title">@genre.Name</h3>
-                <img class="genre-image" src="@genre.ImageUrl" alt="@genre.Name" />
+                <img class="genre-image" src="@genre.Image" alt="@genre.Name" />
             </div>
         }
     </div>
@@ -70,18 +70,18 @@
     public class Genre
     {
         public string Name { get; set; }
-        public string ImageUrl { get; set; } 
+        public string Image { get; set; } 
         public string ColorClass { get; set; }
     }
 
     private List<Genre> GenresGrid = new List<Genre>
     {
-        new Genre { Name = "Pop", ImageUrl = "/images/pop.jpg", ColorClass = "pop-gradient" },
-        new Genre { Name = "Rap", ImageUrl = "/images/rap.jpg", ColorClass = "rap-gradient" },
-        new Genre { Name = "Rock", ImageUrl = "/images/rock.jpg", ColorClass = "rock-gradient" },
-        new Genre { Name = "Latin", ImageUrl = "/images/latin.jpg", ColorClass = "latin-gradient" },
-        new Genre { Name = "R&B", ImageUrl = "/images/r&b.jpg", ColorClass = "rnb-gradient" },
-        new Genre { Name = "EDM", ImageUrl = "/images/edm.jpg", ColorClass = "edm-gradient" }
+        new Genre { Name = "Pop", Image = "/images/pop.jpg", ColorClass = "pop-gradient" },
+        new Genre { Name = "Rap", Image = "/images/rap.jpg", ColorClass = "rap-gradient" },
+        new Genre { Name = "Rock", Image= "/images/rock.jpg", ColorClass = "rock-gradient" },
+        new Genre { Name = "Latin", Image = "/images/latin.jpg", ColorClass = "latin-gradient" },
+        new Genre { Name = "R&B", Image = "/images/r&b.jpg", ColorClass = "rnb-gradient" },
+        new Genre { Name = "EDM", Image = "/images/edm.jpg", ColorClass = "edm-gradient" }
     };
     
     // METODI DI LOGICA
