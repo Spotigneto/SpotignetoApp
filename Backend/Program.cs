@@ -6,6 +6,21 @@ using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure Kestrel for proper port management
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.AddServerHeader = false;
+    // Configure graceful shutdown timeout
+    options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
+    options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(1);
+});
+
+// Configure shutdown timeout (moved to correct location)
+builder.Host.ConfigureHostOptions(options =>
+{
+    options.ShutdownTimeout = TimeSpan.FromSeconds(30);
+});
+
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -56,5 +71,12 @@ app.UseCors();
 
 // Map controllers
 app.MapControllers();
+
+// Configure graceful shutdown
+var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
+lifetime.ApplicationStopping.Register(() =>
+{
+    Console.WriteLine("Backend application is shutting down gracefully...");
+});
 
 app.Run();
