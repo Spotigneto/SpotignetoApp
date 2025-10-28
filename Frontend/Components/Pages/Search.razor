@@ -1,1 +1,102 @@
 ﻿@page "/search"
+
+<div class="search-main-content">
+    <div>
+        <div class="user-profile-icon">
+            <i class="bi bi-person-circle"></i> 
+        </div>
+    </div>
+
+
+    <div class="search-and-filters-area">
+        
+        <div class="search-input-container">
+            <input type="text" 
+                   class="search-input" 
+                   placeholder="Cerca la tua musica preferita..."
+                   @bind="SearchTerm" 
+                   @bind:event="oninput" 
+                   @onchange="ApplyFiltersAndSearch" />
+        </div>
+
+        <div class="filters-container">
+            
+            <select class="filter-dropdown" @bind="SelectedGenre">
+                <option value="">Genere</option>
+                @foreach (var genre in GenresGrid) 
+                {
+                    <option value="@genre.Name">@genre.Name</option> }
+            </select>
+
+            <select class="filter-dropdown" @bind="SelectedSubgenre">
+                <option value="">Sottogenere</option>
+                @foreach (var subgenre in Subgenres)
+                {
+                    <option value="@subgenre">@subgenre</option>
+                }
+            </select>
+            
+        </div>
+    </div>
+    
+    <h2 class="section-title">Sfoglia tutto</h2>
+
+    <div class="genres-grid-container">
+        @foreach (var genre in GenresGrid)
+        {
+            <div class="genre-card @genre.ColorClass">
+                <h3 class="genre-title">@genre.Name</h3>
+                <img class="genre-image" src="@genre.ImageUrl" alt="@genre.Name" />
+            </div>
+        }
+    </div>
+
+    <div class="search-results-list">
+    </div>
+</div>
+
+@code {
+    [Inject]
+    public NavigationManager NavManager { get; set; }
+
+    private string SearchTerm { get; set; } = string.Empty;
+    private string SelectedGenre { get; set; } = string.Empty;
+    private string SelectedSubgenre { get; set; } = string.Empty;
+
+    // Sottogeneri usati solo nel filtro a tendina 'Sottogenere'
+    private List<string> Subgenres = new() { "Hardcore", "Indie Pop", "Classic Rock" };
+
+    // CLASSE MODELLO PER I DATI
+    public class Genre
+    {
+        public string Name { get; set; }
+        public string ImageUrl { get; set; } 
+        public string ColorClass { get; set; }
+    }
+
+    private List<Genre> GenresGrid = new List<Genre>
+    {
+        new Genre { Name = "Pop", ImageUrl = "/images/pop.jpg", ColorClass = "pop-gradient" },
+        new Genre { Name = "Rap", ImageUrl = "/images/rap.jpg", ColorClass = "rap-gradient" },
+        new Genre { Name = "Rock", ImageUrl = "/images/rock.jpg", ColorClass = "rock-gradient" },
+        new Genre { Name = "Latin", ImageUrl = "/images/latin.jpg", ColorClass = "latin-gradient" },
+        new Genre { Name = "R&B", ImageUrl = "/images/r&b.jpg", ColorClass = "rnb-gradient" },
+        new Genre { Name = "EDM", ImageUrl = "/images/edm.jpg", ColorClass = "edm-gradient" }
+    };
+    
+    // METODI DI LOGICA
+    
+    private void SelectGenre(Genre genre)
+    {
+        // Quando si clicca una card, si potrebbe aggiornare la ricerca o navigare
+        Console.WriteLine($"Card Genere selezionata: {genre.Name}");
+    }
+
+    private void ApplyFiltersAndSearch()
+    {
+        // Logica per chiamare l'API o filtrare i dati
+        Console.WriteLine($"Ricerca con filtri: Termine='{SearchTerm}', Genere='{SelectedGenre}', Sottogenere='{SelectedSubgenre}'");
+    }
+
+    
+}

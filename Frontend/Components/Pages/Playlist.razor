@@ -1,4 +1,4 @@
-@page "/playlist-create"
+@page "/create-playlist"
 
 <h2 class="text-3xl font-bold mb-6">🎵 Crea una nuova Playlist</h2>
 
@@ -9,16 +9,17 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
             <label class="block font-medium mb-1">Nome Playlist</label>
-            <input @bind="nomePlaylist" type="text" placeholder="Inserisci il nome" class="w-full border rounded-lg p-2" />
+            <input @bind="nomePlaylist" type="text" placeholder="Inserisci il nome"
+                class="w-full border rounded-lg p-2" />
         </div>
         <div>
             <label class="block font-medium mb-1">Descrizione</label>
-            <input @bind="descrizionePlaylist" type="text" placeholder="Descrizione facoltativa" class="w-full border rounded-lg p-2" />
+            <input @bind="descrizionePlaylist" type="text" placeholder="Descrizione facoltativa"
+                class="w-full border rounded-lg p-2" />
         </div>
     </div>
 
-    <button class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-            @onclick="CreaPlaylist">
+    <button class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700" @onclick="CreaPlaylist">
         Crea Playlist
     </button>
 </div>
