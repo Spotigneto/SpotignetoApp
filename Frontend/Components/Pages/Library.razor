@@ -1,34 +1,201 @@
 ﻿@page "/library"
 
-<div class="p-8 bg-gray-100 min-h-screen">
-    <h2 class="text-3xl font-bold mb-6">📚 La mia Libreria</h2>
-
-    <!-- Nessuna playlist -->
-    <!-- <p class="text-gray-500">Non hai ancora creato playlist. Vai su <a href="/playlist-create" class="text-blue-600 underline">Crea Playlist</a> per iniziare!</p> -->
-
-    <!-- Griglia di playlist -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Card Playlist 1 -->
-        <div class="bg-white rounded-2xl shadow p-6 hover:shadow-lg transition">
-            <h3 class="text-xl font-semibold mb-2">Chill Vibes</h3>
-            <p class="text-gray-600 mb-2">Playlist rilassante per lo studio o il relax.</p>
-            <p class="text-sm text-gray-400">Brani: 12</p>
+<div class="library-container">
+    <h1 class="library-title">Your Library</h1>
+    
+    <h2 class="section-title">Playlists</h2>
+    
+    <!-- Playlist Grid -->
+    <div class="playlists-grid">
+        <!-- Playlist 1 -->
+        <div class="playlist-card">
+            <div class="playlist-color" style="background: linear-gradient(135deg, #450af5 0%, #c4efd9 100%);"></div>
+            <div class="playlist-info">
+                <div class="playlist-type">Playlist</div>
+                <div class="playlist-stats">
+                    <span class="stat-number">42</span>
+                    <span>songs</span>
+                    <span class="stat-divider">•</span>
+                    <span class="stat-number">2h</span>
+                    <span class="stat-number">34min</span>
+                </div>
+            </div>
         </div>
-
-        <!-- Card Playlist 2 -->
-        <div class="bg-white rounded-2xl shadow p-6 hover:shadow-lg transition">
-            <h3 class="text-xl font-semibold mb-2">Workout Hits</h3>
-            <p class="text-gray-600 mb-2">Energia pura per la palestra e l’allenamento.</p>
-            <p class="text-sm text-gray-400">Brani: 20</p>
+        
+        <!-- Playlist 2 -->
+        <div class="playlist-card">
+            <div class="playlist-color" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+            <div class="playlist-info">
+                <div class="playlist-type">Playlist</div>
+                <div class="playlist-stats">
+                    <span class="stat-number">30</span>
+                    <span>songs</span>
+                    <span class="stat-divider">•</span>
+                    <span class="stat-number">2h</span>
+                    <span class="stat-number">32min</span>
+                </div>
+            </div>
         </div>
-
-        <!-- Card Playlist 3 -->
-        <div class="bg-white rounded-2xl shadow p-6 hover:shadow-lg transition">
-            <h3 class="text-xl font-semibold mb-2">Party Time</h3>
-            <p class="text-gray-600 mb-2">I migliori successi per far scatenare tutti.</p>
-            <p class="text-sm text-gray-400">Brani: 15</p>
+        
+        <!-- Playlist 3 -->
+        <div class="playlist-card">
+            <div class="playlist-color" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"></div>
+            <div class="playlist-info">
+                <div class="playlist-type">Playlist</div>
+                <div class="playlist-stats">
+                    <span class="stat-number">38</span>
+                    <span>songs</span>
+                    <span class="stat-divider">•</span>
+                    <span class="stat-number">2h</span>
+                    <span class="stat-number">15min</span>
+                </div>
+            </div>
         </div>
-
-        <!-- Puoi aggiungere altre card -->
+        
+        <!-- Playlist 4 -->
+        <div class="playlist-card">
+            <div class="playlist-color" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);"></div>
+            <div class="playlist-info">
+                <div class="playlist-type">Playlist</div>
+                <div class="playlist-stats">
+                    <span class="stat-number">50</span>
+                    <span>songs</span>
+                    <span class="stat-divider">•</span>
+                    <span class="stat-number">3h</span>
+                    <span class="stat-number">32min</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="see-all">See all</div>
+    
+    <div class="divider"></div>
+    
+    <!-- Single Playlist (separate from the grid) -->
+    <div class="single-playlist">
+        <div class="playlist-color" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);"></div>
+        <div class="playlist-info">
+            <div class="playlist-type">Playlist</div>
+            <div class="playlist-stats">
+                <span class="stat-number">56</span>
+                <span>songs</span>
+                <span class="stat-divider">•</span>
+                <span class="stat-number">3h</span>
+                <span class="stat-number">22min</span>
+            </div>
+        </div>
     </div>
 </div>
+
+<style>
+    .library-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 24px;
+    }
+
+    .library-title {
+        font-size: 32px;
+        font-weight: 900;
+        margin-bottom: 24px;
+        color: #fff;
+    }
+
+    .section-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: #fff;
+    }
+
+    /* Playlist Grid */
+    .playlists-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .playlist-card {
+        background-color: #181818;
+        border-radius: 8px;
+        padding: 16px;
+        transition: background-color 0.3s;
+        cursor: pointer;
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .playlist-card:hover {
+        background-color: #282828;
+    }
+
+    .playlist-color {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        flex-shrink: 0;
+    }
+
+    .playlist-info {
+        flex: 1;
+    }
+
+    .playlist-type {
+        font-size: 14px;
+        color: #b3b3b3;
+        margin-bottom: 4px;
+    }
+
+    .playlist-stats {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: #b3b3b3;
+        margin-top: 4px;
+    }
+
+    .stat-number {
+        font-size: 14px;
+        font-weight: 600;
+        color: #fff;
+    }
+
+    .stat-divider {
+        color: #535353;
+    }
+
+    .see-all {
+        color: #b3b3b3;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: color 0.2s;
+        margin-bottom: 24px;
+        display: inline-block;
+    }
+
+    .see-all:hover {
+        color: #fff;
+    }
+
+    .divider {
+        height: 1px;
+        background-color: #282828;
+        margin: 24px 0;
+    }
+
+    /* Single playlist card (for the last one) */
+    .single-playlist {
+        background-color: #181818;
+        border-radius: 8px;
+        padding: 16px;
+        max-width: 300px;
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+    }
+</style>

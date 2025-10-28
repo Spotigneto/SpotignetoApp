@@ -175,11 +175,7 @@ c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net
 c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\rjimswa.dswa.cache.json
 c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\rjsmrazor.dswa.cache.json
 c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\rjsmcshtml.dswa.cache.json
-c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\scopedcss\Components\Layout\MainLayout.razor.rz.scp.css
-c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\scopedcss\Components\Layout\NavMenu.razor.rz.scp.css
 c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\scopedcss\bundle\Frontend.styles.css
-c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\scopedcss\projectbundle\Frontend.bundle.scp.css
-c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\compressed\tel0g54dgw-khy4lop6wu.gz
 c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\compressed\8hi5addhx4-t1cqhe9u97.gz
 c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\compressed\rbb6md7g22-c2jlpeoesf.gz
 c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\compressed\t2xxkea02z-sejl45xvog.gz
@@ -224,8 +220,6 @@ c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net
 c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\compressed\pxgklafh5v-h1s4sie4z3.gz
 c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\compressed\o81bgcgknk-4d85u1mtcx.gz
 c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\compressed\mwwz246s69-0j3bgjxly4.gz
-c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\compressed\wkaqiq4loj-kqiwfrp2hn.gz
-c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\compressed\xfnzok5kqy-kqiwfrp2hn.gz
 c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\staticwebassets.build.json
 c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\staticwebassets.build.json.cache
 c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\staticwebassets.development.json
@@ -235,3 +229,4 @@ c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net
 c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\Frontend.pdb
 c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\Frontend.genruntimeconfig.cache
 c:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\ref\Frontend.dll
+C:\Users\Davide Gaetano\Desktop\ProjectWork\SpotignetoApp\Frontend\obj\Debug\net9.0\compressed\tel0g54dgw-j3znlrixeu.gz
