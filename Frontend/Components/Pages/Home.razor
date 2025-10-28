@@ -5,99 +5,112 @@
 <div class="home-page">
     <!-- Hero Section -->
     <section class="hero-section">
-<h1 class="hero-title">
-  IT'S YOUR FRIEND <span class="highlight">CANDICE</span>'S BIRTHDAY!
-        </h1>
+      <h1 class="hero-title">
+            IT'S YOUR FRIEND <span class="highlight">CANDICE</span>'S BIRTHDAY!
+  </h1>
         <p class="hero-subtitle">Let's celebrate by listening to some of his favourite music</p>
 
-      <div class="hero-carousel">
-   @foreach (var album in heroAlbums)
+        <div class="hero-carousel">
+      @foreach (var album in heroAlbums)
+{
+   <div class="hero-album" @onclick="() => PlayAlbum(album)">
+   <div class="hero-album-cover">
+        @if (!string.IsNullOrEmpty(album.ImageUrl))
+     {
+           <img src="@album.ImageUrl" alt="@album.Title" class="album-image" />
+          }
+         else
   {
-                <div class="hero-album @(album.IsFeatured ? "hero-album-featured" : "")">
-          <div class="hero-album-cover" style="background: @album.Gradient;">
-         @if (album.IsFeatured)
-          {
-        <div class="featured-overlay">
-                  <div class="featured-info">
-    <div class="featured-artist">@album.Artist</div>
-                 <div class="featured-title">@album.Title</div>
-      </div>
-    <button class="hero-play-btn" @onclick="() => PlayAlbum(album)" aria-label="Play @album.Title">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M8 5v14l11-7z" />
-       </svg>
-               </button>
+     <div class="album-placeholder" style="background: @album.Gradient;"></div>
+             }
+     <div class="hero-album-overlay">
+  <button class="hero-play-btn" @onclick:stopPropagation="true" @onclick="() => PlayAlbum(album)" aria-label="Play @album.Title">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+           <path d="M8 5v14l11-7z" />
+  </svg>
+                 </button>
+     </div>
     </div>
-    }
-           else
-    {
-          <div class="album-placeholder-text">@album.Title</div>
+</div>
   }
-              </div>
-         </div>
- }
         </div>
-  </section>
+    </section>
 
-    <!-- Recently Played Section -->
+  <!-- Recently Played Section -->
     <section class="content-section">
-     <h2 class="section-title">Recently Played</h2>
-  <div class="albums-row">
+        <h2 class="section-title">Recently Played</h2>
+        <div class="albums-row">
             @foreach (var album in recentlyPlayed)
             {
-     <div class="album-item" @onclick="() => SelectAlbum(album)">
-           <div class="album-cover" style="background: @album.Gradient;">
-      <div class="album-hover">
-         <button class="play-button @(album.IsPlaying ? "play-button-visible" : "")" 
-       @onclick:stopPropagation="true"
-        @onclick="() => TogglePlay(album)"
-        aria-label="@(album.IsPlaying ? "Pause" : "Play") @album.Title">
-           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-        @if (album.IsPlaying)
-           {
-    <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
-}
-             else
-    {
-           <path d="M8 5v14l11-7z" />
+  <div class="album-item" @onclick="() => SelectAlbum(album)">
+ <div class="album-cover">
+         @if (!string.IsNullOrEmpty(album.ImageUrl))
+             {
+          <img src="@album.ImageUrl" alt="@album.Title" class="album-image" />
+         }
+     else
+             {
+       <div class="album-placeholder" style="background: @album.Gradient;"></div>
+         }
+         <div class="album-hover">
+        <button class="play-button @(album.IsPlaying ? "play-button-visible" : "")" 
+  @onclick:stopPropagation="true"
+     @onclick="() => TogglePlay(album)"
+ aria-label="@(album.IsPlaying ? "Pause" : "Play") @album.Title">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+  @if (album.IsPlaying)
+   {
+         <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+      }
+   else
+      {
+  <path d="M8 5v14l11-7z" />
   }
-    </svg>
-       </button>
-    </div>
-            </div>
-      <div class="album-details">
-            <div class="album-title">@album.Title</div>
-         <div class="album-artist">@album.Artist</div>
-             </div>
-        </div>
- }
-        </div>
+         </svg>
+     </button>
+       </div>
+                 </div>
+        <div class="album-details">
+       <div class="album-title">@album.Title</div>
+          <div class="album-artist">@album.Artist</div>
+  </div>
+           </div>
+      }
+      </div>
     </section>
 
     <!-- Discover Something New Section -->
     <section class="content-section">
-     <h2 class="section-title">Discover Something New</h2>
+    <h2 class="section-title">Discover Something New</h2>
         <div class="albums-row">
-       @foreach (var album in discoverAlbums)
+         @foreach (var album in discoverAlbums)
+   {
+                <div class="album-item" @onclick="() => SelectAlbum(album)">
+  <div class="album-cover">
+ @if (!string.IsNullOrEmpty(album.ImageUrl))
   {
-              <div class="album-item" @onclick="() => SelectAlbum(album)">
-          <div class="album-cover" style="background: @album.Gradient;">
-  <div class="album-hover">
+          <img src="@album.ImageUrl" alt="@album.Title" class="album-image" />
+     }
+              else
+     {
+      <div class="album-placeholder" style="background: @album.Gradient;"></div>
+               }
+      <div class="album-hover">
        <button class="play-button" 
-              @onclick:stopPropagation="true"
-      @onclick="() => PlayAlbum(album)"
-  aria-label="Play @album.Title">
- <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M8 5v14l11-7z" />
+      @onclick:stopPropagation="true"
+    @onclick="() => PlayAlbum(album)"
+       aria-label="Play @album.Title">
+     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+       <path d="M8 5v14l11-7z" />
          </svg>
-       </button>
-      </div>
-         </div>
-            <div class="album-details">
-       <div class="album-title">@album.Title</div>
-      <div class="album-artist">@album.Artist</div>
+     </button>
+           </div>
+               </div>
+       <div class="album-details">
+      <div class="album-title">@album.Title</div>
+       <div class="album-artist">@album.Artist</div>
   </div>
-            </div>
+      </div>
             }
         </div>
     </section>
@@ -107,37 +120,38 @@
     private List<Album> heroAlbums = new();
     private List<Album> recentlyPlayed = new();
     private List<Album> discoverAlbums = new();
-    private Album? currentlyPlaying;
+ private Album? currentlyPlaying;
 
-    protected override void OnInitialized()
+ protected override void OnInitialized()
     {
-        InitializeHeroAlbums();
-   InitializeRecentlyPlayed();
+   InitializeHeroAlbums();
+ InitializeRecentlyPlayed();
         InitializeDiscoverAlbums();
     }
 
     private void InitializeHeroAlbums()
-    {
-        heroAlbums = new List<Album>
+ {
+  heroAlbums = new List<Album>
         {
-    new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Gradient = "linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)" },
-   new Album { Id = 2, Title = "Album 2", Artist = "Artist 2", Gradient = "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" },
-            new Album { Id = 3, Title = "Late Night", Artist = "ODESZA", Gradient = "linear-gradient(135deg, #4158d0 0%, #c850c0 100%)", IsFeatured = true },
-      new Album { Id = 4, Title = "Album 4", Artist = "Artist 4", Gradient = "linear-gradient(135deg, #fa709a 0%, #fee140 100%)" },
-            new Album { Id = 5, Title = "Album 5", Artist = "Artist 5", Gradient = "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)" }
-        };
-    }
+   new Album { Id = 1, Title = "Be Yourself", Artist = "ILLENIUM", ImageUrl = "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)" },
+   new Album { Id = 2, Title = "Loyal", Artist = "ODESZA", ImageUrl = "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #4158d0 0%, #c850c0 100%)" },
+   new Album { Id = 3, Title = "Super Max", Artist = "Pitstop Boys", ImageUrl = "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #fa709a 0%, #fee140 100%)" },
+            new Album { Id = 4, Title = "Mama", Artist = "Jonas Blue", ImageUrl = "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" },
+new Album { Id = 5, Title = "Future", Artist = "Don Diablo", ImageUrl = "https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" },
+ new Album { Id = 6, Title = "Live Set", Artist = "Various Artists", ImageUrl = "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)" }
+     };
+  }
 
     private void InitializeRecentlyPlayed()
     {
         recentlyPlayed = new List<Album>
-        {
-   new Album { Id = 6, Title = "True Life", Artist = "Avicii", Gradient = "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)" },
-new Album { Id = 7, Title = "Loyal", Artist = "ODESZA", Gradient = "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)", IsPlaying = true },
-       new Album { Id = 8, Title = "Super Max", Artist = "Pitstop Boys", Gradient = "linear-gradient(135deg, #fa709a 0%, #fee140 100%)" },
-            new Album { Id = 9, Title = "Mama", Artist = "Clean Bandit", Gradient = "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)" },
-new Album { Id = 10, Title = "Futura", Artist = "Don Diablo", Gradient = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }
-        };
+   {
+  new Album { Id = 7, Title = "True Life", Artist = "ILLENIUM", ImageUrl = "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)" },
+       new Album { Id = 8, Title = "Loyal", Artist = "ODESZA", ImageUrl = "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #4158d0 0%, #c850c0 100%)", IsPlaying = true },
+     new Album { Id = 9, Title = "Super Max", Artist = "Pitstop Boys", ImageUrl = "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #fa709a 0%, #fee140 100%)" },
+new Album { Id = 10, Title = "Mama", Artist = "Jonas Blue", ImageUrl = "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" },
+ new Album { Id = 11, Title = "Future", Artist = "Don Diablo", ImageUrl = "https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }
+   };
 
         currentlyPlaying = recentlyPlayed.FirstOrDefault(a => a.IsPlaying);
     }
@@ -146,210 +160,180 @@ new Album { Id = 10, Title = "Futura", Artist = "Don Diablo", Gradient = "linear
     {
         discoverAlbums = new List<Album>
         {
- new Album { Id = 11, Title = "New Release", Artist = "Artist Name", Gradient = "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)" },
-            new Album { Id = 12, Title = "Trending", Artist = "Various Artists", Gradient = "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)" },
-            new Album { Id = 13, Title = "Discover", Artist = "Playlist", Gradient = "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)" },
-        new Album { Id = 14, Title = "Mix", Artist = "Curated", Gradient = "linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%)" },
-      new Album { Id = 15, Title = "Chill Vibes", Artist = "Playlist", Gradient = "linear-gradient(135deg, #30cfd0 0%, #330867 100%)" }
+   new Album { Id = 12, Title = "New Release", Artist = "Artist Name", ImageUrl = "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)" },
+new Album { Id = 13, Title = "Trending", Artist = "Various Artists", ImageUrl = "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)" },
+        new Album { Id = 14, Title = "Discover", Artist = "Playlist", ImageUrl = "https://images.unsplash.com/photo-1506157786151-b8491531f063?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)" },
+      new Album { Id = 15, Title = "Mix", Artist = "Curated", ImageUrl = "https://images.unsplash.com/photo-1445985543470-41fba5c3144a?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%)" },
+      new Album { Id = 16, Title = "Chill Vibes", Artist = "Playlist", ImageUrl = "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #30cfd0 0%, #330867 100%)" }
         };
     }
 
     private void PlayAlbum(Album album)
     {
-        if (currentlyPlaying != null)
+     if (currentlyPlaying != null)
         {
-  currentlyPlaying.IsPlaying = false;
-      }
+            currentlyPlaying.IsPlaying = false;
+        }
 
-        album.IsPlaying = true;
+ album.IsPlaying = true;
         currentlyPlaying = album;
    
-        // TODO: Implementare la logica per riprodurre l'album
-    Console.WriteLine($"Playing: {album.Title} by {album.Artist}");
+Console.WriteLine($"Playing: {album.Title} by {album.Artist}");
     }
 
     private void TogglePlay(Album album)
- {
+    {
         if (album.IsPlaying)
-        {
-     album.IsPlaying = false;
+    {
+            album.IsPlaying = false;
             currentlyPlaying = null;
         }
         else
         {
      if (currentlyPlaying != null)
- {
-        currentlyPlaying.IsPlaying = false;
-   }
-  album.IsPlaying = true;
-       currentlyPlaying = album;
-   }
+     {
+    currentlyPlaying.IsPlaying = false;
+            }
+            album.IsPlaying = true;
+ currentlyPlaying = album;
+        }
 
-    // TODO: Implementare la logica per play/pause
-        Console.WriteLine($"{(album.IsPlaying ? "Playing" : "Paused")}: {album.Title}");
+     Console.WriteLine($"{(album.IsPlaying ? "Playing" : "Paused")}: {album.Title}");
     }
 
     private void SelectAlbum(Album album)
     {
-        // TODO: Navigare alla pagina dettaglio album
         Console.WriteLine($"Selected: {album.Title} by {album.Artist}");
     }
 
     private class Album
     {
-     public int Id { get; set; }
+        public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Artist { get; set; } = string.Empty;
-        public string Gradient { get; set; } = string.Empty;
-    public bool IsPlaying { get; set; }
-   public bool IsFeatured { get; set; }
+        public string ImageUrl { get; set; } = string.Empty;
+      public string Gradient { get; set; } = string.Empty;
+   public bool IsPlaying { get; set; }
+ public bool IsFeatured { get; set; }
     }
 }
 
 <style>
     .home-page {
         color: #fff;
-   padding: 0;
+padding: 0;
         max-width: 100%;
         overflow-x: hidden;
     }
 
- /* Hero Section */
+    /* Hero Section */
     .hero-section {
-        background: linear-gradient(180deg, rgba(80, 80, 80, 0.5) 0%, rgba(18, 18, 18, 0) 100%);
- padding: 16px 24px 32px;
-        margin-bottom: 24px;
-        border-radius: 8px;
+        background: linear-gradient(180deg, rgba(80, 80, 80, 0.3) 0%, rgba(18, 18, 18, 0) 100%);
+    padding: 24px 24px 48px;
+      margin-bottom: 32px;
     }
 
- .hero-title {
-      font-size: 48px;
+  .hero-title {
+        font-size: 48px;
         font-weight: 900;
-        margin: 0 0 8px 0;
-        color: #fff;
- letter-spacing: -0.04em;
+   margin: 0 0 8px 0;
+    color: #fff;
+        letter-spacing: -0.04em;
         line-height: 1.2;
-}
+    }
 
     .hero-title .highlight {
         color: #1db954;
     }
 
-    .hero-subtitle {
+ .hero-subtitle {
         font-size: 14px;
- color: #a7a7a7;
-     margin: 0 0 24px 0;
+        color: #a7a7a7;
+        margin: 0 0 32px 0;
         font-weight: 400;
     }
 
     .hero-carousel {
-      display: flex;
-        gap: 16px;
+     display: flex;
+    gap: 20px;
         overflow-x: auto;
-   padding: 8px 0;
+        padding: 8px 0;
         scroll-behavior: smooth;
-   scrollbar-width: none;
+        scrollbar-width: none;
     }
 
     .hero-carousel::-webkit-scrollbar {
-        display: none;
-    }
+      display: none;
+ }
 
     .hero-album {
-     flex-shrink: 0;
+        flex-shrink: 0;
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
     }
 
     .hero-album:hover {
-        transform: translateY(-8px);
+        transform: scale(1.02);
     }
 
     .hero-album-cover {
-        width: 160px;
- height: 160px;
-    border-radius: 8px;
+        width: 180px;
+      height: 180px;
+        border-radius: 8px;
         position: relative;
         overflow: hidden;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: box-shadow 0.3s ease;
     }
 
-  .hero-album:hover .hero-album-cover {
+    .hero-album:hover .hero-album-cover {
         box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
     }
 
-    .hero-album-featured .hero-album-cover {
-        width: 200px;
-        height: 200px;
+    .album-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
     }
 
-    .album-placeholder-text {
-   color: rgba(255, 255, 255, 0.3);
-        font-size: 14px;
-     font-weight: 600;
-        user-select: none;
+    .album-placeholder {
+    width: 100%;
+        height: 100%;
     }
 
-    .featured-overlay {
-      position: absolute;
+    .hero-album-overlay {
+        position: absolute;
         inset: 0;
-        background: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
+        background: rgba(0, 0, 0, 0.4);
         display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        padding: 16px;
-  opacity: 0;
-        transition: opacity 0.3s ease;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+    transition: opacity 0.3s ease;
     }
 
-    .hero-album-featured:hover .featured-overlay {
-opacity: 1;
-    }
-
-    .featured-info {
-        margin-top: auto;
-    }
-
-    .featured-artist {
-        font-size: 11px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-     color: #b3b3b3;
-        margin-bottom: 4px;
-    }
-
-    .featured-title {
- font-size: 18px;
-font-weight: 700;
-        color: #fff;
+    .hero-album:hover .hero-album-overlay {
+        opacity: 1;
     }
 
     .hero-play-btn {
-        width: 56px;
-        height: 56px;
-      border-radius: 50%;
+     width: 56px;
+  height: 56px;
+        border-radius: 50%;
         background-color: #1db954;
-        border: none;
-      color: #000;
-        cursor: pointer;
-        display: flex;
-     align-items: center;
+      border: none;
+        color: #000;
+  cursor: pointer;
+     display: flex;
+        align-items: center;
         justify-content: center;
         transition: all 0.2s ease;
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-     position: absolute;
-        bottom: 16px;
-        right: 16px;
     }
 
     .hero-play-btn:hover {
-  transform: scale(1.06);
-     background-color: #1ed760;
+        transform: scale(1.06);
+        background-color: #1ed760;
     }
 
     .hero-play-btn:active {
@@ -358,61 +342,65 @@ font-weight: 700;
 
     .hero-play-btn svg {
         margin-left: 2px;
- }
-
-    /* Content Sections */
-  .content-section {
-        padding: 0 24px;
-        margin-bottom: 32px;
     }
 
-    .section-title {
+    /* Content Sections */
+    .content-section {
+    padding: 0 24px;
+      margin-bottom: 48px;
+    }
+
+ .section-title {
         font-size: 24px;
         font-weight: 700;
-        margin: 0 0 16px 0;
+        margin: 0 0 20px 0;
         color: #fff;
-     letter-spacing: -0.04em;
-}
+    letter-spacing: -0.04em;
+ }
 
     .albums-row {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 16px;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 20px;
     }
 
     .album-item {
         position: relative;
         cursor: pointer;
-        transition: transform 0.2s ease;
+ transition: transform 0.2s ease;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 16px;
+        border-radius: 8px;
     }
 
     .album-item:hover {
-  transform: translateY(-4px);
+   background: rgba(255, 255, 255, 0.1);
+   transform: translateY(-4px);
     }
 
     .album-cover {
-    width: 100%;
+        width: 100%;
         aspect-ratio: 1;
-  border-radius: 8px;
-     position: relative;
-   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-        margin-bottom: 12px;
-      transition: box-shadow 0.3s ease;
+        border-radius: 4px;
+        position: relative;
+        overflow: hidden;
+ box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        margin-bottom: 16px;
+        transition: box-shadow 0.3s ease;
     }
 
     .album-item:hover .album-cover {
-        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
     }
 
-  .album-hover {
+    .album-hover {
         position: absolute;
         inset: 0;
-        background: rgba(0, 0, 0, 0.3);
+   background: rgba(0, 0, 0, 0.4);
         display: flex;
         align-items: flex-end;
         justify-content: flex-end;
-      padding: 12px;
+ padding: 12px;
         opacity: 0;
         transition: opacity 0.3s ease;
     }
@@ -421,24 +409,24 @@ font-weight: 700;
         opacity: 1;
     }
 
- .play-button {
-   width: 48px;
+    .play-button {
+        width: 48px;
         height: 48px;
         border-radius: 50%;
-        background-color: #1db954;
-border: none;
-  color: #000;
+ background-color: #1db954;
+        border: none;
+     color: #000;
         cursor: pointer;
         display: flex;
         align-items: center;
-        justify-content: center;
-        transition: all 0.2s ease;
+   justify-content: center;
+ transition: all 0.2s ease;
         box-shadow: 0 8px 8px rgba(0, 0, 0, 0.3);
-        transform: translateY(8px);
+   transform: translateY(8px);
     }
 
     .album-item:hover .play-button {
-        transform: translateY(0);
+ transform: translateY(0);
     }
 
     .play-button:hover {
@@ -447,13 +435,13 @@ border: none;
     }
 
     .play-button:active {
-     transform: scale(0.98) translateY(0);
+        transform: scale(0.98) translateY(0);
     }
 
-    .play-button-visible {
+  .play-button-visible {
         opacity: 1;
     transform: translateY(0);
-}
+    }
 
     .play-button svg {
         margin-left: 2px;
@@ -461,102 +449,98 @@ border: none;
 
     .album-details {
         padding: 0;
-      user-select: none;
+        user-select: none;
     }
 
     .album-title {
         font-size: 16px;
         font-weight: 700;
-   color: #fff;
-        margin-bottom: 4px;
-      white-space: nowrap;
+        color: #fff;
+        margin-bottom: 8px;
+        white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
 
     .album-artist {
-  font-size: 14px;
-        color: #b3b3b3;
+      font-size: 14px;
+   color: #b3b3b3;
         font-weight: 400;
         white-space: nowrap;
- overflow: hidden;
+        overflow: hidden;
         text-overflow: ellipsis;
-    }
-
-    .album-item:hover .album-title {
-        text-decoration: underline;
     }
 
     /* Responsive Design */
     @@media (max-width: 1200px) {
-        .albums-row {
-      grid-template-columns: repeat(4, 1fr);
-  }
+    .albums-row {
+         grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+ }
     }
 
     @@media (max-width: 992px) {
         .albums-row {
-            grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
         }
 
-        .hero-title {
-       font-size: 36px;
+     .hero-title {
+    font-size: 36px;
+        }
+
+      .hero-album-cover {
+            width: 160px;
+         height: 160px;
         }
     }
 
     @@media (max-width: 768px) {
         .albums-row {
             grid-template-columns: repeat(2, 1fr);
-       gap: 12px;
+            gap: 16px;
         }
 
         .hero-title {
     font-size: 28px;
         }
 
-     .section-title {
- font-size: 20px;
+        .section-title {
+            font-size: 20px;
         }
 
         .hero-album-cover {
-          width: 140px;
-            height: 140px;
-        }
-
-        .hero-album-featured .hero-album-cover {
- width: 170px;
-            height: 170px;
+   width: 140px;
+    height: 140px;
         }
     }
 
     @@media (max-width: 480px) {
-        .hero-title {
-  font-size: 24px;
+  .hero-title {
+    font-size: 24px;
         }
 
         .albums-row {
-            grid-template-columns: repeat(2, 1fr);
-        }
+     grid-template-columns: repeat(2, 1fr);
+      }
     }
 
-/* Accessibility */
+    /* Accessibility */
     .play-button:focus-visible,
     .hero-play-btn:focus-visible {
-   outline: 2px solid #1db954;
-outline-offset: 2px;
+        outline: 2px solid #1db954;
+        outline-offset: 2px;
     }
 
     /* Animation for playing state */
     @@keyframes pulse {
         0%, 100% {
-   opacity: 1;
-    }
-    50% {
-      opacity: 0.5;
+            opacity: 1;
         }
+        50% {
+  opacity: 0.5;
+  }
     }
 
-  .play-button-visible {
+    .play-button-visible {
         animation: pulse 2s ease-in-out infinite;
     }
 </style>
