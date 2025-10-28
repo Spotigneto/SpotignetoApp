@@ -14,6 +14,7 @@ namespace Backend.Data
         public DbSet<PlaylistEntity> Playlists { get; set; }
         public DbSet<AlbumEntity> Albums { get; set; }
         public DbSet<AsCanzonePlaylistEntity> AsCanzonePlaylist { get; set; }
+        public DbSet<AsAlbumCanzoneEntity> AsAlbumCanzone { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

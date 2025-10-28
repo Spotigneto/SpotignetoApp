@@ -331,3 +331,6 @@ D:\ProjectWork\SpotignetoApp\SpotignetoApp\Backend\obj\Debug\net9.0\ref\Backend.
 D:\ProjectWork\SpotignetoApp\SpotignetoApp\Backend\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll
 D:\ProjectWork\SpotignetoApp\SpotignetoApp\Backend\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 D:\ProjectWork\SpotignetoApp\SpotignetoApp\Backend\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\ProjectWork\SpotignetoApp-1\Backend\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\ProjectWork\SpotignetoApp-1\Backend\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\ProjectWork\SpotignetoApp-1\Backend\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll

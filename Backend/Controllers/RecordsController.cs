@@ -13,12 +13,14 @@ namespace Backend.Controllers
         private readonly SpotigneteDbContext _context;
         private readonly IPlaylistService _playlistService;
         private readonly IAlbumService _albumService;
+        private readonly IAsAlbumCanzoneService _asAlbumCanzoneService;
 
-        public RecordsController(SpotigneteDbContext context, IPlaylistService playlistService, IAlbumService albumService)
+        public RecordsController(SpotigneteDbContext context, IPlaylistService playlistService, IAlbumService albumService, IAsAlbumCanzoneService asAlbumCanzoneService)
         {
             _context = context;
             _playlistService = playlistService;
             _albumService = albumService;
+            _asAlbumCanzoneService = asAlbumCanzoneService;
         }
 
         // POST: api/Records/playlist
@@ -45,12 +47,12 @@ namespace Backend.Controllers
         }
 
         // GET: api/Records/album/canzoni
-        // [HttpGet("album/canzoni")]
-        // public IActionResult GetAlbumCanzoni()
-        // {
-        //     // Endpoint disabilitato: entity e DbSet non definiti
-        //     return NotFound();
-        // }
+        [HttpGet("album/canzoni")]
+        public async Task<ActionResult<IEnumerable<AsAlbumCanzoneModel>>> GetAlbumCanzoni()
+        {
+            var items = await _asAlbumCanzoneService.GetAllAsync();
+            return Ok(items);
+        }
 
         // GET: api/Records/playlists
         [HttpGet("playlists")]

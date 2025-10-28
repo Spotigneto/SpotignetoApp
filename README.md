@@ -1,6 +1,20 @@
 # SpotignetoApp
+Un progetto che punta a creare una WebApp per una libreria musicale chiamata SpotignetoApp.
+Il codice utilizza per il backendle tecnologie:
+- ASP.Net
+- Web API
+Per il frontend si utilizza:
+- Blazor
+Per il database si utilizza:
+- Sql Server
 
-SPOTIGNETO PROJECT WORK
+Obiettivi:
+- Progettare una navigazione friendly-user per cercare i brani, le app e le playlist per Genere, Artista, Album e Playlist.
+- Implementare le funzionalità per riprodurre un brano, un album o una playlist.
+- Implementare le funzioni per gestire la coda della coda di ascolto, quando si usa una playlist o un album si può gestire se sentire in ordine, random, loop o loop per un singolo brano.
+- Creazione e modifica della Playlist.
+
+# SPOTIGNETO PROJECT WORK
 VISTE
 | Home
 | Profilo
@@ -26,13 +40,13 @@ CONTROLLER
 
 # Spotigneto DB
 
-| SET UP DATABASE
+# | SET UP DATABASE
 
 - Aprire Sql Server Management Studio
 - Aprire un nuovo Database (Nome preferibile Spotigneto)
 - Incollare le query sottostanti
 
-| QUERY CREAZIONE TABELLE (Entity / Tipologiche)
+# | QUERY CREAZIONE TABELLE (Entity / Tipologiche)
 
 CREATE TABLE Utente(
 ut_id BIGINT IDENTITY(1,1) PRIMARY KEY,
@@ -92,7 +106,7 @@ CONSTRAINT FK_Canzone_Sottogenere FOREIGN KEY (ca_sottogenere_fk) REFERENCES Sot
 
 GO
 
-| Query per Tabelle Associative
+# | Query per Tabelle Associative
 
 CREATE TABLE as_utente_playlist(
 asup_id BIGINT IDENTITY(1,1) PRIMARY KEY,
