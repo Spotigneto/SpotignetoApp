@@ -15,6 +15,9 @@ builder.WebHost.ConfigureKestrel(options =>
     options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(1);
 });
 
+// Configure explicit URLs to avoid port conflicts
+builder.WebHost.UseUrls("http://localhost:5232");
+
 // Configure shutdown timeout (moved to correct location)
 builder.Host.ConfigureHostOptions(options =>
 {
@@ -72,11 +75,24 @@ app.UseCors();
 // Map controllers
 app.MapControllers();
 
-// Configure graceful shutdown
+// Configure graceful shutdown with port cleanup
 var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
 lifetime.ApplicationStopping.Register(() =>
 {
     Console.WriteLine("Backend application is shutting down gracefully...");
+    
+    // Additional cleanup to ensure ports are released
+    try
+    {
+        // Force garbage collection to help release resources
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error during cleanup: {ex.Message}");
+    }
 });
 
 app.Run();
