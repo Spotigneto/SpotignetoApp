@@ -106,7 +106,7 @@ CONSTRAINT FK_Canzone_Sottogenere FOREIGN KEY (ca_sottogenere_fk) REFERENCES Sot
 
 GO
 
-# | Query per Tabelle Associative
+| Query per Tabelle Associative
 
 CREATE TABLE as_utente_playlist(
 asup_id BIGINT IDENTITY(1,1) PRIMARY KEY,
