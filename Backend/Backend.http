@@ -1,6 +1,110 @@
-@Backend_HostAddress = http://localhost:5232
+@host = http://localhost:5232
+@json = application/json
 
-GET {{Backend_HostAddress}}/weatherforecast/
-Accept: application/json
+### Health (Swagger/OpenAPI)
+GET {{host}}/swagger/index.html
 
-###
+### HomeController.Random_View
+GET {{host}}/api/Home/Random_View?songs=6&artists=6&playlists=6
+Accept: {{json}}
+
+### NavigateController.Search_Filtri
+GET {{host}}/api/Navigate/Search_Filtri?q=a&genereId=1&sottoGenereId=2&playlistPrivata=false
+Accept: {{json}}
+
+### NavigateController.Lettere
+GET {{host}}/api/Navigate/Lettere?q=b
+Accept: {{json}}
+
+### ProfileController.Search_Filtri
+GET {{host}}/api/Profile/Search_Filtri?q=rock&albumPubblica=true&albumFrom=2020-01-01&albumTo=2025-12-31&playlistPrivata=false
+Accept: {{json}}
+
+### CanzoneController CRUD
+# Create
+POST {{host}}/api/Canzone/canzone
+Content-Type: {{json}}
+
+{
+  "id": 0,
+  "nome": "Brano demo",
+  "file": "/files/demo.mp3",
+  "genereId": 1,
+  "sottogenereId": 1,
+  "durata": "03:10",
+  "secondi": 190
+}
+
+# Get all
+GET {{host}}/api/Canzone/canzoni
+Accept: {{json}}
+
+# Get by id
+GET {{host}}/api/Canzone/canzone/1
+Accept: {{json}}
+
+# Get by name
+GET {{host}}/api/Canzone/canzone/by-name/Brano%20demo
+Accept: {{json}}
+
+# Update
+PUT {{host}}/api/Canzone/canzone/1
+Content-Type: {{json}}
+
+{
+  "id": 1,
+  "nome": "Brano demo v2",
+  "file": "/files/demo2.mp3",
+  "genereId": 1,
+  "sottogenereId": 2,
+  "durata": "03:20",
+  "secondi": 200
+}
+
+# Delete
+DELETE {{host}}/api/Canzone/canzone/1
+Accept: {{json}}
+
+### RecordsController (playlist/album CRUD)
+# Create playlist
+POST {{host}}/api/Records/playlist
+Content-Type: {{json}}
+
+{ "id": 0, "nome": "My Playlist", "privata": false }
+
+# Get playlists
+GET {{host}}/api/Records/playlists
+Accept: {{json}}
+
+# Create album
+POST {{host}}/api/Records/album
+Content-Type: {{json}}
+
+{ "id": 0, "nome": "My Album", "pubblica": true, "releaseDate": "2024-10-01" }
+
+# Get albums
+GET {{host}}/api/Records/albums
+Accept: {{json}}
+
+### AsCanzonePlaylistController
+# Add track to playlist
+POST {{host}}/api/AsCanzonePlaylist/AddTrackToPlaylist
+Content-Type: {{json}}
+
+{ "acPlaylistId": 1, "acCanzoneId": 1 }
+
+# Get tracks in playlist
+GET {{host}}/api/AsCanzonePlaylist/GetTracksInPlaylist?playlistId=1
+Accept: {{json}}
+
+# Update track in playlist
+PUT {{host}}/api/AsCanzonePlaylist/UpdateTrackInPlaylist
+Content-Type: {{json}}
+
+{ "acPlaylistId": 1, "oldCanzoneId": 1, "newCanzoneId": 2 }
+
+# Remove track from playlist
+DELETE {{host}}/api/AsCanzonePlaylist/RemoveTrackFromPlaylist
+Content-Type: {{json}}
+
+{ "acPlaylistId": 1, "acCanzoneId": 2 }
