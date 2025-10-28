@@ -63,14 +63,6 @@
                         <div class="stat-value">17.2 <span class="stat-unit">minutes</span></div>
                         <div class="stat-change positive">+27 minutes</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Network</div>
-                        <div class="network-stats">
-                            <div class="network-stat download">↓ 12 mb/s</div>
-                            <div class="network-stat upload">↑ 24 kb/s</div>
-                            <div class="network-ping">263ms</div>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Queue Widget -->
@@ -121,39 +113,6 @@
                         </div>
                     </div>
                     <button class="see-more-btn">See More</button>
-                </div>
-
-                <!-- Weekly Analysis Widget -->
-                <div class="widget-block">
-                    <h4 class="widget-title">Weekly Analysis</h4>
-                    <div class="chart-widget">
-                        <svg width="100%" height="100" viewBox="0 0 280 100" preserveAspectRatio="none">
-                            <!-- Background grid -->
-                            <line x1="0" y1="20" x2="280" y2="20" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
-                            <line x1="0" y1="40" x2="280" y2="40" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
-                            <line x1="0" y1="60" x2="280" y2="60" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
-                            <line x1="0" y1="80" x2="280" y2="80" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
-
-                            <!-- Wave lines -->
-                            <path d="M0,60 Q40,40 70,50 T140,45 T210,55 T280,50" fill="none" stroke="#10b981"
-                                stroke-width="2" />
-                            <path d="M0,50 Q40,30 70,40 T140,35 T210,45 T280,40" fill="none" stroke="#3b82f6"
-                                stroke-width="2" />
-                            <path d="M0,70 Q40,50 70,60 T140,55 T210,65 T280,60" fill="none" stroke="#ef4444"
-                                stroke-width="2" />
-                            <path d="M0,65 Q40,45 70,55 T140,50 T210,60 T280,55" fill="none" stroke="#f59e0b"
-                                stroke-width="2" />
-                        </svg>
-                        <div class="chart-labels">
-                            <span>M</span>
-                            <span>T</span>
-                            <span>W</span>
-                            <span>T</span>
-                            <span>F</span>
-                            <span>S</span>
-                            <span>S</span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </aside>
@@ -454,9 +413,6 @@
     }
 
     .stats-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
         margin-bottom: 20px;
     }
 
@@ -464,6 +420,7 @@
         background-color: #282828;
         border-radius: 8px;
         padding: 16px;
+        margin-bottom: 20px;
     }
 
     .stat-label {
