@@ -50,6 +50,45 @@ namespace Backend.Controllers
             return Ok(tracks);
         }
 
+        [HttpGet]
+        [Route("GetTrackInPlaylist/{playlistId}/{canzoneId}")]
+        public IActionResult GetTrackInPlaylist(long playlistId, long canzoneId)
+        {
+            var relation = _context.AsCanzonePlaylist
+                .FirstOrDefault(ac => ac.AcPlaylistId == playlistId && ac.AcCanzoneId == canzoneId);
+
+            if (relation == null)
+            {
+                return NotFound("Track not found in playlist");
+            }
+
+            return Ok(relation);
+        }
+
+        [HttpGet]
+        [Route("GetTracksInPlaylist/{id}/{trackname}")]
+        public IActionResult GetTracksInPlaylist([FromRoute] long id, [FromRoute] string trackname)
+        {
+            // First find the playlist by name
+            var playlist = _context.Playlists.FirstOrDefault(p => p.PlId == id);
+            if (playlist == null)
+            {
+                return NotFound($"Playlist '{id}' not found");  
+            }
+
+            // Then get all tracks in that playlist
+            var tracks = _context.AsCanzonePlaylist
+                .Where(ac => ac.AcPlaylistId == playlist.PlId)
+                .Join(_context.Canzoni,
+                      ac => ac.AcCanzoneId,
+                      c => c.CaId,
+                      (ac, c) => c)
+                .Where(c => c.CaNome.Contains(trackname))       
+                .ToList();
+
+            return Ok(tracks);
+        }
+
         [HttpPut]
         [Route("UpdateTrackInPlaylist")]
         public IActionResult UpdateTrackFromPlaylist([FromBody] AsCanzonePlaylistModel model)
