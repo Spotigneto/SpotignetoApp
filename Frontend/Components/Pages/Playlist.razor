@@ -3,7 +3,7 @@
 @using System.Text
 @inject HttpClient Http
 
-<PageTitle>Spotigneto - Create Playlist</PageTitle>
+<PageTitle>SpotignetoApp</PageTitle>
 
 <div class="playlist-page">
     <!-- Header Section -->
@@ -22,8 +22,8 @@
                     <input @bind="nomePlaylist" type="text" placeholder="Inserisci il nome" class="form-input" />
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Descrizione</label>
-                    <input @bind="descrizionePlaylist" type="text" placeholder="Descrizione facoltativa" class="form-input" />
+                    <label class="form-label">Private</label>
+                    <input type="checkbox" @bind="isPrivata" />
                 </div>
             </div>
 
@@ -122,32 +122,38 @@
     private string descrizionePlaylist = string.Empty;
     private bool isCreating = false;
     private string errorMessage = string.Empty;
+    private bool isPrivata = false;
     private string successMessage = string.Empty;
 
     private async Task CreaPlaylist()
     {
+        Console.WriteLine("[Playlist.razor: Click]: Avvio CreaPlaylist");
         if (string.IsNullOrWhiteSpace(nomePlaylist))
         {
             errorMessage = "Il nome della playlist è obbligatorio";
+            Console.WriteLine("[Playlist.razor: Validation]: Nome playlist mancante");
             return;
         }
 
         isCreating = true;
         errorMessage = string.Empty;
         successMessage = string.Empty;
+        Console.WriteLine($"[Playlist.razor: State]: isCreating={{isCreating}}, nome=''{nomePlaylist}'', privata={{isPrivata}} ");
 
         try
         {
-            var nuovaPlaylist = new PlaylistModel
+            var nuovaPlaylist = new
             {
                 Nome = nomePlaylist,
-                Descrizione = descrizionePlaylist
+                Privata = isPrivata
             };
 
             var json = JsonSerializer.Serialize(nuovaPlaylist);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
+            Console.WriteLine($"[Playlist.razor: Request]: POST api/Records/playlist payload={{json}} ");
             
             var response = await Http.PostAsync("api/Records/playlist", content);
+            Console.WriteLine($"[Playlist.razor: Response]: StatusCode={{response.StatusCode}} ");
             
             if (response.IsSuccessStatusCode)
             {
@@ -158,21 +164,25 @@
                 });
                 
                 successMessage = $"Playlist '{playlistCreata?.Nome}' creata con successo!";
+                Console.WriteLine($"[Playlist.razor: Success]: Creata Id={{playlistCreata?.Id}}, Nome=''{playlistCreata?.Nome}'' ");
                 nomePlaylist = string.Empty;
                 descrizionePlaylist = string.Empty;
             }
             else
             {
                 errorMessage = $"Errore nella creazione della playlist: {response.StatusCode}";
+                Console.WriteLine($"[Playlist.razor: Error]: Creazione fallita StatusCode={{response.StatusCode}} ");
             }
         }
         catch (Exception ex)
         {
             errorMessage = $"Errore: {ex.Message}";
+            Console.WriteLine($"[Playlist.razor: Exception]: {{ex.Message}} ");
         }
         finally
         {
             isCreating = false;
+            Console.WriteLine("[Playlist.razor: Finally]: isCreating=false");
         }
     }
 
