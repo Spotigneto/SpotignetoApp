@@ -8,26 +8,6 @@
 
         <main class="main-content">
             <div class="top-bar">
-                <div class="nav-arrows">
-                    <button class="nav-arrow">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                            <path d="M11 3L6 8l5 5" stroke="currentColor" stroke-width="2" fill="none" />
-                        </svg>
-                    </button>
-                    <button class="nav-arrow">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                            <path d="M5 3l5 5-5 5" stroke="currentColor" stroke-width="2" fill="none" />
-                        </svg>
-                    </button>
-                </div>
-                <div class="top-bar-right">
-                    <button class="settings-btn">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                            <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5" fill="none" />
-                            <circle cx="10" cy="10" r="2" fill="currentColor" />
-                        </svg>
-                    </button>
-                </div>
             </div>
 
             <article class="content">
@@ -46,7 +26,8 @@
                     <h4 class="widget-title">New Releases</h4>
                     <div class="widget-list">
                         <div class="release-item">
-                            <div class="release-cover" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                            <div class="release-cover"
+                                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
                             <div class="release-info">
                                 <div class="release-name">Looking back</div>
                                 <div class="release-artist">Maro</div>
@@ -54,7 +35,8 @@
                             <div class="release-duration">3:45</div>
                         </div>
                         <div class="release-item">
-                            <div class="release-cover" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+                            <div class="release-cover"
+                                style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
                             <div class="release-info">
                                 <div class="release-name">High On Life</div>
                                 <div class="release-artist">Martin Garrix, Bonn</div>
@@ -62,7 +44,8 @@
                             <div class="release-duration">2:41</div>
                         </div>
                         <div class="release-item">
-                            <div class="release-cover" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);"></div>
+                            <div class="release-cover"
+                                style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);"></div>
                             <div class="release-info">
                                 <div class="release-name">Bad Guy</div>
                                 <div class="release-artist">Billie Eilish</div>
@@ -79,14 +62,6 @@
                         <div class="stat-label">Daily Usage</div>
                         <div class="stat-value">17.2 <span class="stat-unit">minutes</span></div>
                         <div class="stat-change positive">+27 minutes</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Network</div>
-                        <div class="network-stats">
-                            <div class="network-stat download">↓ 12 mb/s</div>
-                            <div class="network-stat upload">↑ 24 kb/s</div>
-                            <div class="network-ping">263ms</div>
-                        </div>
                     </div>
                 </div>
 
@@ -139,35 +114,6 @@
                     </div>
                     <button class="see-more-btn">See More</button>
                 </div>
-
-                <!-- Weekly Analysis Widget -->
-                <div class="widget-block">
-                    <h4 class="widget-title">Weekly Analysis</h4>
-                    <div class="chart-widget">
-                        <svg width="100%" height="100" viewBox="0 0 280 100" preserveAspectRatio="none">
-                            <!-- Background grid -->
-                            <line x1="0" y1="20" x2="280" y2="20" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
-                            <line x1="0" y1="40" x2="280" y2="40" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
-                            <line x1="0" y1="60" x2="280" y2="60" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
-                            <line x1="0" y1="80" x2="280" y2="80" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
-
-                            <!-- Wave lines -->
-                            <path d="M0,60 Q40,40 70,50 T140,45 T210,55 T280,50" fill="none" stroke="#10b981" stroke-width="2" />
-                            <path d="M0,50 Q40,30 70,40 T140,35 T210,45 T280,40" fill="none" stroke="#3b82f6" stroke-width="2" />
-                            <path d="M0,70 Q40,50 70,60 T140,55 T210,65 T280,60" fill="none" stroke="#ef4444" stroke-width="2" />
-                            <path d="M0,65 Q40,45 70,55 T140,50 T210,60 T280,55" fill="none" stroke="#f59e0b" stroke-width="2" />
-                        </svg>
-                        <div class="chart-labels">
-                            <span>M</span>
-                            <span>T</span>
-                            <span>W</span>
-                            <span>T</span>
-                            <span>F</span>
-                            <span>S</span>
-                            <span>S</span>
-                        </div>
-                    </div>
-                </div>
             </div>
         </aside>
     </div>
@@ -182,7 +128,8 @@
             </div>
             <button class="player-action-btn liked">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                    <path d="M8 14s-6-4.5-6-8c0-2 1.5-3.5 3.5-3.5 1.5 0 2.5 1 2.5 1s1-1 2.5-1C12.5 2.5 14 4 14 6c0 3.5-6 8-6 8z" />
+                    <path
+                        d="M8 14s-6-4.5-6-8c0-2 1.5-3.5 3.5-3.5 1.5 0 2.5 1 2.5 1s1-1 2.5-1C12.5 2.5 14 4 14 6c0 3.5-6 8-6 8z" />
                 </svg>
             </button>
             <button class="player-action-btn">
@@ -197,7 +144,8 @@
             <div class="player-controls">
                 <button class="control-btn shuffle">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                        <path d="M2 5h8l2-2 2 2M2 11h8l2 2 2-2M10 5L2 11M10 11L2 5" stroke="currentColor" stroke-width="1.5" fill="none" />
+                        <path d="M2 5h8l2-2 2 2M2 11h8l2 2 2-2M10 5L2 11M10 11L2 5" stroke="currentColor"
+                            stroke-width="1.5" fill="none" />
                     </svg>
                 </button>
                 <button class="control-btn prev">
@@ -238,12 +186,14 @@
         <div class="player-right">
             <button class="control-btn">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                    <path d="M8 3L6 5h4l-2-2zM8 13l2-2H6l2 2zM3 6v4l2-2-2-2zM13 6v4l-2-2 2-2z" stroke="currentColor" stroke-width="1" />
+                    <path d="M8 3L6 5h4l-2-2zM8 13l2-2H6l2 2zM3 6v4l2-2-2-2zM13 6v4l-2-2 2-2z" stroke="currentColor"
+                        stroke-width="1" />
                 </svg>
             </button>
             <button class="control-btn">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                    <rect x="3" y="3" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.5" fill="none" />
+                    <rect x="3" y="3" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.5"
+                        fill="none" />
                     <circle cx="6" cy="6" r="1" fill="currentColor" />
                     <circle cx="10" cy="10" r="1" fill="currentColor" />
                 </svg>
@@ -320,46 +270,6 @@
         background-color: transparent;
     }
 
-    .nav-arrows {
-        display: flex;
-        gap: 8px;
-    }
-
-    .nav-arrow {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background-color: rgba(0, 0, 0, 0.7);
-        border: none;
-        color: #fff;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s;
-    }
-
-    .nav-arrow:hover {
-        background-color: rgba(0, 0, 0, 0.9);
-        transform: scale(1.05);
-    }
-
-    .settings-btn {
-        background: transparent;
-        border: none;
-        color: #b3b3b3;
-        cursor: pointer;
-        padding: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: color 0.2s;
-    }
-
-    .settings-btn:hover {
-        color: #fff;
-    }
-
     .content {
         flex: 1;
         overflow-y: auto;
@@ -413,7 +323,8 @@
         gap: 12px;
     }
 
-    .release-item, .queue-item {
+    .release-item,
+    .queue-item {
         display: flex;
         align-items: center;
         gap: 12px;
@@ -428,12 +339,14 @@
         flex-shrink: 0;
     }
 
-    .release-info, .queue-info {
+    .release-info,
+    .queue-info {
         flex: 1;
         min-width: 0;
     }
 
-    .release-name, .queue-name {
+    .release-name,
+    .queue-name {
         font-size: 13px;
         font-weight: 600;
         color: #fff;
@@ -443,7 +356,8 @@
         margin-bottom: 4px;
     }
 
-    .release-artist, .queue-artist {
+    .release-artist,
+    .queue-artist {
         font-size: 11px;
         color: #b3b3b3;
         white-space: nowrap;
@@ -451,16 +365,14 @@
         text-overflow: ellipsis;
     }
 
-    .release-duration, .queue-duration {
+    .release-duration,
+    .queue-duration {
         font-size: 12px;
         color: #b3b3b3;
         flex-shrink: 0;
     }
 
     .stats-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
         margin-bottom: 20px;
     }
 
@@ -468,6 +380,7 @@
         background-color: #282828;
         border-radius: 8px;
         padding: 16px;
+        margin-bottom: 20px;
     }
 
     .stat-label {
@@ -695,7 +608,8 @@
         max-width: 100%;
     }
 
-    .time-current, .time-total {
+    .time-current,
+    .time-total {
         color: #b3b3b3;
         font-size: 11px;
         font-weight: 500;
