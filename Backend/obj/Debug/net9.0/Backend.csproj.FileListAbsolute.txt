@@ -334,3 +334,4 @@ D:\ProjectWork\SpotignetoApp\SpotignetoApp\Backend\bin\Debug\net9.0\Swashbuckle.
 C:\ProjectWork\SpotignetoApp-1\Backend\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\ProjectWork\SpotignetoApp-1\Backend\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\ProjectWork\SpotignetoApp-1\Backend\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\ProjectWork\SpotignetoApp-1\Backend\bin\Debug\net9.0\Backend.staticwebassets.runtime.json
