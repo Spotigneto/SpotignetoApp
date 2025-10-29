@@ -2,6 +2,38 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "kill-backend-ports",
+            "type": "process",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy", "Bypass",
+                "-File",
+                "${workspaceFolder}\\.vscode\\kill-backend-ports.ps1"
+            ]
+        },
+        {
+            "label": "kill-frontend-ports",
+            "type": "process",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy", "Bypass",
+                "-File",
+                "${workspaceFolder}\\.vscode\\kill-frontend-ports.ps1"
+            ]
+        },
+        {
+            "label": "prelaunch-backend",
+            "dependsOn": ["kill-backend-ports", "build-backend"],
+            "dependsOrder": "sequence"
+        },
+        {
+            "label": "prelaunch-frontend",
+            "dependsOn": ["kill-frontend-ports", "build-frontend"],
+            "dependsOrder": "sequence"
+        },
+        {
             "label": "build",
             "dependsOn": ["build-backend", "build-frontend"],
             "group": {

@@ -1,6 +1,10 @@
 @page "/playlist"
+@rendermode InteractiveServer
+@using System.Text.Json
+@using System.Text
+@inject HttpClient Http
 
-<PageTitle>Spotigneto - Create Playlist</PageTitle>
+<PageTitle>SpotignetoApp</PageTitle>
 
 <div class="playlist-page">
     <!-- Header Section -->
@@ -12,35 +16,53 @@
     <section class="playlist-form-section">
         <div class="playlist-form-card">
             <h2 class="form-title">➕ Nuova Playlist</h2>
-
+            
             <div class="form-grid">
                 <div class="form-group">
                     <label class="form-label">Name Playlist</label>
                     <input @bind="nomePlaylist" type="text" placeholder="Inserisci il nome" class="form-input" />
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Descrizione</label>
-                    <input @bind="descrizionePlaylist" type="text" placeholder="Descrizione facoltativa"
-                        class="form-input" />
+                    <label class="form-label">Private</label>
+                    <div class="checkbox-container">
+                        <input type="checkbox" @bind="isPrivata" id="private-checkbox" class="custom-checkbox" />
+                        <label for="private-checkbox" class="checkbox-label">Make this playlist private</label>
+                    </div>
                 </div>
             </div>
 
             <div class="form-actions">
-                <button class="create-playlist-btn" @onclick="CreaPlaylist">
-                    Create Playlist (0 songs)
+                <button type="button" class="create-playlist-btn" @onclick="CreaPlaylist" disabled="@isCreating">
+                    @if (isCreating)
+                    {
+                        <span>Creating...</span>
+                    }
+                    else
+                    {
+                        <span>Create Playlist (0 songs)</span>
+                    }
                 </button>
                 <div class="selection-info">0 selected</div>
             </div>
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="error-message">@errorMessage</div>
+            }
+            @if (!string.IsNullOrEmpty(successMessage))
+            {
+                <div class="success-message">@successMessage</div>
+            }
         </div>
     </section>
 
-    @if (playlistSelezionata != null)
+    @if (playlistCreata != null)
     {
         <!-- Add Songs Section -->
         <section class="add-songs-section">
             <div class="add-songs-card">
                 <h3 class="section-title">
-                    ➕ Aggiungi brani a <span class="playlist-name">@playlistSelezionata.Nome</span>
+                    ➕ Aggiungi brani a <span class="playlist-name">@playlistCreata.Nome</span>
                 </h3>
 
                 <div class="search-songs">
@@ -99,32 +121,109 @@
 </div>
 
 @code {
-    private PlaylistMock? playlistSelezionata;
+    private PlaylistModel? playlistCreata;
     private string nomePlaylist = string.Empty;
-    private string descrizionePlaylist = string.Empty;
+    private bool isCreating = false;
+    private string errorMessage = string.Empty;
+    private bool isPrivata = false;
+    private string successMessage = string.Empty;
 
-    private void CreaPlaylist()
+    private async Task CreaPlaylist()
     {
-        if (string.IsNullOrWhiteSpace(nomePlaylist))
-            return;
-
-        var nuovaPlaylist = new PlaylistMock
+        try
         {
-            Nome = nomePlaylist,
-            Descrizione = descrizionePlaylist,
-            NumeroBrani = 0
-        };
+            // Log immediato per verificare che il metodo venga chiamato
+            Console.WriteLine("=== METODO CREAPLAYLIST CHIAMATO ===");
+            await Task.Delay(100); // Piccolo delay per assicurarsi che il log appaia
+            
+            // Reset messaggi
+            errorMessage = string.Empty;
+            successMessage = string.Empty;
+            StateHasChanged(); // Forza il re-rendering
+            
+            Console.WriteLine($"Nome playlist inserito: '{nomePlaylist}'");
+            Console.WriteLine($"Playlist privata: {isPrivata}");
+            
+            // Validazione
+            if (string.IsNullOrWhiteSpace(nomePlaylist))
+            {
+                errorMessage = "Il nome della playlist è obbligatorio";
+                Console.WriteLine("ERRORE: Nome playlist vuoto");
+                StateHasChanged();
+                return;
+            }
 
-        playlistSelezionata = nuovaPlaylist;
-        nomePlaylist = string.Empty;
-        descrizionePlaylist = string.Empty;
+            // Imposta stato di caricamento
+            isCreating = true;
+            StateHasChanged();
+            Console.WriteLine("Stato isCreating impostato a true");
+
+            // Prepara i dati per l'API
+            var playlistData = new
+            {
+                Nome = nomePlaylist.Trim(),
+                Privata = isPrivata
+            };
+
+            Console.WriteLine($"Dati da inviare: Nome='{playlistData.Nome}', Privata={playlistData.Privata}");
+
+            // Serializza i dati
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            var jsonContent = JsonSerializer.Serialize(playlistData, jsonOptions);
+            Console.WriteLine($"JSON da inviare: {jsonContent}");
+
+            // Prepara la richiesta HTTP
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            Console.WriteLine("Invio richiesta POST a api/Records/playlist...");
+
+            // Invia la richiesta
+            var response = await Http.PostAsync("api/Records/playlist", httpContent);
+            Console.WriteLine($"Risposta ricevuta - Status Code: {response.StatusCode}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Contenuto risposta: {responseContent}");
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                
+                playlistCreata = JsonSerializer.Deserialize<PlaylistModel>(responseContent, options);
+                
+                successMessage = $"Playlist '{playlistCreata?.Nome}' creata con successo!";
+                Console.WriteLine($"SUCCESS: Playlist creata con ID {playlistCreata?.Id}");
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                errorMessage = $"Errore nella creazione: {response.StatusCode} - {errorContent}";
+                Console.WriteLine($"ERRORE API: {response.StatusCode} - {errorContent}");
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Errore imprevisto: {ex.Message}";
+            Console.WriteLine($"ECCEZIONE: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
+        }
+        finally
+        {
+            isCreating = false;
+            StateHasChanged(); // Assicura che l'UI si aggiorni
+            Console.WriteLine("=== FINE METODO CREAPLAYLIST ===");
+        }
     }
 
-    public class PlaylistMock
+    public class PlaylistModel
     {
+        public long Id { get; set; }
         public string Nome { get; set; } = string.Empty;
-        public string Descrizione { get; set; } = string.Empty;
-        public int NumeroBrani { get; set; }
+        public bool Privata { get; set; }
     }
 }
 
@@ -206,6 +305,59 @@
         background: rgba(255, 255, 255, 0.15);
     }
 
+    /* Custom Checkbox Styles */
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 4px;
+    }
+
+    .custom-checkbox {
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        position: relative;
+        transition: all 0.2s ease;
+    }
+
+    .custom-checkbox:hover {
+        border-color: rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .custom-checkbox:checked {
+        background: #1db954;
+        border-color: #1db954;
+    }
+
+    .custom-checkbox:checked::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #000;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .checkbox-label {
+        font-size: 13px;
+        color: #b3b3b3;
+        cursor: pointer;
+        user-select: none;
+        transition: color 0.2s ease;
+    }
+
+    .checkbox-label:hover {
+        color: #fff;
+    }
+
     .form-actions {
         display: flex;
         align-items: center;
@@ -224,15 +376,40 @@
         transition: all 0.2s ease;
     }
 
-    .create-playlist-btn:hover {
+    .create-playlist-btn:hover:not(:disabled) {
         background: #1ed760;
         transform: scale(1.02);
+    }
+
+    .create-playlist-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
     }
 
     .selection-info {
         font-size: 12px;
         color: #b3b3b3;
         font-weight: 500;
+    }
+
+    .error-message {
+        color: #ff6b6b;
+        font-size: 14px;
+        margin-top: 12px;
+        padding: 8px 12px;
+        background: rgba(255, 107, 107, 0.1);
+        border-radius: 6px;
+        border: 1px solid rgba(255, 107, 107, 0.3);
+    }
+
+    .success-message {
+        color: #1db954;
+        font-size: 14px;
+        margin-top: 12px;
+        padding: 8px 12px;
+        background: rgba(29, 185, 84, 0.1);
+        border-radius: 6px;
+        border: 1px solid rgba(29, 185, 84, 0.3);
     }
 
     /* Add Songs Section */
@@ -375,27 +552,50 @@
 
     /* Responsive Design */
     @@media (max-width: 768px) {
-        .form-grid {
-    grid-template-columns: 1fr;
-            gap: 16px;
+        .playlist-container {
+            padding: 16px;
         }
-
-        .form-actions {
-         flex-direction: column;
-            align-items: flex-start;
- gap: 12px;
-    }
 
         .playlist-title {
-  font-size: 24px;
+            font-size: 24px;
         }
 
-        .form-title {
-            font-size: 20px;
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-input {
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            font-size: 14px;
+            padding: 10px 20px;
+        }
+
+        .song-addition-section {
+            padding: 16px;
         }
 
         .releases-grid {
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .release-card {
+            padding: 12px;
+        }
+
+        .release-image {
+            width: 50px;
+            height: 50px;
+        }
+
+        .release-title {
+            font-size: 14px;
+        }
+
+        .release-artist {
+            font-size: 12px;
         }
     }
 </style>

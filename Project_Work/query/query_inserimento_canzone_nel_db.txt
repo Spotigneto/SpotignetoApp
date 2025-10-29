@@ -1,0 +1,5 @@
+UPDATE dbo.Canzone
+SET ca_file = '/songs/Monkeys-Spinning-Monkeys.mp3';
+
+
+--Il path dovrebbe essere universale, poi vedi tu negro
