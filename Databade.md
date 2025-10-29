@@ -26,46 +26,23 @@ Facendo ciò il Database inizia ad essere popolato tramite i dati provenienti da
 
 ## | QUERY CREAZIONE TABELLE (Entity / Tipologiche)
 
-CREATE TABLE Utente(
-ut_id BIGINT IDENTITY(1,1) PRIMARY KEY,
-ut_nome VARCHAR(100) NOT NULL,
-);
+CREATE TABLE Utente( ut_id VARCHAR(255) PRIMARY KEY, ut_nome VARCHAR(100) NOT NULL, );
 
 GO
 
-CREATE TABLE Artista(
-ar_id BIGINT IDENTITY(1,1) PRIMARY KEY,
-ar_nome VARCHAR(100) NOT NULL,
-);
+CREATE TABLE Artista( ar_id VARCHAR(255) PRIMARY KEY, ar_nome VARCHAR(100) NOT NULL, );
 
 GO
 
-CREATE TABLE Playlist(
-pl_id BIGINT IDENTITY(1,1) PRIMARY KEY,
-pl_nome VARCHAR(100) NOT NULL,
-pl_privata BIT NOT NULL DEFAULT 1
-);
+CREATE TABLE Playlist( pl_id VARCHAR(255) PRIMARY KEY, pl_nome VARCHAR(100) NOT NULL, pl_privata BIT NOT NULL DEFAULT 1 );
 
 GO
 
-CREATE TABLE Album(
-al_id BIGINT IDENTITY(1,1) PRIMARY KEY,
-al_nome VARCHAR(100) NOT NULL,
-al_pubblica BIT NOT NULL DEFAULT 1,
-al_release_date DATE NULL
-);
+CREATE TABLE Album( al_id VARCHAR(255) PRIMARY KEY, al_nome VARCHAR(100) NOT NULL, al_pubblica BIT NOT NULL DEFAULT 1, al_release_date DATE NULL );
 
 GO
 
-CREATE TABLE Canzone(
-ca_id BIGINT IDENTITY(1,1) PRIMARY KEY,
-ca_nome VARCHAR(100) NOT NULL,
-ca_file VARCHAR(500) NOT NULL,
-ca_genere VARCHAR(100) NOT NULL,
-ca_sottogenere VARCHAR(100) NOT NULL,
-ca_durata VARCHAR(10) NOT NULL,
-ca_secondi INT NOT NULL,
-);
+CREATE TABLE Canzone( ca_id VARCHAR(255) PRIMARY KEY, ca_nome VARCHAR(100) NOT NULL, ca_file VARCHAR(500) NULL, ca_genere VARCHAR(100) NOT NULL, ca_sottogenere VARCHAR(100) NOT NULL, ca_durata VARCHAR(10) NOT NULL, ca_secondi INT NOT NULL, );
 
 GO
 
@@ -73,8 +50,8 @@ GO
 
 CREATE TABLE as_utente_playlist(
 asup_id BIGINT IDENTITY(1,1) PRIMARY KEY,
-asup_utente_fk BIGINT NOT NULL,
-asup_playlist_fk BIGINT NOT NULL,
+asup_utente_fk VARCHAR(255) NOT NULL,
+asup_playlist_fk VARCHAR(255) NOT NULL,
 CONSTRAINT FK_Utente_Playlist FOREIGN KEY (asup_utente_fk) REFERENCES Utente(ut_id),
 CONSTRAINT FK_Playlist_Utente FOREIGN KEY (asup_playlist_fk) REFERENCES Playlist(pl_id)
 );
@@ -83,8 +60,8 @@ GO
 
 CREATE TABLE as_canzone_playlist(
 ascp_id BIGINT IDENTITY(1,1) PRIMARY KEY,
-ascp_canzone_fk BIGINT NOT NULL,
-ascp_playlist_fk BIGINT NOT NULL,
+ascp_canzone_fk VARCHAR(255) NOT NULL,
+ascp_playlist_fk VARCHAR(255) NOT NULL,
 CONSTRAINT FK_Canzone_Playlist FOREIGN KEY (ascp_canzone_fk) REFERENCES Canzone(ca_id),
 CONSTRAINT FK_Playlist_Canzone FOREIGN KEY (ascp_playlist_fk) REFERENCES Playlist(pl_id)
 );
@@ -93,8 +70,8 @@ GO
 
 CREATE TABLE as_artista_album(
 asaa_id BIGINT IDENTITY(1,1) PRIMARY KEY,
-asaa_artista_fk BIGINT NOT NULL,
-asaa_album_fk BIGINT NOT NULL,
+asaa_artista_fk VARCHAR(255) NOT NULL,
+asaa_album_fk VARCHAR(255) NOT NULL,
 CONSTRAINT FK_Artista_Album FOREIGN KEY (asaa_artista_fk) REFERENCES Artista(ar_id),
 CONSTRAINT FK_Album_Artista FOREIGN KEY (asaa_album_fk) REFERENCES Album(al_id)
 );
@@ -103,8 +80,8 @@ GO
 
 CREATE TABLE as_artista_canzone(
 asarc_id BIGINT IDENTITY(1,1) PRIMARY KEY,
-asarc_artista_fk BIGINT NOT NULL,
-asarc_canzone_fk BIGINT NOT NULL,
+asarc_artista_fk VARCHAR(255) NOT NULL,
+asarc_canzone_fk VARCHAR(255) NOT NULL,
 CONSTRAINT FK_Artista_Canzone FOREIGN KEY (asarc_artista_fk) REFERENCES Artista(ar_id),
 CONSTRAINT FK_Canzone_Artista FOREIGN KEY (asarc_canzone_fk) REFERENCES Canzone(ca_id)
 );
@@ -113,10 +90,20 @@ GO
 
 CREATE TABLE as_album_canzone(
 asalc_id BIGINT IDENTITY(1,1) PRIMARY KEY,
-asalc_canzone_fk BIGINT NOT NULL,
-asalc_album_fk BIGINT NOT NULL,
+asalc_canzone_fk VARCHAR(255) NOT NULL,
+asalc_album_fk VARCHAR(255) NOT NULL,
 CONSTRAINT FK_Canzone_Album FOREIGN KEY (asalc_canzone_fk) REFERENCES Canzone(ca_id),
 CONSTRAINT FK_Album_Canzone FOREIGN KEY (asalc_album_fk) REFERENCES Album(al_id)
+);
+
+GO
+
+CREATE TABLE as_utente_artista(
+asua_id BIGINT IDENTITY(1,1) PRIMARY KEY,
+asua_utente_fk VARCHAR(255) NOT NULL,
+asua_artista_fk VARCHAR(255) NOT NULL,
+CONSTRAINT FK_Utente_Artista FOREIGN KEY (asua_utente_fk) REFERENCES Utente(ut_id),
+CONSTRAINT FK_Artista_Utente FOREIGN KEY (asua_artista_fk) REFERENCES Artista(ar_id)
 );
 
 GO
