@@ -26,8 +26,16 @@ namespace Backend.Controllers
         [HttpPost("playlist")]
         public async Task<ActionResult<PlaylistModel>> PostPlaylist(PlaylistModel playlist)
         {
-            var created = await _playlistService.CreateAsync(playlist);
-            return CreatedAtAction(nameof(GetPlaylist), new { id = created.Id }, created);
+            try
+            {
+                var created = await _playlistService.CreateAsync(playlist);
+                // Use explicit location to avoid routing mismatches
+                return Created($"/api/Records/playlists/{created.Id}", created);
+            }
+            catch (Exception ex)
+            {
+                return Problem(detail: ex.ToString(), statusCode: 500);
+            }
         }
 
         [HttpPost("album")]

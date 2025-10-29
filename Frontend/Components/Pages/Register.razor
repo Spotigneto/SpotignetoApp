@@ -1,4 +1,5 @@
 @page "/register"
+@inject HttpClient Http
 
 <style>
     .register-overlay {
@@ -152,6 +153,61 @@
     }
 </style>
 
+<style>
+    /* Custom Checkbox Styles (same as Playlist) */
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 4px;
+    }
+
+    .custom-checkbox {
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        position: relative;
+        transition: all 0.2s ease;
+    }
+
+    .custom-checkbox:hover {
+        border-color: rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .custom-checkbox:checked {
+        background: #1db954;
+        border-color: #1db954;
+    }
+
+    .custom-checkbox:checked::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #000;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .checkbox-label {
+        font-size: 13px;
+        color: #b3b3b3;
+        cursor: pointer;
+        user-select: none;
+        transition: color 0.2s ease;
+    }
+
+    .checkbox-label:hover {
+        color: #fff;
+    }
+</style>
+
 <div class="register-overlay">
     <div class="register-card">
         <a href="/" class="close-button">
@@ -167,13 +223,48 @@
 
         <form>
             <label>Username</label>
-            <input type="text" placeholder="Choose a username" />
+            <input type="text" placeholder="Choose a username" @bind="username" />
 
-            <button type="submit">Sign Up</button>
+            <div class="checkbox-container">
+                <input type="checkbox" @bind="isArtista" id="artist-checkbox" class="custom-checkbox" />
+                <label for="artist-checkbox" class="checkbox-label">Spunta per registrarti come Artista</label>
+            </div>
+
+            <button type="button" @onclick="OnSubmit">Sign Up</button>
 
             <div class="login-link">
                 Already have an account? <a href="/login">Log in here</a>
             </div>
         </form>
-    </div>
 </div>
+</div>
+
+@code {
+    private string username = string.Empty;
+    private bool isArtista = false;
+
+    private async Task OnSubmit()
+    {
+        var nome = (username ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(nome))
+        {
+            return;
+        }
+
+        var payload = new { Nome = nome };
+        var json = System.Text.Json.JsonSerializer.Serialize(payload, new System.Text.Json.JsonSerializerOptions
+        {
+            PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
+        });
+        using var content = new System.Net.Http.StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+        if (isArtista)
+        {
+            await Http.PostAsync("api/Artista", content);
+        }
+        else
+        {
+            await Http.PostAsync("api/Profile", content);
+        }
+    }
+}

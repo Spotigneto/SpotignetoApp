@@ -15,16 +15,21 @@ namespace Backend.Controllers
 
 
         [HttpGet("Random_View")]
-        public async Task<IActionResult> Random_View([FromQuery] int songs = 6, [FromQuery] int artists = 6, [FromQuery] int playlists = 6)
+        public async Task<IActionResult> Random_View(
+            [FromQuery] int albums = 8,
+            [FromQuery] int songs = 6,
+            [FromQuery] int artists = 6,
+            [FromQuery] int playlists = 6)
         {
             using var conn = _context.Database.GetDbConnection();
             await conn.OpenAsync();
 
+            var albumsList = await QueryAsync(conn, $"SELECT TOP (@t) al_id AS Id, al_nome AS Nome FROM Album ORDER BY NEWID()", ("@t", albums));
             var songsList = await QueryAsync(conn, $"SELECT TOP (@t) ca_id AS Id, ca_nome AS Nome FROM Canzone ORDER BY NEWID()", ("@t", songs));
             var artistsList = await QueryAsync(conn, $"SELECT TOP (@t) ar_id AS Id, ar_nome AS Nome FROM Artista ORDER BY NEWID()", ("@t", artists));
             var playlistsList = await QueryAsync(conn, $"SELECT TOP (@t) pl_id AS Id, pl_nome AS Nome FROM Playlist ORDER BY NEWID()", ("@t", playlists));
 
-            return Ok(new { songs = songsList, artists = artistsList, playlists = playlistsList });
+            return Ok(new { albums = albumsList, songs = songsList, artists = artistsList, playlists = playlistsList });
         }
 
         private static async Task<List<ItemModel>> QueryAsync(System.Data.Common.DbConnection conn, string sql, params (string, object)[] ps)
@@ -42,7 +47,7 @@ namespace Backend.Controllers
             using var rdr = await cmd.ExecuteReaderAsync();
             while (await rdr.ReadAsync())
             {
-                list.Add(new ItemModel { Id = rdr.GetInt64(0).ToString(), Nome = rdr.GetString(1) });
+                list.Add(new ItemModel { Id = rdr.GetString(0), Nome = rdr.GetString(1) });
             }
             return list;
         }

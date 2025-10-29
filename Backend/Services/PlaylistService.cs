@@ -35,6 +35,7 @@ namespace Backend.Services
         {
             var entity = new PlaylistEntity
             {
+                PlId = Guid.NewGuid().ToString(),
                 PlNome = model.Nome,
                 PlPrivata = model.Privata
             };

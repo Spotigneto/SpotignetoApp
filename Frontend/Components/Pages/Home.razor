@@ -1,4 +1,7 @@
 @page "/"
+@using System.Net.Http.Json
+@using System.Text.Json
+@inject HttpClient Http
 
 <PageTitle>SpotignetoApp</PageTitle>
 
@@ -31,14 +34,15 @@
                  </button>
      </div>
     </div>
+    <div class="hero-album-title">@album.Title</div>
 </div>
   }
         </div>
     </section>
 
-  <!-- Recently Played Section -->
+  <!-- Discover new song Section -->
     <section class="content-section">
-        <h2 class="section-title">Recently Played</h2>
+        <h2 class="section-title">Discover new song</h2>
         <div class="albums-row">
             @foreach (var album in recentlyPlayed)
             {
@@ -79,9 +83,9 @@
       </div>
     </section>
 
-    <!-- Discover Something New Section -->
+    <!-- Some Artists Section -->
     <section class="content-section">
-    <h2 class="section-title">Discover Something New</h2>
+    <h2 class="section-title">Some Artists</h2>
         <div class="albums-row">
          @foreach (var album in discoverAlbums)
    {
@@ -120,52 +124,90 @@
     private List<Album> heroAlbums = new();
     private List<Album> recentlyPlayed = new();
     private List<Album> discoverAlbums = new();
- private Album? currentlyPlaying;
+    private Album? currentlyPlaying;
 
- protected override void OnInitialized()
+    // Simple model matching the backend Home random payload
+    private class ItemModel
     {
-   InitializeHeroAlbums();
- InitializeRecentlyPlayed();
-        InitializeDiscoverAlbums();
+        public string Id { get; set; } = string.Empty;
+        public string Nome { get; set; } = string.Empty;
     }
 
-    private void InitializeHeroAlbums()
- {
-  heroAlbums = new List<Album>
-        {
-   new Album { Id = 1, Title = "Be Yourself", Artist = "ILLENIUM", ImageUrl = "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)" },
-   new Album { Id = 2, Title = "Loyal", Artist = "ODESZA", ImageUrl = "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #4158d0 0%, #c850c0 100%)" },
-   new Album { Id = 3, Title = "Super Max", Artist = "Pitstop Boys", ImageUrl = "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #fa709a 0%, #fee140 100%)" },
-            new Album { Id = 4, Title = "Mama", Artist = "Jonas Blue", ImageUrl = "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" },
-new Album { Id = 5, Title = "Future", Artist = "Don Diablo", ImageUrl = "https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" },
- new Album { Id = 6, Title = "Live Set", Artist = "Various Artists", ImageUrl = "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)" }
-     };
-  }
-
-    private void InitializeRecentlyPlayed()
+    private class HomeRandomResponse
     {
-        recentlyPlayed = new List<Album>
-   {
-  new Album { Id = 7, Title = "True Life", Artist = "ILLENIUM", ImageUrl = "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)" },
-       new Album { Id = 8, Title = "Loyal", Artist = "ODESZA", ImageUrl = "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #4158d0 0%, #c850c0 100%)", IsPlaying = true },
-     new Album { Id = 9, Title = "Super Max", Artist = "Pitstop Boys", ImageUrl = "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #fa709a 0%, #fee140 100%)" },
-new Album { Id = 10, Title = "Mama", Artist = "Jonas Blue", ImageUrl = "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" },
- new Album { Id = 11, Title = "Future", Artist = "Don Diablo", ImageUrl = "https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }
-   };
-
-        currentlyPlaying = recentlyPlayed.FirstOrDefault(a => a.IsPlaying);
+        public List<ItemModel> Albums { get; set; } = new();
+        public List<ItemModel> Songs { get; set; } = new();
+        public List<ItemModel> Artists { get; set; } = new();
     }
 
-    private void InitializeDiscoverAlbums()
+    protected override async Task OnInitializedAsync()
     {
-        discoverAlbums = new List<Album>
+        await LoadRandomHomeAsync();
+    }
+
+    private async Task LoadRandomHomeAsync()
+    {
+        try
         {
-   new Album { Id = 12, Title = "New Release", Artist = "Artist Name", ImageUrl = "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)" },
-new Album { Id = 13, Title = "Trending", Artist = "Various Artists", ImageUrl = "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)" },
-        new Album { Id = 14, Title = "Discover", Artist = "Playlist", ImageUrl = "https://images.unsplash.com/photo-1506157786151-b8491531f063?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)" },
-      new Album { Id = 15, Title = "Mix", Artist = "Curated", ImageUrl = "https://images.unsplash.com/photo-1445985543470-41fba5c3144a?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%)" },
-      new Album { Id = 16, Title = "Chill Vibes", Artist = "Playlist", ImageUrl = "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #30cfd0 0%, #330867 100%)" }
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var data = await Http.GetFromJsonAsync<HomeRandomResponse>("api/Home/Random_View?albums=8&songs=8&artists=4", options);
+            MapRandomToUI(data ?? new HomeRandomResponse());
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Home random load failed: {ex}");
+            // Keep lists empty on failure to respect 'only DB elements'
+            heroAlbums = new List<Album>();
+            recentlyPlayed = new List<Album>();
+            discoverAlbums = new List<Album>();
+        }
+    }
+
+    private void MapRandomToUI(HomeRandomResponse data)
+    {
+        var gradients = new[]
+        {
+            "linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)",
+            "linear-gradient(135deg, #4158d0 0%, #c850c0 100%)",
+            "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+            "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+            "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+            "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+            "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
         };
+
+        // Albums in hero carousel
+        heroAlbums = data.Albums.Select((pl, i) => new Album
+        {
+            Id = pl.Id,
+            Title = pl.Nome,
+            Artist = string.Empty,
+            ImageUrl = string.Empty,
+            Gradient = gradients[i % gradients.Length]
+        }).ToList();
+
+        // Songs -> Recently Played
+        recentlyPlayed = data.Songs.Select((s, i) => new Album
+        {
+            Id = s.Id,
+            Title = s.Nome,
+            Artist = string.Empty,
+            ImageUrl = string.Empty,
+            Gradient = gradients[i % gradients.Length],
+            IsPlaying = false
+        }).ToList();
+        currentlyPlaying = null;
+
+        // Artists -> Discover section
+        discoverAlbums = data.Artists.Select((a, i) => new Album
+        {
+            Id = a.Id,
+            Title = a.Nome,
+            Artist = string.Empty,
+            ImageUrl = string.Empty,
+            Gradient = gradients[i % gradients.Length]
+        }).ToList();
     }
 
     private void PlayAlbum(Album album)
@@ -208,13 +250,13 @@ Console.WriteLine($"Playing: {album.Title} by {album.Artist}");
 
     private class Album
     {
-        public int Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public string Artist { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
-      public string Gradient { get; set; } = string.Empty;
-   public bool IsPlaying { get; set; }
- public bool IsFeatured { get; set; }
+        public string Gradient { get; set; } = string.Empty;
+        public bool IsPlaying { get; set; }
+        public bool IsFeatured { get; set; }
     }
 }
 
@@ -342,6 +384,18 @@ padding: 0;
 
     .hero-play-btn svg {
         margin-left: 2px;
+    }
+
+    .hero-album-title {
+        width: 180px;
+        font-size: 14px;
+        font-weight: 700;
+        color: #fff;
+        margin-top: 8px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        user-select: none;
     }
 
     /* Content Sections */
