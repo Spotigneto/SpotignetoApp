@@ -7,8 +7,9 @@ using Microsoft.Extensions.Configuration;
 
 using Backend.Data;
 using Backend.Repositories;
+using Backend.Repositories.IRepositories;
 using Backend.Services;
-using Microsoft.AspNetCore.Builder;
+using Backend.Services.IServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,18 +37,18 @@ builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-        services.AddDbContext<SpotigneteDbContext>(options =>
-            options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<SpotigneteDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-        services.AddControllers();
+builder.Services.AddControllers();
 
-        services.AddCors(options =>
-        {
-            options.AddDefaultPolicy(policy =>
-                policy.AllowAnyOrigin()
-                      .AllowAnyMethod()
-                      .AllowAnyHeader());
-        });
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader());
+});
 
 // Add repositories and services
 builder.Services.AddScoped<ICanzoneRepository, CanzoneRepository>();
@@ -58,7 +59,10 @@ builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
 builder.Services.AddScoped<IAlbumService, AlbumService>();
 builder.Services.AddScoped<IAsAlbumCanzoneRepository, AsAlbumCanzoneRepository>();
 builder.Services.AddScoped<IAsAlbumCanzoneService, AsAlbumCanzoneService>();
+builder.Services.AddScoped<IAsUtenteArtistaRepository, AsUtenteArtistaRepository>();
+builder.Services.AddScoped<IAsUtenteArtistaService, AsUtenteArtistaService>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IQueueService, QueueService>();
 
 var app = builder.Build();
 

@@ -8,23 +8,23 @@
     "net9.0": []
   },
   "packageFolders": {
-    "C:\\Users\\MoatazTarek\\.nuget\\packages\\": {},
+    "C:\\ProjectWork\\SpotignetoApp-1\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\MoatazTarek\\SpotignetoApp\\SpotignetoApp\\Frontend\\Frontend.csproj",
+      "projectUniqueName": "C:\\ProjectWork\\SpotignetoApp-1\\Frontend\\Frontend.csproj",
       "projectName": "Frontend",
-      "projectPath": "C:\\Users\\MoatazTarek\\SpotignetoApp\\SpotignetoApp\\Frontend\\Frontend.csproj",
-      "packagesPath": "C:\\Users\\MoatazTarek\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\MoatazTarek\\SpotignetoApp\\SpotignetoApp\\Frontend\\obj\\",
+      "projectPath": "C:\\ProjectWork\\SpotignetoApp-1\\Frontend\\Frontend.csproj",
+      "packagesPath": "C:\\ProjectWork\\SpotignetoApp-1\\.nuget\\packages\\",
+      "outputPath": "C:\\ProjectWork\\SpotignetoApp-1\\Frontend\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\MoatazTarek\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\ProjectWork\\SpotignetoApp-1\\.nuget\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

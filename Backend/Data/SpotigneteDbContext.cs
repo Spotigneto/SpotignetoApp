@@ -15,9 +15,12 @@ namespace Backend.Data
         public DbSet<ArtistaEntity> Artisti { get; set; }
         public DbSet<ProfileEntity> Utenti { get; set; }
 
-
         public DbSet<AsCanzonePlaylistEntity> AsCanzonePlaylist { get; set; }
         public DbSet<AsAlbumCanzoneEntity> AsAlbumCanzone { get; set; }
+        public DbSet<AsUtentePlaylistEntity> AsUtentePlaylist { get; set; }
+        public DbSet<AsArtistaAlbumEntity> AsArtistaAlbum { get; set; }
+        public DbSet<AsArtistaCanzoneEntity> AsArtistaCanzone { get; set; }
+        public DbSet<AsUtenteArtistaEntity> AsUtenteArtista { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,9 +31,5 @@ namespace Backend.Data
             // modelBuilder.Entity<Track>()
             //     .HasKey(t => t.Id);
         }
-        public DbSet<AsUtentePlaylistEntity> AsUtentePlaylist { get; set; }
-        public DbSet<AsArtistaAlbumEntity> AsArtistaAlbum { get; set; }
-        public DbSet<AsArtistaCanzoneEntity> AsArtistaCanzone { get; set; }
-        public DbSet<AsAlbumCanzoneEntity> AsAlbumCanzone { get; set; }
     }
 }

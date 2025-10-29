@@ -17,5 +17,8 @@ namespace Backend.Entities
         [Required]
         [Column("ac_canzone_id")]
         public long AcCanzoneId { get; set; }
+
+        [Column("ac_track_order")]
+        public int? AcTrackOrder { get; set; }
     }
 }
