@@ -53,6 +53,7 @@ builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
 builder.Services.AddScoped<IAlbumService, AlbumService>();
 builder.Services.AddScoped<IAsAlbumCanzoneRepository, AsAlbumCanzoneRepository>();
 builder.Services.AddScoped<IAsAlbumCanzoneService, AsAlbumCanzoneService>();
+builder.Services.AddScoped<IFileService, FileService>();
 
 var app = builder.Build();
 
@@ -74,6 +75,9 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseCors();
+
+// Configure static file serving for audio files
+app.UseStaticFiles();
 
 // Map controllers
 app.MapControllers();
