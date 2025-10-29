@@ -1,4 +1,5 @@
 @page "/playlist"
+@rendermode InteractiveServer
 @using System.Text.Json
 @using System.Text
 @inject HttpClient Http
@@ -23,12 +24,15 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Private</label>
-                    <input type="checkbox" @bind="isPrivata" />
+                    <div class="checkbox-container">
+                        <input type="checkbox" @bind="isPrivata" id="private-checkbox" class="custom-checkbox" />
+                        <label for="private-checkbox" class="checkbox-label">Make this playlist private</label>
+                    </div>
                 </div>
             </div>
 
             <div class="form-actions">
-                <button class="create-playlist-btn" @onclick="CreaPlaylist" disabled="@isCreating">
+                <button type="button" class="create-playlist-btn" @onclick="CreaPlaylist" disabled="@isCreating">
                     @if (isCreating)
                     {
                         <span>Creating...</span>
@@ -119,7 +123,6 @@
 @code {
     private PlaylistModel? playlistCreata;
     private string nomePlaylist = string.Empty;
-    private string descrizionePlaylist = string.Empty;
     private bool isCreating = false;
     private string errorMessage = string.Empty;
     private bool isPrivata = false;
@@ -127,62 +130,92 @@
 
     private async Task CreaPlaylist()
     {
-        Console.WriteLine("[Playlist.razor: Click]: Avvio CreaPlaylist");
-        if (string.IsNullOrWhiteSpace(nomePlaylist))
-        {
-            errorMessage = "Il nome della playlist è obbligatorio";
-            Console.WriteLine("[Playlist.razor: Validation]: Nome playlist mancante");
-            return;
-        }
-
-        isCreating = true;
-        errorMessage = string.Empty;
-        successMessage = string.Empty;
-        Console.WriteLine($"[Playlist.razor: State]: isCreating={{isCreating}}, nome=''{nomePlaylist}'', privata={{isPrivata}} ");
-
         try
         {
-            var nuovaPlaylist = new
+            // Log immediato per verificare che il metodo venga chiamato
+            Console.WriteLine("=== METODO CREAPLAYLIST CHIAMATO ===");
+            await Task.Delay(100); // Piccolo delay per assicurarsi che il log appaia
+            
+            // Reset messaggi
+            errorMessage = string.Empty;
+            successMessage = string.Empty;
+            StateHasChanged(); // Forza il re-rendering
+            
+            Console.WriteLine($"Nome playlist inserito: '{nomePlaylist}'");
+            Console.WriteLine($"Playlist privata: {isPrivata}");
+            
+            // Validazione
+            if (string.IsNullOrWhiteSpace(nomePlaylist))
             {
-                Nome = nomePlaylist,
+                errorMessage = "Il nome della playlist è obbligatorio";
+                Console.WriteLine("ERRORE: Nome playlist vuoto");
+                StateHasChanged();
+                return;
+            }
+
+            // Imposta stato di caricamento
+            isCreating = true;
+            StateHasChanged();
+            Console.WriteLine("Stato isCreating impostato a true");
+
+            // Prepara i dati per l'API
+            var playlistData = new
+            {
+                Nome = nomePlaylist.Trim(),
                 Privata = isPrivata
             };
 
-            var json = JsonSerializer.Serialize(nuovaPlaylist);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            Console.WriteLine($"[Playlist.razor: Request]: POST api/Records/playlist payload={{json}} ");
-            
-            var response = await Http.PostAsync("api/Records/playlist", content);
-            Console.WriteLine($"[Playlist.razor: Response]: StatusCode={{response.StatusCode}} ");
-            
+            Console.WriteLine($"Dati da inviare: Nome='{playlistData.Nome}', Privata={playlistData.Privata}");
+
+            // Serializza i dati
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            var jsonContent = JsonSerializer.Serialize(playlistData, jsonOptions);
+            Console.WriteLine($"JSON da inviare: {jsonContent}");
+
+            // Prepara la richiesta HTTP
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            Console.WriteLine("Invio richiesta POST a api/Records/playlist...");
+
+            // Invia la richiesta
+            var response = await Http.PostAsync("api/Records/playlist", httpContent);
+            Console.WriteLine($"Risposta ricevuta - Status Code: {response.StatusCode}");
+
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                playlistCreata = JsonSerializer.Deserialize<PlaylistModel>(responseContent, new JsonSerializerOptions
+                Console.WriteLine($"Contenuto risposta: {responseContent}");
+
+                var options = new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
-                });
+                };
+                
+                playlistCreata = JsonSerializer.Deserialize<PlaylistModel>(responseContent, options);
                 
                 successMessage = $"Playlist '{playlistCreata?.Nome}' creata con successo!";
-                Console.WriteLine($"[Playlist.razor: Success]: Creata Id={{playlistCreata?.Id}}, Nome=''{playlistCreata?.Nome}'' ");
-                nomePlaylist = string.Empty;
-                descrizionePlaylist = string.Empty;
+                Console.WriteLine($"SUCCESS: Playlist creata con ID {playlistCreata?.Id}");
             }
             else
             {
-                errorMessage = $"Errore nella creazione della playlist: {response.StatusCode}";
-                Console.WriteLine($"[Playlist.razor: Error]: Creazione fallita StatusCode={{response.StatusCode}} ");
+                var errorContent = await response.Content.ReadAsStringAsync();
+                errorMessage = $"Errore nella creazione: {response.StatusCode} - {errorContent}";
+                Console.WriteLine($"ERRORE API: {response.StatusCode} - {errorContent}");
             }
         }
         catch (Exception ex)
         {
-            errorMessage = $"Errore: {ex.Message}";
-            Console.WriteLine($"[Playlist.razor: Exception]: {{ex.Message}} ");
+            errorMessage = $"Errore imprevisto: {ex.Message}";
+            Console.WriteLine($"ECCEZIONE: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
         }
         finally
         {
             isCreating = false;
-            Console.WriteLine("[Playlist.razor: Finally]: isCreating=false");
+            StateHasChanged(); // Assicura che l'UI si aggiorni
+            Console.WriteLine("=== FINE METODO CREAPLAYLIST ===");
         }
     }
 
@@ -190,9 +223,7 @@
     {
         public long Id { get; set; }
         public string Nome { get; set; } = string.Empty;
-        public string Descrizione { get; set; } = string.Empty;
-        public DateTime DataCreazione { get; set; }
-        public DateTime DataModifica { get; set; }
+        public bool Privata { get; set; }
     }
 }
 
@@ -272,6 +303,59 @@
         outline: none;
         border-color: #1db954;
         background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Custom Checkbox Styles */
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 4px;
+    }
+
+    .custom-checkbox {
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        position: relative;
+        transition: all 0.2s ease;
+    }
+
+    .custom-checkbox:hover {
+        border-color: rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .custom-checkbox:checked {
+        background: #1db954;
+        border-color: #1db954;
+    }
+
+    .custom-checkbox:checked::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #000;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .checkbox-label {
+        font-size: 13px;
+        color: #b3b3b3;
+        cursor: pointer;
+        user-select: none;
+        transition: color 0.2s ease;
+    }
+
+    .checkbox-label:hover {
+        color: #fff;
     }
 
     .form-actions {

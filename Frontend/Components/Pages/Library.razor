@@ -25,13 +25,10 @@
                     <div class="playlist-color" style="background: @GetRandomGradient();"></div>
                     <div class="playlist-info">
                         <div class="playlist-name">@playlist.Nome</div>
-                        <div class="playlist-type">Playlist</div>
-                        <div class="playlist-description">@playlist.Descrizione</div>
+                        <div class="playlist-type">@(playlist.Privata ? "Playlist Privata" : "Playlist")</div>
                         <div class="playlist-stats">
                             <span class="stat-number">0</span>
                             <span>songs</span>
-                            <span class="stat-divider">•</span>
-                            <span>Creata il @playlist.DataCreazione.ToString("dd/MM/yyyy")</span>
                         </div>
                     </div>
                 </div>
@@ -63,13 +60,10 @@
                     <div class="playlist-color" style="background: @GetRandomGradient();"></div>
                     <div class="playlist-info">
                         <div class="playlist-name">@playlist.Nome</div>
-                        <div class="playlist-type">Playlist</div>
-                        <div class="playlist-description">@playlist.Descrizione</div>
+                        <div class="playlist-type">@(playlist.Privata ? "Playlist Privata" : "Playlist")</div>
                         <div class="playlist-stats">
                             <span class="stat-number">0</span>
                             <span>songs</span>
-                            <span class="stat-divider">•</span>
-                            <span>Creata il @playlist.DataCreazione.ToString("dd/MM/yyyy")</span>
                         </div>
                     </div>
                 </div>
@@ -351,8 +345,6 @@
     {
         public long Id { get; set; }
         public string Nome { get; set; } = string.Empty;
-        public string Descrizione { get; set; } = string.Empty;
-        public DateTime DataCreazione { get; set; }
-        public DateTime DataModifica { get; set; }
+        public bool Privata { get; set; }
     }
 }
