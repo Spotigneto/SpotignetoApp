@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Data;
+using Backend.Models;
 using System.Data;
 
 namespace Backend.Controllers
@@ -12,11 +13,6 @@ namespace Backend.Controllers
         private readonly SpotigneteDbContext _context;
         public HomeController(SpotigneteDbContext context) { _context = context; }
 
-        public class ItemDto
-        {
-            public long Id { get; set; }
-            public string Nome { get; set; } = "";
-        }
 
         [HttpGet("Random_View")]
         public async Task<IActionResult> Random_View([FromQuery] int songs = 6, [FromQuery] int artists = 6, [FromQuery] int playlists = 6)
@@ -31,7 +27,7 @@ namespace Backend.Controllers
             return Ok(new { songs = songsList, artists = artistsList, playlists = playlistsList });
         }
 
-        private static async Task<List<ItemDto>> QueryAsync(System.Data.Common.DbConnection conn, string sql, params (string, object)[] ps)
+        private static async Task<List<ItemModel>> QueryAsync(System.Data.Common.DbConnection conn, string sql, params (string, object)[] ps)
         {
             using var cmd = conn.CreateCommand();
             cmd.CommandText = sql;
@@ -42,11 +38,11 @@ namespace Backend.Controllers
                 par.Value = p.Item2 ?? DBNull.Value;
                 cmd.Parameters.Add(par);
             }
-            var list = new List<ItemDto>();
+            var list = new List<ItemModel>();
             using var rdr = await cmd.ExecuteReaderAsync();
             while (await rdr.ReadAsync())
             {
-                list.Add(new ItemDto { Id = rdr.GetInt64(0), Nome = rdr.GetString(1) });
+                list.Add(new ItemModel { Id = rdr.GetInt64(0), Nome = rdr.GetString(1) });
             }
             return list;
         }

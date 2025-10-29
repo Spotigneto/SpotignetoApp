@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\MoatazTarek\\SpotignetoApp\\SpotignetoApp\\Backend\\Backend.csproj": {}
+    "C:\\Users\\MoatazTarek\\SpotignetoApp\\SpotignetoApp\\Backend\\Backend.csproj": {}
   },
   "projects": {
-    "c:\\Users\\MoatazTarek\\SpotignetoApp\\SpotignetoApp\\Backend\\Backend.csproj": {
+    "C:\\Users\\MoatazTarek\\SpotignetoApp\\SpotignetoApp\\Backend\\Backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\MoatazTarek\\SpotignetoApp\\SpotignetoApp\\Backend\\Backend.csproj",
+        "projectUniqueName": "C:\\Users\\MoatazTarek\\SpotignetoApp\\SpotignetoApp\\Backend\\Backend.csproj",
         "projectName": "Backend",
-        "projectPath": "c:\\Users\\MoatazTarek\\SpotignetoApp\\SpotignetoApp\\Backend\\Backend.csproj",
+        "projectPath": "C:\\Users\\MoatazTarek\\SpotignetoApp\\SpotignetoApp\\Backend\\Backend.csproj",
         "packagesPath": "C:\\Users\\MoatazTarek\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\MoatazTarek\\SpotignetoApp\\SpotignetoApp\\Backend\\obj\\",
+        "outputPath": "C:\\Users\\MoatazTarek\\SpotignetoApp\\SpotignetoApp\\Backend\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

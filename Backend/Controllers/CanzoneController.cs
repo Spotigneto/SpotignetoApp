@@ -14,7 +14,6 @@ namespace Backend.Controllers
             _service = service;
         }
 
-        // POST: api/Canzone/canzone
         [HttpPost("canzone")]
         public async Task<ActionResult<CanzoneModel>> PostCanzone(CanzoneModel canzone)
         {
@@ -22,7 +21,6 @@ namespace Backend.Controllers
             return CreatedAtAction(nameof(GetCanzone), new { id = created.Id }, created);
         }
 
-        // GET: api/Canzone/canzoni
         [HttpGet("canzoni")]
         public async Task<ActionResult<IEnumerable<CanzoneModel>>> GetCanzoni()
         {
@@ -30,7 +28,6 @@ namespace Backend.Controllers
             return Ok(items);
         }
 
-        // GET: api/Canzone/canzone/{id}
         [HttpGet("canzone/{id:long}")]
         public async Task<ActionResult<CanzoneModel>> GetCanzone(long id)
         {
@@ -42,7 +39,6 @@ namespace Backend.Controllers
             return Ok(canzone);
         }
 
-        // GET: api/Canzone/canzone/{name}
         [HttpGet("canzone/by-name/{name}")]
         public async Task<ActionResult<CanzoneModel>> GetCanzoneByName(string name)
         {
@@ -54,7 +50,6 @@ namespace Backend.Controllers
             return Ok(canzone);
         }
 
-        // PUT: api/Canzone/canzone/{id}
         [HttpPut("canzone/{id}")]
         public async Task<IActionResult> PutCanzone(long id, CanzoneModel canzone)
         {
@@ -66,7 +61,6 @@ namespace Backend.Controllers
             return NoContent();
         }
 
-        // DELETE: api/Canzone/canzone/{id}
         [HttpDelete("canzone/{id}")]
         public async Task<IActionResult> DeleteCanzone(long id)
         {

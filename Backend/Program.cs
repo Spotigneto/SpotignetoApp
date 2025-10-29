@@ -54,36 +54,39 @@ public class Startup
                       .AllowAnyHeader());
         });
 
-        // Repository
+
         services.AddScoped<ICanzoneRepository, CanzoneRepository>();
         services.AddScoped<IPlaylistRepository, PlaylistRepository>();
         services.AddScoped<IAlbumRepository, AlbumRepository>();
-        // services.AddScoped<IArtistaRepository, ArtistaRepository>(); // se lo hai
+        services.AddScoped<IArtistaRepository, ArtistaRepository>();
+        services.AddScoped<IProfileRepository, ProfileRepository>();
 
-        // Services
+
         services.AddScoped<ICanzoneService, CanzoneService>();
         services.AddScoped<IPlaylistService, PlaylistService>();
         services.AddScoped<IAlbumService, AlbumService>();
         services.AddScoped<IHomeService, HomeService>();
         services.AddScoped<INavigateService, NavigateService>();
         services.AddScoped<IProfileService, ProfileService>();
+        services.AddScoped<IArtistaService, ArtistaService>();
     }
 
     public void Configure(IApplicationBuilder app)
     {
         if (_env.IsDevelopment())
         {
-            app.UseRouting();
             app.UseSwagger();
             app.UseSwaggerUI();
         }
         else
         {
             app.UseHttpsRedirection();
-            app.UseRouting();
         }
 
+        app.UseRouting();
+
         app.UseCors();
+
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();

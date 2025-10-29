@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Backend.Data;
 using Backend.Models;
+using Backend.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Services
@@ -13,49 +14,60 @@ namespace Backend.Services
         private readonly SpotigneteDbContext _context;
         public NavigateService(SpotigneteDbContext context) { _context = context; }
 
-        public async Task<(IReadOnlyList<ItemModel> songs, IReadOnlyList<ItemModel> playlists, IReadOnlyList<ItemModel> artists)> SearchFiltriAsync(string? q, long? genereId, long? sottoGenereId, bool? playlistPrivata)
+        public async Task<(IReadOnlyList<ItemModel> songs, IReadOnlyList<ItemModel> playlists, IReadOnlyList<ItemModel> artists)>
+            SearchFiltriAsync(string? q, long? genereId, long? sottoGenereId, bool? playlistPrivata)
         {
             var qp = (q ?? "").Trim();
+            var songsQuery = _context.Canzoni.AsNoTracking().AsQueryable();
 
-            var songsQuery = _context.Set<Canzone>().AsNoTracking().AsQueryable();
-            if (!string.IsNullOrEmpty(qp)) songsQuery = songsQuery.Where(s => EF.Functions.Like(s.Nome, qp + "%"));
-            if (genereId.HasValue) songsQuery = songsQuery.Where(s => s.GenereFk == genereId.Value);
-            if (sottoGenereId.HasValue) songsQuery = songsQuery.Where(s => s.SottogenereFk == sottoGenereId.Value);
-            var songs = await songsQuery.OrderBy(s => s.Nome).Take(50)
-                .Select(s => new ItemModel { Id = s.Id, Nome = s.Nome }).ToListAsync();
+            if (!string.IsNullOrEmpty(qp))
+                songsQuery = songsQuery.Where(s => s.CaNome.StartsWith(qp));
 
-            var playlistsQuery = _context.Set<Playlist>().AsNoTracking().AsQueryable();
-            if (!string.IsNullOrEmpty(qp)) playlistsQuery = playlistsQuery.Where(p => EF.Functions.Like(p.Nome, qp + "%"));
-            if (playlistPrivata.HasValue) playlistsQuery = playlistsQuery.Where(p => p.Privata == playlistPrivata.Value);
-            var playlists = await playlistsQuery.OrderBy(p => p.Nome).Take(50)
-                .Select(p => new ItemModel { Id = p.Id, Nome = p.Nome }).ToListAsync();
+            if (genereId.HasValue)
+                songsQuery = songsQuery.Where(s => s.CaGenere == genereId.Value);
 
-            var artistsQuery = _context.Set<Artista>().AsNoTracking().AsQueryable();
-            if (!string.IsNullOrEmpty(qp)) artistsQuery = artistsQuery.Where(a => EF.Functions.Like(a.Nome, qp + "%"));
-            var artists = await artistsQuery.OrderBy(a => a.Nome).Take(50)
-                .Select(a => new ItemModel { Id = a.Id, Nome = a.Nome }).ToListAsync();
+            if (sottoGenereId.HasValue)
+                songsQuery = songsQuery.Where(s => s.CaSottogenere == sottoGenereId.Value);
+
+            var songs = await songsQuery.OrderBy(s => s.CaNome).Take(50)
+                .Select(s => new ItemModel { Id = s.CaId, Nome = s.CaNome }).ToListAsync();
+
+            var playlistsQuery = _context.Playlists.AsNoTracking().AsQueryable();
+            if (!string.IsNullOrEmpty(qp))
+                playlistsQuery = playlistsQuery.Where(p => p.PlNome.StartsWith(qp));
+            if (playlistPrivata.HasValue)
+                playlistsQuery = playlistsQuery.Where(p => p.PlPrivata == playlistPrivata.Value);
+            var playlists = await playlistsQuery.OrderBy(p => p.PlNome).Take(50)
+                .Select(p => new ItemModel { Id = p.PlId, Nome = p.PlNome }).ToListAsync();
+
+            var artistsQuery = _context.Artisti.AsNoTracking().AsQueryable();
+            if (!string.IsNullOrEmpty(qp))
+                artistsQuery = artistsQuery.Where(a => a.ArNome.StartsWith(qp));
+            var artists = await artistsQuery.OrderBy(a => a.ArNome).Take(50)
+                .Select(a => new ItemModel { Id = a.ArId, Nome = a.ArNome }).ToListAsync();
 
             return (songs, playlists, artists);
         }
 
-        public async Task<(IReadOnlyList<ItemModel> songs, IReadOnlyList<ItemModel> playlists, IReadOnlyList<ItemModel> artists)> LettereAsync(string q)
+        public async Task<(IReadOnlyList<ItemModel> songs, IReadOnlyList<ItemModel> playlists, IReadOnlyList<ItemModel> artists)>
+            LettereAsync(string q)
         {
             var qp = q.Trim();
 
-            var songs = await _context.Set<Canzone>().AsNoTracking()
-                .Where(s => EF.Functions.Like(s.Nome, qp + "%"))
-                .OrderBy(s => s.Nome).Take(50)
-                .Select(s => new ItemModel { Id = s.Id, Nome = s.Nome }).ToListAsync();
+            var songs = await _context.Canzoni.AsNoTracking()
+                .Where(s => s.CaNome.StartsWith(qp))
+                .OrderBy(s => s.CaNome).Take(50)
+                .Select(s => new ItemModel { Id = s.CaId, Nome = s.CaNome }).ToListAsync();
 
-            var playlists = await _context.Set<Playlist>().AsNoTracking()
-                .Where(p => EF.Functions.Like(p.Nome, qp + "%"))
-                .OrderBy(p => p.Nome).Take(50)
-                .Select(p => new ItemModel { Id = p.Id, Nome = p.Nome }).ToListAsync();
+            var playlists = await _context.Playlists.AsNoTracking()
+                .Where(p => p.PlNome.StartsWith(qp))
+                .OrderBy(p => p.PlNome).Take(50)
+                .Select(p => new ItemModel { Id = p.PlId, Nome = p.PlNome }).ToListAsync();
 
-            var artists = await _context.Set<Artista>().AsNoTracking()
-                .Where(a => EF.Functions.Like(a.Nome, qp + "%"))
-                .OrderBy(a => a.Nome).Take(50)
-                .Select(a => new ItemModel { Id = a.Id, Nome = a.Nome }).ToListAsync();
+            var artists = await _context.Artisti.AsNoTracking()
+                .Where(a => a.ArNome.StartsWith(qp))
+                .OrderBy(a => a.ArNome).Take(50)
+                .Select(a => new ItemModel { Id = a.ArId, Nome = a.ArNome }).ToListAsync();
 
             return (songs, playlists, artists);
         }

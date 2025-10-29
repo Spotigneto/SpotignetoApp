@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Data;
+using Backend.Models;
 
 namespace Backend.Controllers
 {
@@ -11,11 +12,6 @@ namespace Backend.Controllers
         private readonly SpotigneteDbContext _context;
         public NavigateController(SpotigneteDbContext context) { _context = context; }
 
-        public class ItemDto
-        {
-            public long Id { get; set; }
-            public string Nome { get; set; } = "";
-        }
 
         [HttpGet("Search_Filtri")]
         public async Task<IActionResult> Search_Filtri([FromQuery] string? q, [FromQuery] long? genereId, [FromQuery] long? sottoGenereId, [FromQuery] bool? playlistPrivata)
@@ -64,7 +60,7 @@ namespace Backend.Controllers
             return Ok(new { songs, playlists, artists });
         }
 
-        private static async Task<List<ItemDto>> QueryAsync(System.Data.Common.DbConnection conn, string sql, List<(string, object)> ps)
+        private static async Task<List<ItemModel>> QueryAsync(System.Data.Common.DbConnection conn, string sql, List<(string, object)> ps)
         {
             using var cmd = conn.CreateCommand();
             cmd.CommandText = sql;
@@ -75,11 +71,11 @@ namespace Backend.Controllers
                 par.Value = p.Item2 ?? DBNull.Value;
                 cmd.Parameters.Add(par);
             }
-            var list = new List<ItemDto>();
+            var list = new List<ItemModel>();
             using var rdr = await cmd.ExecuteReaderAsync();
             while (await rdr.ReadAsync())
             {
-                list.Add(new ItemDto { Id = rdr.GetInt64(0), Nome = rdr.GetString(1) });
+                list.Add(new ItemModel { Id = rdr.GetInt64(0), Nome = rdr.GetString(1) });
             }
             return list;
         }

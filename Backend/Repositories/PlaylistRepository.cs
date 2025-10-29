@@ -20,12 +20,14 @@ namespace Backend.Repositories
 
         public async Task<PlaylistEntity?> GetByIdAsync(long id)
         {
-            return await _context.Playlists.AsNoTracking().FirstOrDefaultAsync(p => p.PlId == id);
+            return await _context.Playlists.AsNoTracking()
+                .FirstOrDefaultAsync(p => p.PlId == id);
         }
 
         public async Task<PlaylistEntity?> GetByNameAsync(string name)
         {
-            return await _context.Playlists.AsNoTracking().FirstOrDefaultAsync(p => p.PlNome == name);
+            return await _context.Playlists.AsNoTracking()
+                .FirstOrDefaultAsync(p => p.PlNome == name);
         }
 
         public async Task<PlaylistEntity> AddAsync(PlaylistEntity entity)
@@ -37,25 +39,23 @@ namespace Backend.Repositories
 
         public async Task<bool> UpdateAsync(PlaylistEntity entity)
         {
-            var existing = await _context.Playlists.FirstOrDefaultAsync(p => p.PlId == entity.PlId);
-            if (existing == null)
-            {
-                return false;
-            }
+            var existing = await _context.Playlists.FindAsync(entity.PlId);
+            if (existing == null) return false;
+
             existing.PlNome = entity.PlNome;
             existing.PlPrivata = entity.PlPrivata;
+
+            _context.Playlists.Update(existing);
             await _context.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> DeleteAsync(long id)
         {
-            var existing = await _context.Playlists.FirstOrDefaultAsync(p => p.PlId == id);
-            if (existing == null)
-            {
-                return false;
-            }
-            _context.Playlists.Remove(existing);
+            var entity = await _context.Playlists.FindAsync(id);
+            if (entity == null) return false;
+
+            _context.Playlists.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
         }
