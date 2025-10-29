@@ -19,22 +19,21 @@ namespace Backend.Controllers
         public async Task<IActionResult> TestConnection()
         {
             try
-        {
-                // Test database connection
+            {
                 await _context.Database.CanConnectAsync();
-                
+
                 var connectionString = _context.Database.GetConnectionString();
-                
-                return Ok(new 
+
+                return Ok(new
                 {
                     Status = "Success",
                     Message = "Database connection successful",
-                    ConnectionString = connectionString?.Replace("Password=", "Password=***") // Hide password for security
+                    ConnectionString = connectionString?.Replace("Password=", "Password=***")
                 });
             }
             catch (Exception ex)
             {
-                return BadRequest(new 
+                return BadRequest(new
                 {
                     Status = "Error",
                     Message = "Database connection failed",

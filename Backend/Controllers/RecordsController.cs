@@ -23,7 +23,6 @@ namespace Backend.Controllers
             _asAlbumCanzoneService = asAlbumCanzoneService;
         }
 
-        // POST: api/Records/playlist
         [HttpPost("playlist")]
         public async Task<ActionResult<PlaylistModel>> PostPlaylist(PlaylistModel playlist)
         {
@@ -31,7 +30,6 @@ namespace Backend.Controllers
             return CreatedAtAction(nameof(GetPlaylist), new { id = created.Id }, created);
         }
 
-        // POST: api/Records/album
         [HttpPost("album")]
         public async Task<ActionResult<AlbumModel>> PostAlbum(AlbumModel album)
         {
@@ -39,7 +37,6 @@ namespace Backend.Controllers
             return CreatedAtAction(nameof(GetAlbum), new { id = created.Id }, created);
         }
 
-        // GET: api/Records/playlist/canzoni
         [HttpGet("playlist/canzoni")]
         public ActionResult<IEnumerable<AsCanzonePlaylistEntity>> GetPlaylistCanzoni()
         {
@@ -62,7 +59,8 @@ namespace Backend.Controllers
             return Ok(items);
         }
 
-        // GET: api/Records/albums
+
+
         [HttpGet("albums")]
         public async Task<ActionResult<IEnumerable<AlbumModel>>> GetAlbums()
         {
@@ -70,7 +68,8 @@ namespace Backend.Controllers
             return Ok(items);
         }
 
-        // GET: api/Records/playlists/{id}
+
+
         [HttpGet("playlists/{id:long}")]
         public async Task<ActionResult<PlaylistModel>> GetPlaylist(long id)
         {
@@ -82,7 +81,8 @@ namespace Backend.Controllers
             return Ok(playlist);
         }
 
-        // GET: api/Records/albums/{id}
+
+
         [HttpGet("albums/{id:long}")]
         public async Task<ActionResult<AlbumModel>> GetAlbum(long id)
         {
@@ -94,7 +94,8 @@ namespace Backend.Controllers
             return Ok(album);
         }
 
-        // GET: api/Records/playlists/{name}
+
+
         [HttpGet("playlists/by-name/{name}")]
         public async Task<ActionResult<PlaylistModel>> GetPlaylist(string name)
         {
@@ -106,7 +107,8 @@ namespace Backend.Controllers
             return Ok(playlist);
         }
 
-        // GET: api/Records/albums/{name}
+
+
         [HttpGet("albums/by-name/{name}")]
         public async Task<ActionResult<AlbumModel>> GetAlbum(string name)
         {
@@ -118,7 +120,6 @@ namespace Backend.Controllers
             return Ok(album);
         }
 
-        // PUT: api/Records/playlists/{id}
         [HttpPut("playlists/{id}")]
         public async Task<IActionResult> PutPlaylist(long id, PlaylistModel playlist)
         {
@@ -130,7 +131,6 @@ namespace Backend.Controllers
             return NoContent();
         }
 
-        // PUT: api/Records/albums/{id}
         [HttpPut("albums/{id}")]
         public async Task<IActionResult> PutAlbum(long id, AlbumModel album)
         {
@@ -142,7 +142,6 @@ namespace Backend.Controllers
             return NoContent();
         }
 
-        // DELETE: api/Records/playlists/{id}
         [HttpDelete("playlists/{id}")]
         public async Task<IActionResult> DeletePlaylist(long id)
         {
@@ -154,7 +153,6 @@ namespace Backend.Controllers
             return NoContent();
         }
 
-        // DELETE: api/Records/albums/{id}
         [HttpDelete("albums/{id}")]
         public async Task<IActionResult> DeleteAlbum(long id)
         {

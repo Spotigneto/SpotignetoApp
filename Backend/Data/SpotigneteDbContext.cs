@@ -9,10 +9,13 @@ namespace Backend.Data
         {
         }
 
-        // Entity DbSets
         public DbSet<CanzoneEntity> Canzoni { get; set; }
         public DbSet<PlaylistEntity> Playlists { get; set; }
         public DbSet<AlbumEntity> Albums { get; set; }
+        public DbSet<ArtistaEntity> Artisti { get; set; }
+        public DbSet<ProfileEntity> Utenti { get; set; }
+
+
         public DbSet<AsCanzonePlaylistEntity> AsCanzonePlaylist { get; set; }
         public DbSet<AsAlbumCanzoneEntity> AsAlbumCanzone { get; set; }
 
@@ -25,5 +28,9 @@ namespace Backend.Data
             // modelBuilder.Entity<Track>()
             //     .HasKey(t => t.Id);
         }
+        public DbSet<AsUtentePlaylistEntity> AsUtentePlaylist { get; set; }
+        public DbSet<AsArtistaAlbumEntity> AsArtistaAlbum { get; set; }
+        public DbSet<AsArtistaCanzoneEntity> AsArtistaCanzone { get; set; }
+        public DbSet<AsAlbumCanzoneEntity> AsAlbumCanzone { get; set; }
     }
 }

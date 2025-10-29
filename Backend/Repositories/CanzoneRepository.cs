@@ -20,12 +20,14 @@ namespace Backend.Repositories
 
         public async Task<CanzoneEntity?> GetByIdAsync(long id)
         {
-            return await _context.Canzoni.AsNoTracking().FirstOrDefaultAsync(c => c.CaId == id);
+            return await _context.Canzoni.AsNoTracking()
+                .FirstOrDefaultAsync(c => c.CaId == id);
         }
 
         public async Task<CanzoneEntity?> GetByNameAsync(string name)
         {
-            return await _context.Canzoni.AsNoTracking().FirstOrDefaultAsync(c => c.CaNome == name);
+            return await _context.Canzoni.AsNoTracking()
+                .FirstOrDefaultAsync(c => c.CaNome == name);
         }
 
         public async Task<CanzoneEntity> AddAsync(CanzoneEntity entity)
@@ -37,11 +39,8 @@ namespace Backend.Repositories
 
         public async Task<bool> UpdateAsync(CanzoneEntity entity)
         {
-            var existing = await _context.Canzoni.FirstOrDefaultAsync(c => c.CaId == entity.CaId);
-            if (existing == null)
-            {
-                return false;
-            }
+            var existing = await _context.Canzoni.FindAsync(entity.CaId);
+            if (existing == null) return false;
 
             existing.CaNome = entity.CaNome;
             existing.CaFile = entity.CaFile;
@@ -50,19 +49,17 @@ namespace Backend.Repositories
             existing.CaDurata = entity.CaDurata;
             existing.CaSecondi = entity.CaSecondi;
 
+            _context.Canzoni.Update(existing);
             await _context.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> DeleteAsync(long id)
         {
-            var existing = await _context.Canzoni.FirstOrDefaultAsync(c => c.CaId == id);
-            if (existing == null)
-            {
-                return false;
-            }
+            var entity = await _context.Canzoni.FindAsync(id);
+            if (entity == null) return false;
 
-            _context.Canzoni.Remove(existing);
+            _context.Canzoni.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
         }

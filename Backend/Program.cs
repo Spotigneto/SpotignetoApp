@@ -1,4 +1,10 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+
 using Backend.Data;
 using Backend.Repositories;
 using Backend.Services;
@@ -30,19 +36,18 @@ builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Add Entity Framework
-builder.Services.AddDbContext<SpotigneteDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+        services.AddDbContext<SpotigneteDbContext>(options =>
+            options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
 
-// Add controllers
-builder.Services.AddControllers();
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy =>
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader());
-});
+        services.AddControllers();
+
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(policy =>
+                policy.AllowAnyOrigin()
+                      .AllowAnyMethod()
+                      .AllowAnyHeader());
+        });
 
 // Add repositories and services
 builder.Services.AddScoped<ICanzoneRepository, CanzoneRepository>();
