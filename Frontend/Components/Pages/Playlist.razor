@@ -254,7 +254,7 @@ var minutes = totalSeconds / 60;
   return $", {hours}hr {remainingMinutes}min";
     }
 
- public class Song
+public class Song
     {
         public int Id { get; set; }
    public string Title { get; set; } = string.Empty;
@@ -264,13 +264,7 @@ public string Album { get; set; } = string.Empty;
         public int DurationSeconds { get; set; }
 public string CoverUrl { get; set; } = string.Empty;
   }
-        finally
-        {
-            isCreating = false;
-            StateHasChanged(); // Assicura che l'UI si aggiorni
-            Console.WriteLine("=== FINE METODO CREAPLAYLIST ===");
-        }
-    }
+    
 
     public class PlaylistModel
     {

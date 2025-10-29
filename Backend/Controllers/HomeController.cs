@@ -24,8 +24,23 @@ namespace Backend.Controllers
             using var conn = _context.Database.GetDbConnection();
             await conn.OpenAsync();
 
-            var albumsList = await QueryAsync(conn, $"SELECT TOP (@t) al_id AS Id, al_nome AS Nome FROM Album ORDER BY NEWID()", ("@t", albums));
-            var songsList = await QueryAsync(conn, $"SELECT TOP (@t) ca_id AS Id, ca_nome AS Nome FROM Canzone ORDER BY NEWID()", ("@t", songs));
+            var albumsList = await QueryAsync(conn,
+                $"SELECT TOP (@t) al.al_id AS Id, al.al_nome AS Nome, STRING_AGG(ar.ar_nome, ', ') AS Artista " +
+                "FROM Album al " +
+                "LEFT JOIN as_artista_album aa ON aa.asaa_album_fk = al.al_id " +
+                "LEFT JOIN Artista ar ON ar.ar_id = aa.asaa_artista_fk " +
+                "GROUP BY al.al_id, al.al_nome " +
+                "ORDER BY NEWID()",
+                ("@t", albums));
+
+            var songsList = await QueryAsync(conn,
+                $"SELECT TOP (@t) ca.ca_id AS Id, ca.ca_nome AS Nome, STRING_AGG(ar.ar_nome, ', ') AS Artista " +
+                "FROM Canzone ca " +
+                "LEFT JOIN as_artista_canzone ac ON ac.asarc_canzone_fk = ca.ca_id " +
+                "LEFT JOIN Artista ar ON ar.ar_id = ac.asarc_artista_fk " +
+                "GROUP BY ca.ca_id, ca.ca_nome " +
+                "ORDER BY NEWID()",
+                ("@t", songs));
             var artistsList = await QueryAsync(conn, $"SELECT TOP (@t) ar_id AS Id, ar_nome AS Nome FROM Artista ORDER BY NEWID()", ("@t", artists));
             var playlistsList = await QueryAsync(conn, $"SELECT TOP (@t) pl_id AS Id, pl_nome AS Nome FROM Playlist ORDER BY NEWID()", ("@t", playlists));
 
@@ -47,7 +62,12 @@ namespace Backend.Controllers
             using var rdr = await cmd.ExecuteReaderAsync();
             while (await rdr.ReadAsync())
             {
-                list.Add(new ItemModel { Id = rdr.GetString(0), Nome = rdr.GetString(1) });
+                var item = new ItemModel { Id = rdr.GetString(0), Nome = rdr.GetString(1) };
+                if (rdr.FieldCount >= 3)
+                {
+                    item.Artista = rdr.IsDBNull(2) ? string.Empty : rdr.GetString(2);
+                }
+                list.Add(item);
             }
             return list;
         }

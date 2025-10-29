@@ -35,6 +35,10 @@
      </div>
     </div>
     <div class="hero-album-title">@album.Title</div>
+    @if (!string.IsNullOrWhiteSpace(album.Artist))
+    {
+        <div class="hero-album-artist">@album.Artist</div>
+    }
 </div>
   }
         </div>
@@ -131,6 +135,7 @@
     {
         public string Id { get; set; } = string.Empty;
         public string Nome { get; set; } = string.Empty;
+        public string Artista { get; set; } = string.Empty;
     }
 
     private class HomeRandomResponse
@@ -182,7 +187,7 @@
         {
             Id = pl.Id,
             Title = pl.Nome,
-            Artist = string.Empty,
+            Artist = pl.Artista,
             ImageUrl = string.Empty,
             Gradient = gradients[i % gradients.Length]
         }).ToList();
@@ -192,7 +197,7 @@
         {
             Id = s.Id,
             Title = s.Nome,
-            Artist = string.Empty,
+            Artist = s.Artista,
             ImageUrl = string.Empty,
             Gradient = gradients[i % gradients.Length],
             IsPlaying = false
@@ -392,6 +397,18 @@ padding: 0;
         font-weight: 700;
         color: #fff;
         margin-top: 8px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        user-select: none;
+    }
+
+    .hero-album-artist {
+        width: 180px;
+        font-size: 12px;
+        font-weight: 400;
+        color: #a7a7a7;
+        margin-top: 2px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
