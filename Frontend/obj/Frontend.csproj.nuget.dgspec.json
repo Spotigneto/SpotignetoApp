@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\Davide Gaetano\\Desktop\\ProjectWork\\SpotignetoApp\\Frontend\\Frontend.csproj": {}
+    "C:\\Users\\Garzoli\\Desktop\\spotigneto - Copia\\SpotignetoApp\\Frontend\\Frontend.csproj": {}
   },
   "projects": {
-    "c:\\Users\\Davide Gaetano\\Desktop\\ProjectWork\\SpotignetoApp\\Frontend\\Frontend.csproj": {
+    "C:\\Users\\Garzoli\\Desktop\\spotigneto - Copia\\SpotignetoApp\\Frontend\\Frontend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\Davide Gaetano\\Desktop\\ProjectWork\\SpotignetoApp\\Frontend\\Frontend.csproj",
+        "projectUniqueName": "C:\\Users\\Garzoli\\Desktop\\spotigneto - Copia\\SpotignetoApp\\Frontend\\Frontend.csproj",
         "projectName": "Frontend",
-        "projectPath": "c:\\Users\\Davide Gaetano\\Desktop\\ProjectWork\\SpotignetoApp\\Frontend\\Frontend.csproj",
-        "packagesPath": "C:\\Users\\Davide Gaetano\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\Davide Gaetano\\Desktop\\ProjectWork\\SpotignetoApp\\Frontend\\obj\\",
+        "projectPath": "C:\\Users\\Garzoli\\Desktop\\spotigneto - Copia\\SpotignetoApp\\Frontend\\Frontend.csproj",
+        "packagesPath": "C:\\Users\\Garzoli\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Garzoli\\Desktop\\spotigneto - Copia\\SpotignetoApp\\Frontend\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Davide Gaetano\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Garzoli\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -68,7 +68,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
