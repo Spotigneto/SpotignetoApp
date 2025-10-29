@@ -64,6 +64,7 @@ h1:focus {
   text-align: end;
 }
 
+<<<<<<< HEAD
 .form-floating > .form-control-plaintext:focus::placeholder,
 .form-floating > .form-control:focus::placeholder {
   text-align: start;
@@ -201,4 +202,17 @@ padding: 15px 30px; /* Spazio interno */
 }
 .edm-gradient {
   background: linear-gradient(135deg, #00bfff, #1e90ff);
+=======
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+    text-align: start;
+}
+
+.page-wrapper {
+    transition: filter 0.4s ease, opacity 0.4s ease;
+}
+
+.page-wrapper.blurred {
+    filter: blur(10px) brightness(0.6);
+    pointer-events: none;
+>>>>>>> origin/Giovanni
 }

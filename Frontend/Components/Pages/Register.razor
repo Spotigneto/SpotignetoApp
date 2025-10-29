@@ -1,0 +1,147 @@
+@page "/register"
+
+<style>
+    .register-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.65);
+        backdrop-filter: blur(10px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        color: white;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    .register-card {
+        background-color: rgba(18, 18, 18, 0.9);
+        border-radius: 16px;
+        padding: 2.5rem 3rem;
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .register-icon {
+        background-color: #1db954;
+        color: black;
+        border-radius: 50%;
+        width: 85px;
+        height: 85px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    h1 {
+        font-size: 2.4rem;
+        margin-bottom: 0.4rem;
+        text-align: center;
+    }
+
+    p {
+        color: #b3b3b3;
+        margin-bottom: 2.2rem;
+        text-align: center;
+    }
+
+    form {
+        width: 330px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        text-align: left;
+        font-weight: 500;
+        margin-bottom: 0.3rem;
+    }
+
+    input[type="text"], input[type="email"], input[type="password"] {
+        background-color: #2a2a2a;
+        border: none;
+        border-radius: 8px;
+        padding: 0.9rem;
+        margin-bottom: 1.2rem;
+        color: white;
+        font-size: 1rem;
+        outline: none;
+    }
+
+    input::placeholder {
+        color: #888;
+    }
+
+    .terms {
+        color: #b3b3b3;
+        font-size: 0.9rem;
+        text-align: left;
+        margin-bottom: 1.5rem;
+    }
+
+    .terms a {
+        color: #1db954;
+        text-decoration: none;
+    }
+
+    button {
+        background-color: #1db954;
+        border: none;
+        color: black;
+        font-weight: bold;
+        font-size: 1rem;
+        padding: 0.9rem;
+        border-radius: 40px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #1ed760;
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        color: #b3b3b3;
+    }
+
+    .login-link a {
+        color: #1db954;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="register-overlay">
+    <div class="register-card">
+        <div class="register-icon">🎵</div>
+        <h1>Sign up for free</h1>
+        <p>Create your account to get started</p>
+
+        <form>
+
+            <label>Username</label>
+            <input type="text" placeholder="Choose a username" />
+
+            <button type="submit">Sign Up</button>
+            <a href="/login"></a>
+
+            <div class="login-link">
+                Already have an account? <a href="/login">Log in here</a>
+            </div>
+        </form>
+    </div>
+</div>
