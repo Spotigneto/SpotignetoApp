@@ -1,0 +1,21 @@
+SELECT 
+    c.ca_nome AS NomeCanzone,
+    c.ca_genere AS Genere,
+    c.ca_sottogenere AS Sottogenere,
+    c.ca_durata AS Durata,
+    a.ar_nome AS Artista
+FROM dbo.Canzone AS c
+INNER JOIN dbo.as_artista_canzone AS ac
+    ON c.ca_id = ac.asarc_canzone_fk
+INNER JOIN dbo.Artista AS a
+    ON ac.asarc_artista_fk = a.ar_id
+WHERE a.ar_nome = 'Eminem'
+GROUP BY 
+    c.ca_nome,
+    c.ca_genere,
+    c.ca_sottogenere,
+    c.ca_durata,
+    a.ar_nome
+ORDER BY 
+    c.ca_nome ASC;
+
