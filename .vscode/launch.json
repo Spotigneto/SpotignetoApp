@@ -8,7 +8,8 @@
             "name": "Backend",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build-backend",
+            "preLaunchTask": "prelaunch-backend",
+            "postDebugTask": "kill-backend-ports",
             "program": "${workspaceFolder}\\Backend\\bin\\Debug\\net9.0\\Backend.dll",
             "args": [],
             "cwd": "${workspaceFolder}\\Backend",
@@ -19,14 +20,16 @@
                 "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
             },
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS": "http://localhost:5232;https://localhost:7089"
             }
         },
         {
             "name": "Frontend",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build-frontend",
+            "preLaunchTask": "prelaunch-frontend",
+            "postDebugTask": "kill-frontend-ports",
             "program": "${workspaceFolder}\\Frontend\\bin\\Debug\\net9.0\\Frontend.dll",
             "args": [],
             "cwd": "${workspaceFolder}\\Frontend",
@@ -37,7 +40,8 @@
                 "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
             },
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS": "http://localhost:5001;https://localhost:7007"
             }
         }
     ],

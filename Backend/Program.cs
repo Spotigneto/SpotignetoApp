@@ -61,7 +61,10 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.DocumentTitle = "Backend";
+    });
 }
 
 // Avoid HTTPS redirect during local dev if HTTPS endpoint isn't configured
