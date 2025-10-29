@@ -1,0 +1,692 @@
+@page "/queue"
+
+<PageTitle>Queue - Spotigneto</PageTitle>
+
+<div class="queue-page">
+    <!-- Header Section -->
+    <section class="queue-header">
+        <h1 class="queue-title">Queue</h1>
+        <div class="queue-stats">
+            <span class="queue-count">@queueTracks.Count tracks in queue</span>
+<span class="queue-separator">•</span>
+     <span class="queue-duration">@totalDuration total</span>
+  </div>
+        <div class="queue-actions">
+ <button class="action-btn shuffle-btn" @onclick="ShuffleQueue" aria-label="Shuffle Queue">
+         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor">
+          <path d="M11 2h3v3M2 8.5h12M11 14h3v-3M14 2l-3.5 3.5M14 14l-3.5-3.5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+             </svg>
+ Shuffle
+  </button>
+       <button class="action-btn clear-btn" @onclick="ClearQueue" aria-label="Clear Queue">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor">
+         <path d="M2 4h12M6 2h4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+   <path d="M5 4v8a1 1 0 001 1h4a1 1 0 001-1V4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6.5 7v4M9.5 7v4" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+          Clear Queue
+            </button>
+</div>
+    </section>
+
+    <!-- Now Playing Section -->
+    <section class="now-playing-section">
+        <h2 class="section-title">Now Playing</h2>
+        @if (nowPlaying != null)
+        {
+         <div class="now-playing-card">
+   <div class="track-playing-indicator">
+     <div class="playing-bars">
+   <span class="bar"></span>
+              <span class="bar"></span>
+  <span class="bar"></span>
+     </div>
+    </div>
+                <div class="track-cover" style="background: @nowPlaying.Gradient;">
+        @if (!string.IsNullOrEmpty(nowPlaying.ImageUrl))
+           {
+               <img src="@nowPlaying.ImageUrl" alt="@nowPlaying.Title" />
+           }
+          </div>
+       <div class="track-info">
+ <div class="track-title">@nowPlaying.Title</div>
+      <div class="track-artist">@nowPlaying.Artist</div>
+   </div>
+         <div class="track-album-label">
+        <span class="album-prefix">Album:</span>
+        <span class="album-name">@nowPlaying.Album</span>
+    </div>
+         <div class="track-duration">@nowPlaying.Duration</div>
+     <button class="track-play-btn" @onclick="() => PlayTrack(nowPlaying)" aria-label="Play">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <circle cx="12" cy="12" r="12" fill="#1db954" />
+ <path d="M10 8v8l6-4z" fill="#000" />
+        </svg>
+</button>
+            </div>
+   }
+    </section>
+
+    <!-- Queue List Section -->
+    <section class="queue-list-section">
+ <h2 class="section-title">Next in Queue</h2>
+        <div class="queue-table">
+     <div class="queue-table-header">
+      <div class="header-number">#</div>
+      <div class="header-title">TITLE</div>
+          <div class="header-album">ALBUM</div>
+                <div class="header-duration">
+   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor">
+     <circle cx="8" cy="8" r="6.5" stroke-width="1.5" />
+           <path d="M8 5v3l2 2" stroke-width="1.5" stroke-linecap="round"/>
+                 </svg>
+     </div>
+         </div>
+
+            <div class="queue-table-body">
+       @foreach (var track in queueTracks)
+   {
+          <div class="queue-track-row @(track.Id == hoveredTrackId ? "hovered" : "")" 
+             @onmouseenter="() => hoveredTrackId = track.Id"
+  @onmouseleave="() => hoveredTrackId = null">
+         <div class="track-number">
+          @if (hoveredTrackId == track.Id)
+   {
+       <button class="play-icon-btn" @onclick="() => PlayTrack(track)" aria-label="Play @track.Title">
+       <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+      <path d="M5 3v10l8-5z" />
+      </svg>
+ </button>
+     }
+     else
+      {
+      <span>@track.Position</span>
+           }
+     </div>
+              <div class="track-main">
+            <div class="track-cover" style="background: @track.Gradient;">
+ @if (!string.IsNullOrEmpty(track.ImageUrl))
+{
+          <img src="@track.ImageUrl" alt="@track.Title" />
+       }
+         </div>
+           <div class="track-info">
+         <div class="track-title">@track.Title</div>
+         <div class="track-artist">@track.Artist</div>
+            </div>
+        </div>
+        <div class="track-album">@track.Album</div>
+        <div class="track-duration">@track.Duration</div>
+              </div>
+      }
+            </div>
+   </div>
+    </section>
+
+    <!-- Recently Played Section -->
+    <section class="recently-played-section">
+        <h2 class="section-title">Recently Played</h2>
+        <div class="queue-table">
+       <div class="queue-table-header">
+      <div class="header-number">#</div>
+         <div class="header-title">TITLE</div>
+                <div class="header-album">ALBUM</div>
+      <div class="header-duration">
+         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor">
+        <circle cx="8" cy="8" r="6.5" stroke-width="1.5" />
+       <path d="M8 5v3l2 2" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        </div>
+  </div>
+
+            <div class="queue-table-body">
+   @foreach (var track in recentlyPlayedTracks)
+              {
+           <div class="queue-track-row @(track.Id == hoveredTrackId ? "hovered" : "")" 
+     @onmouseenter="() => hoveredTrackId = track.Id"
+        @onmouseleave="() => hoveredTrackId = null">
+     <div class="track-number">
+     @if (hoveredTrackId == track.Id)
+     {
+             <button class="play-icon-btn" @onclick="() => PlayTrack(track)" aria-label="Play @track.Title">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M5 3v10l8-5z" />
+     </svg>
+     </button>
+              }
+     else
+      {
+       <span>@track.Position</span>
+     }
+        </div>
+     <div class="track-main">
+      <div class="track-cover" style="background: @track.Gradient;">
+@if (!string.IsNullOrEmpty(track.ImageUrl))
+     {
+        <img src="@track.ImageUrl" alt="@track.Title" />
+      }
+   </div>
+   <div class="track-info">
+         <div class="track-title">@track.Title</div>
+     <div class="track-artist">@track.Artist</div>
+</div>
+      </div>
+              <div class="track-album">@track.Album</div>
+ <div class="track-duration">@track.Duration</div>
+  </div>
+                }
+            </div>
+      </div>
+    </section>
+</div>
+
+@code {
+  private Track? nowPlaying;
+    private List<Track> queueTracks = new();
+    private List<Track> recentlyPlayedTracks = new();
+    private int? hoveredTrackId;
+    private string totalDuration = "21min total";
+
+    protected override void OnInitialized()
+    {
+        InitializeNowPlaying();
+ InitializeQueue();
+  InitializeRecentlyPlayed();
+    }
+
+    private void InitializeNowPlaying()
+    {
+    nowPlaying = new Track
+     {
+    Id = 0,
+            Position = 0,
+     Title = "Say My Name",
+         Artist = "ODESZA, Zyra",
+  Album = "In Return",
+        Duration = "3:59",
+      ImageUrl = "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop",
+    Gradient = "linear-gradient(135deg, #4158d0 0%, #c850c0 100%)"
+        };
+  }
+
+    private void InitializeQueue()
+ {
+        queueTracks = new List<Track>
+        {
+        new Track { Id = 1, Position = 1, Title = "A Moment Apart", Artist = "ODESZA", Album = "A Moment Apart", Duration = "3:33", ImageUrl = "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)" },
+      new Track { Id = 2, Position = 2, Title = "It's Only", Artist = "ODESZA, Zyra", Album = "In Return", Duration = "4:47", ImageUrl = "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #4158d0 0%, #c850c0 100%)" },
+            new Track { Id = 3, Position = 3, Title = "Line of Sight", Artist = "ODESZA, Wynne, Mansionair", Album = "A Moment Apart", Duration = "4:29", ImageUrl = "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)" },
+     new Track { Id = 4, Position = 4, Title = "Bloom", Artist = "ODESZA", Album = "In Return", Duration = "4:34", ImageUrl = "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #4158d0 0%, #c850c0 100%)" }
+   };
+    }
+
+    private void InitializeRecentlyPlayed()
+    {
+        recentlyPlayedTracks = new List<Track>
+        {
+       new Track { Id = 5, Position = 1, Title = "Nightlight", Artist = "ILLENIUM, Annika Wells", Album = "Ascend", Duration = "3:23", ImageUrl = "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)" },
+        new Track { Id = 6, Position = 2, Title = "Good Things Fall Apart", Artist = "ILLENIUM, Jon Bellion", Album = "Ascend", Duration = "3:31", ImageUrl = "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)" },
+            new Track { Id = 7, Position = 3, Title = "Takeaway", Artist = "The Chainsmokers, ILLENIUM", Album = "World War Joy", Duration = "3:37", ImageUrl = "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #fa709a 0%, #fee140 100%)" },
+            new Track { Id = 8, Position = 4, Title = "Crashing", Artist = "ILLENIUM, Bahari", Album = "Awake", Duration = "3:38", ImageUrl = "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)" },
+            new Track { Id = 9, Position = 5, Title = "Feel Good", Artist = "ILLENIUM, Daya", Album = "Ascend", Duration = "3:37", ImageUrl = "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)" }
+        };
+    }
+
+    private void PlayTrack(Track track)
+    {
+     Console.WriteLine($"Playing: {track.Title} by {track.Artist}");
+        nowPlaying = track;
+      StateHasChanged();
+    }
+
+    private void ShuffleQueue()
+    {
+        var random = new Random();
+        queueTracks = queueTracks.OrderBy(x => random.Next()).ToList();
+        for (int i = 0; i < queueTracks.Count; i++)
+        {
+   queueTracks[i].Position = i + 1;
+        }
+   Console.WriteLine("Queue shuffled");
+        StateHasChanged();
+    }
+
+    private void ClearQueue()
+    {
+        queueTracks.Clear();
+        Console.WriteLine("Queue cleared");
+        StateHasChanged();
+    }
+
+    private class Track
+    {
+        public int Id { get; set; }
+        public int Position { get; set; }
+  public string Title { get; set; } = string.Empty;
+        public string Artist { get; set; } = string.Empty;
+        public string Album { get; set; } = string.Empty;
+        public string Duration { get; set; } = string.Empty;
+        public string ImageUrl { get; set; } = string.Empty;
+   public string Gradient { get; set; } = string.Empty;
+    }
+}
+
+<style>
+    .queue-page {
+        color: #fff;
+        padding: 0;
+        max-width: 100%;
+    }
+
+    .queue-header {
+        padding: 24px 24px 32px;
+        background: linear-gradient(180deg, rgba(80, 80, 80, 0.3) 0%, rgba(18, 18, 18, 0) 100%);
+        margin-bottom: 32px;
+ }
+
+    .queue-title {
+        font-size: 48px;
+      font-weight: 900;
+  margin: 0 0 12px 0;
+color: #fff;
+ letter-spacing: -0.04em;
+    line-height: 1.2;
+    }
+
+    .queue-stats {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 24px;
+        font-size: 14px;
+        color: #b3b3b3;
+    }
+
+    .queue-count {
+        font-weight: 400;
+    }
+
+    .queue-separator {
+font-weight: 700;
+    }
+
+    .queue-duration {
+        font-weight: 400;
+    }
+
+    .queue-actions {
+        display: flex;
+     gap: 12px;
+    }
+
+.action-btn {
+     display: flex;
+ align-items: center;
+        gap: 10px;
+     padding: 10px 24px;
+   border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: transparent;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        letter-spacing: 0.02em;
+    }
+
+    .action-btn:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.4);
+      transform: scale(1.04);
+    }
+
+    .action-btn:active {
+        transform: scale(0.98);
+    }
+
+    .action-btn svg {
+        flex-shrink: 0;
+    }
+
+    .section-title {
+    font-size: 20px;
+        font-weight: 700;
+        margin: 0 0 16px 0;
+     padding: 0 24px;
+    color: #fff;
+        letter-spacing: -0.02em;
+    }
+
+    .now-playing-section {
+        margin-bottom: 48px;
+    }
+
+    .now-playing-card {
+        display: grid;
+    grid-template-columns: 40px 60px 1fr 180px 60px 60px;
+        gap: 16px;
+        align-items: center;
+        padding: 16px 24px;
+        background: rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+        margin: 0 24px;
+        transition: background-color 0.2s ease;
+    }
+
+    .now-playing-card:hover {
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    .track-playing-indicator {
+   display: flex;
+        align-items: center;
+     justify-content: center;
+    }
+
+    .playing-bars {
+        display: flex;
+        align-items: flex-end;
+        gap: 3px;
+        height: 16px;
+    }
+
+    .playing-bars .bar {
+        width: 3px;
+        background-color: #1db954;
+        border-radius: 2px;
+        animation: playing 0.8s ease-in-out infinite;
+    }
+
+    .playing-bars .bar:nth-child(1) {
+        height: 60%;
+ animation-delay: 0s;
+  }
+
+ .playing-bars .bar:nth-child(2) {
+     height: 100%;
+        animation-delay: 0.2s;
+  }
+
+    .playing-bars .bar:nth-child(3) {
+        height: 40%;
+        animation-delay: 0.4s;
+    }
+
+    @@keyframes playing {
+        0%, 100% {
+        transform: scaleY(1);
+        }
+        50% {
+         transform: scaleY(0.4);
+        }
+    }
+
+    .track-album-label {
+        display: flex;
+        flex-direction: column;
+   gap: 2px;
+    }
+
+    .album-prefix {
+        font-size: 11px;
+        color: #b3b3b3;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .album-name {
+        font-size: 14px;
+        color: #fff;
+        font-weight: 400;
+    }
+
+    .queue-list-section,
+    .recently-played-section {
+        margin-bottom: 48px;
+}
+
+    .queue-table {
+     padding: 0 24px;
+    }
+
+    .queue-table-header {
+        display: grid;
+     grid-template-columns: 40px 1fr 180px 60px;
+        gap: 16px;
+        padding: 8px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 8px;
+        color: #b3b3b3;
+        font-size: 11px;
+   font-weight: 600;
+        text-transform: uppercase;
+    letter-spacing: 0.1em;
+    }
+
+  .header-number {
+        text-align: center;
+    }
+
+    .header-title {
+        padding-left: 72px;
+    }
+
+    .header-album {
+        padding-left: 0;
+    }
+
+    .header-duration {
+        display: flex;
+        justify-content: center;
+      align-items: center;
+ }
+
+    .queue-table-body {
+        display: flex;
+        flex-direction: column;
+      gap: 4px;
+    }
+
+    .queue-track-row {
+        display: grid;
+     grid-template-columns: 40px 1fr 180px 60px;
+        gap: 16px;
+        align-items: center;
+     padding: 8px 16px;
+        border-radius: 4px;
+     transition: background-color 0.2s ease;
+    }
+
+    .queue-track-row:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .track-number {
+        display: flex;
+        align-items: center;
+   justify-content: center;
+        color: #b3b3b3;
+        font-size: 14px;
+        font-weight: 500;
+      min-width: 40px;
+  }
+
+    .play-icon-btn {
+   background: transparent;
+    border: none;
+        color: #fff;
+        cursor: pointer;
+        padding: 4px;
+        display: flex;
+    align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .play-icon-btn:hover {
+        transform: scale(1.1);
+    }
+
+    .track-main {
+    display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+    }
+
+    .track-cover {
+        width: 48px;
+        height: 48px;
+        border-radius: 4px;
+        flex-shrink: 0;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .track-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .track-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .track-title {
+        font-size: 16px;
+  font-weight: 400;
+        color: #fff;
+        white-space: nowrap;
+     overflow: hidden;
+ text-overflow: ellipsis;
+        margin-bottom: 4px;
+    }
+
+    .track-artist {
+        font-size: 14px;
+        color: #b3b3b3;
+        white-space: nowrap;
+        overflow: hidden;
+  text-overflow: ellipsis;
+    }
+
+    .track-album {
+        font-size: 14px;
+        color: #b3b3b3;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .track-duration {
+        text-align: center;
+        font-size: 14px;
+        color: #b3b3b3;
+        font-weight: 400;
+        font-variant-numeric: tabular-nums;
+  }
+
+    .track-play-btn {
+        background: transparent;
+        border: none;
+    cursor: pointer;
+ padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .track-play-btn:hover {
+        transform: scale(1.06);
+    }
+
+    .track-play-btn svg {
+        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+ }
+
+    @@media (max-width: 1200px) {
+        .queue-table-header,
+  .queue-track-row {
+   grid-template-columns: 40px 1fr 150px 60px;
+      }
+
+        .now-playing-card {
+          grid-template-columns: 40px 56px 1fr 150px 60px 60px;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .queue-title {
+   font-size: 36px;
+        }
+
+        .queue-table-header,
+        .queue-track-row {
+     grid-template-columns: 40px 1fr 60px;
+        }
+
+        .track-album,
+        .header-album {
+ display: none;
+  }
+
+        .now-playing-card {
+            grid-template-columns: 40px 48px 1fr 60px 60px;
+    }
+
+        .now-playing-card .track-album-label {
+display: none;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .queue-title {
+     font-size: 28px;
+        }
+
+    .section-title {
+          font-size: 18px;
+  }
+
+     .action-btn {
+     font-size: 12px;
+            padding: 8px 16px;
+        }
+
+        .track-cover {
+            width: 40px;
+     height: 40px;
+      }
+
+  .now-playing-card .track-cover {
+         width: 48px;
+          height: 48px;
+        }
+    }
+
+    @@media (max-width: 480px) {
+     .queue-title {
+  font-size: 24px;
+    }
+
+        .queue-actions {
+         flex-direction: column;
+        }
+
+        .action-btn {
+  width: 100%;
+          justify-content: center;
+      }
+    }
+
+    .action-btn:focus-visible,
+    .play-icon-btn:focus-visible,
+    .track-play-btn:focus-visible {
+        outline: 2px solid #1db954;
+   outline-offset: 2px;
+    }
+</style>
