@@ -1,0 +1,486 @@
+@page "/nowplaying"
+
+<PageTitle>Now Playing - Spotigneto</PageTitle>
+
+<div class="now-playing-page">
+    <!-- Collapse Button -->
+    <button class="collapse-btn" @onclick="GoBack" aria-label="Collapse">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+    <path d="M8 12L4 8l4-4"/>
+        </svg>
+    </button>
+
+    <!-- Playing From Label -->
+    <div class="playing-from-label">PLAYING FROM PLAYLIST</div>
+
+    <!-- Main Content Container -->
+    <div class="content-container">
+        <!-- Album Art -->
+        <div class="album-art-wrapper">
+    <div class="album-art" style="background: @currentTrack.Gradient;">
+  @if (!string.IsNullOrEmpty(currentTrack.ImageUrl))
+    {
+         <img src="@currentTrack.ImageUrl" alt="@currentTrack.Title" />
+     }
+      </div>
+ </div>
+
+        <!-- Track Title -->
+        <h1 class="track-title">@currentTrack.Title</h1>
+
+   <!-- Artist Name -->
+  <p class="track-artist">@currentTrack.Artist</p>
+
+        <!-- Progress Bar Section -->
+        <div class="progress-section">
+            <div class="progress-bar">
+      <div class="progress-fill" style="width: @progressPercent%;"></div>
+    </div>
+            <div class="time-info">
+       <span class="time-current">@currentTime</span>
+      <span class="time-total">@currentTrack.Duration</span>
+            </div>
+   </div>
+
+        <!-- Playback Controls -->
+        <div class="playback-controls">
+     <button class="control-btn shuffle-btn @(isShuffled ? "active" : "")" @onclick="ToggleShuffle" aria-label="Shuffle">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M11 2h3v3M2 8h12M11 14h3v-3M14 2l-3 3M14 14l-3-3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+           </svg>
+     </button>
+
+    <button class="control-btn prev-btn" @onclick="PreviousTrack" aria-label="Previous">
+           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+  <path d="M3 2h2v12H3V2zM7 8l6-5v10l-6-5z"/>
+        </svg>
+      </button>
+
+    <button class="play-pause-btn" @onclick="TogglePlay" aria-label="@(isPlaying ? "Pause" : "Play")">
+             @if (isPlaying)
+   {
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="currentColor">
+   <circle cx="18" cy="18" r="18" fill="#fff"/>
+  <rect x="13" y="12" width="3" height="12" rx="0.5" fill="#000"/>
+         <rect x="20" y="12" width="3" height="12" rx="0.5" fill="#000"/>
+        </svg>
+     }
+                else
+      {
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="currentColor">
+               <circle cx="18" cy="18" r="18" fill="#fff"/>
+          <path d="M14 10v16l12-8z" fill="#000"/>
+    </svg>
+           }
+            </button>
+
+      <button class="control-btn next-btn" @onclick="NextTrack" aria-label="Next">
+       <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M11 2h2v12h-2V2zM3 8l6 5V3L3 8z"/>
+     </svg>
+    </button>
+
+        <button class="control-btn repeat-btn @(repeatMode != "off" ? "active" : "")" @onclick="ToggleRepeat" aria-label="Repeat">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+     <path d="M4 6h8M10 3l2 3-2 3M12 10H4M6 13l-2-3 2-3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+            </button>
+        </div>
+
+        <!-- Bottom Controls -->
+        <div class="bottom-controls">
+            <button class="bottom-btn like-btn @(isLiked ? "liked" : "")" @onclick="ToggleLike" aria-label="Like">
+         <svg width="20" height="20" viewBox="0 0 20 20" fill="@(isLiked ? "currentColor" : "none")" stroke="currentColor">
+          <path d="M10 18s-7-4.5-7-9c0-2.5 2-4 4-4 1.5 0 2.5 1 2.5 1s1-1 2.5-1c2 0 4 1.5 4 4 0 4.5-7 9-7 9z" stroke-width="1.8"/>
+              </svg>
+      </button>
+
+            <button class="bottom-btn volume-btn" aria-label="Volume">
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                 <path d="M8 3L5 6H2v4h3l3 3V3zM11 8c0-1.2-0.8-2.2-2-2.5M13 8c0-2-1.2-3.5-3-4.5"/>
+    </svg>
+   </button>
+
+            <div class="volume-slider">
+          <div class="volume-track">
+   <div class="volume-fill" style="width: @volume%;"></div>
+    </div>
+            </div>
+
+       <button class="bottom-btn queue-btn" @onclick="OpenQueue" aria-label="Queue">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor">
+         <path d="M3 4h12M3 9h12M3 14h8" stroke-width="1.5" stroke-linecap="round"/>
+   </svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Track currentTrack = new();
+    private string currentTime = "1:44";
+    private int progressPercent = 31;
+    private bool isPlaying = true;
+    private bool isShuffled = false;
+    private bool isLiked = false;
+    private string repeatMode = "off";
+    private int volume = 60;
+
+    protected override void OnInitialized()
+    {
+        InitializeCurrentTrack();
+    }
+
+    private void InitializeCurrentTrack()
+    {
+        currentTrack = new Track
+   {
+          Title = "Late Night",
+          Artist = "ODESZA",
+            Album = "In Return",
+  Duration = "3:52",
+   ImageUrl = "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=400&h=400&fit=crop",
+Gradient = "linear-gradient(135deg, #6b46c1 0%, #9333ea 50%, #ec4899 100%)"
+   };
+    }
+
+    private void GoBack() => Console.WriteLine("Go back");
+    
+    private void TogglePlay()
+    {
+        isPlaying = !isPlaying;
+        Console.WriteLine(isPlaying ? "Playing" : "Paused");
+    }
+
+    private void PreviousTrack() => Console.WriteLine("Previous track");
+    private void NextTrack() => Console.WriteLine("Next track");
+    
+    private void ToggleShuffle()
+    {
+        isShuffled = !isShuffled;
+        Console.WriteLine($"Shuffle: {isShuffled}");
+    }
+
+    private void ToggleRepeat()
+    {
+   repeatMode = repeatMode switch
+        {
+"off" => "all",
+     "all" => "one",
+       "one" => "off",
+     _ => "off"
+    };
+        Console.WriteLine($"Repeat: {repeatMode}");
+    }
+
+    private void ToggleLike()
+    {
+        isLiked = !isLiked;
+        Console.WriteLine($"Liked: {isLiked}");
+    }
+
+    private void OpenQueue() => Console.WriteLine("Opening queue");
+
+    private class Track
+    {
+        public string Title { get; set; } = string.Empty;
+    public string Artist { get; set; } = string.Empty;
+        public string Album { get; set; } = string.Empty;
+    public string Duration { get; set; } = string.Empty;
+        public string ImageUrl { get; set; } = string.Empty;
+        public string Gradient { get; set; } = string.Empty;
+    }
+}
+
+<style>
+    .now-playing-page {
+        min-height: 100vh;
+        background: linear-gradient(180deg, #2d1b4e 0%, #1a1333 50%, #0f0a1f 100%);
+        color: #fff;
+        display: flex;
+    flex-direction: column;
+        position: relative;
+    }
+
+    /* Collapse Button */
+  .collapse-btn {
+   position: absolute;
+        top: 16px;
+        left: 16px;
+        background: transparent;
+     border: none;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+    justify-content: center;
+        transition: all 0.2s;
+        z-index: 10;
+    }
+
+    .collapse-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        transform: scale(1.05);
+    }
+
+    /* Playing From Label */
+    .playing-from-label {
+        position: absolute;
+     top: 20px;
+   left: 50%;
+        transform: translateX(-50%);
+        font-size: 10px;
+  font-weight: 700;
+        letter-spacing: 0.15em;
+        color: rgba(255, 255, 255, 0.5);
+      text-transform: uppercase;
+        z-index: 10;
+    }
+
+    /* Content Container */
+    .content-container {
+        flex: 1;
+ display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 32px 40px;
+        max-width: 700px;
+margin: 0 auto;
+        width: 100%;
+    }
+
+    /* Album Art */
+    .album-art-wrapper {
+        margin-bottom: 40px;
+    }
+
+    .album-art {
+        width: 280px;
+  height: 280px;
+        border-radius: 8px;
+      overflow: hidden;
+     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
+    }
+
+    .album-art img {
+   width: 100%;
+  height: 100%;
+        object-fit: cover;
+    }
+
+    /* Track Info */
+    .track-title {
+        font-size: 32px;
+        font-weight: 700;
+      margin: 0 0 12px 0;
+      text-align: center;
+        letter-spacing: -0.02em;
+    }
+
+    .track-artist {
+   font-size: 16px;
+        font-weight: 400;
+        margin: 0 0 36px 0;
+   text-align: center;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Progress Section */
+    .progress-section {
+        width: 100%;
+   margin-bottom: 32px;
+    }
+
+  .progress-bar {
+        width: 100%;
+        height: 5px;
+     background: rgba(255, 255, 255, 0.2);
+        border-radius: 3px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .progress-bar:hover {
+        height: 6px;
+ }
+
+    .progress-fill {
+        height: 100%;
+        background: #fff;
+ border-radius: 3px;
+        transition: width 0.1s linear;
+  }
+
+    .time-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+   color: rgba(255, 255, 255, 0.6);
+   font-variant-numeric: tabular-nums;
+    }
+
+    /* Playback Controls */
+    .playback-controls {
+    display: flex;
+        align-items: center;
+        gap: 22px;
+        margin-bottom: 52px;
+    }
+
+    .control-btn {
+        background: transparent;
+        border: none;
+  color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+   padding: 8px;
+    display: flex;
+   align-items: center;
+        justify-content: center;
+     transition: all 0.2s;
+    }
+
+    .control-btn:hover {
+ color: #fff;
+        transform: scale(1.1);
+    }
+
+    .control-btn.active {
+        color: #fff;
+    }
+
+    .play-pause-btn {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+  padding: 0;
+display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s;
+    }
+
+    .play-pause-btn:hover {
+        transform: scale(1.06);
+    }
+
+   
+    .bottom-controls {
+        display: flex;
+     align-items: center;
+    gap: 16px;
+        width: 100%;
+        justify-content:center;
+    }
+
+    .bottom-btn {
+        background: transparent;
+        border: none;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+     align-items: center;
+        justify-content: center;
+      transition: color 0.2s;
+     width: 20px;
+     height: 20px;
+        flex-shrink: 0;
+    }
+
+    .bottom-btn svg {
+  width: 100%;
+        height: 100%;
+}
+
+    .bottom-btn:hover {
+        color: #fff;
+    }
+
+    .like-btn.liked {
+        color: #fff;
+    }
+
+    .volume-slider {
+        flex: 1;
+        max-width: 140px;
+        margin: 0 10px;
+        display: flex;
+        align-items: center;
+    }
+
+    .volume-track {
+width: 100%;
+        height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+        border-radius: 2px;
+        cursor: pointer;
+    }
+
+    .volume-track:hover {
+        height: 5px;
+    }
+
+    .volume-fill {
+        height: 100%;
+        background: #fff;
+        border-radius: 2px;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .content-container {
+       padding: 50px 24px 32px;
+  }
+
+        .album-art {
+ width: 240px;
+         height: 240px;
+        }
+
+ .track-title {
+       font-size: 26px;
+     }
+
+    .track-artist {
+            font-size: 14px;
+        }
+
+        .playback-controls {
+            gap: 18px;
+    }
+    }
+
+    @@media (max-width: 480px) {
+        .album-art {
+        width: 220px;
+     height: 220px;
+        }
+
+   .track-title {
+            font-size: 24px;
+        }
+
+    .playback-controls {
+         gap: 14px;
+        }
+
+   .volume-slider {
+     max-width: 100px;
+  }
+    }
+
+    /* Focus States */
+    .collapse-btn:focus-visible,
+    .control-btn:focus-visible,
+    .play-pause-btn:focus-visible,
+    .bottom-btn:focus-visible {
+        outline: 2px solid rgba(255, 255, 255, 0.5);
+        outline-offset: 2px;
+    }
+</style>
