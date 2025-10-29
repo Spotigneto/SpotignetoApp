@@ -1,58 +1,92 @@
-global using Microsoft.AspNetCore.Builder;
-global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Hosting;
-global using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 using Backend.Data;
 using Backend.Repositories;
 using Backend.Services;
 
-var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddOpenApi();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddDbContext<SpotigneteDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services.AddControllers();
-
-builder.Services.AddCors(options =>
+public class Program
 {
-    options.AddDefaultPolicy(policy =>
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader());
-});
+    public static void Main(string[] args)
+    {
+        CreateHostBuilder(args).Build().Run();
+    }
 
-// Repository
-builder.Services.AddScoped<ICanzoneRepository, CanzoneRepository>();
-builder.Services.AddScoped<IPlaylistRepository, PlaylistRepository>();
-builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
-// builder.Services.AddScoped<IArtistaRepository, ArtistaRepository>(); // se lo hai
-
-// Services
-builder.Services.AddScoped<ICanzoneService, CanzoneService>();
-builder.Services.AddScoped<IPlaylistService, PlaylistService>();
-builder.Services.AddScoped<IAlbumService, AlbumService>();
-builder.Services.AddScoped<IHomeService, HomeService>();
-builder.Services.AddScoped<INavigateService, NavigateService>();
-builder.Services.AddScoped<IProfileService, ProfileService>();
-
-var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-else
-{
-    app.UseHttpsRedirection();
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            });
 }
 
-app.UseCors();
-app.MapControllers();
-app.Run();
+public class Startup
+{
+    private readonly IConfiguration _configuration;
+    private readonly IHostEnvironment _env;
+
+    public Startup(IConfiguration configuration, IHostEnvironment env)
+    {
+        _configuration = configuration;
+        _env = env;
+    }
+
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddOpenApi();
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen();
+
+        services.AddDbContext<SpotigneteDbContext>(options =>
+            options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
+
+        services.AddControllers();
+
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(policy =>
+                policy.AllowAnyOrigin()
+                      .AllowAnyMethod()
+                      .AllowAnyHeader());
+        });
+
+        // Repository
+        services.AddScoped<ICanzoneRepository, CanzoneRepository>();
+        services.AddScoped<IPlaylistRepository, PlaylistRepository>();
+        services.AddScoped<IAlbumRepository, AlbumRepository>();
+        // services.AddScoped<IArtistaRepository, ArtistaRepository>(); // se lo hai
+
+        // Services
+        services.AddScoped<ICanzoneService, CanzoneService>();
+        services.AddScoped<IPlaylistService, PlaylistService>();
+        services.AddScoped<IAlbumService, AlbumService>();
+        services.AddScoped<IHomeService, HomeService>();
+        services.AddScoped<INavigateService, NavigateService>();
+        services.AddScoped<IProfileService, ProfileService>();
+    }
+
+    public void Configure(IApplicationBuilder app)
+    {
+        if (_env.IsDevelopment())
+        {
+            app.UseRouting();
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
+        else
+        {
+            app.UseHttpsRedirection();
+            app.UseRouting();
+        }
+
+        app.UseCors();
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
+    }
+}

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "SxX9TPoNr1I=",
+  "dgSpecHash": "K9VHed7Q214=",
   "success": true,
-  "projectFilePath": "C:\\Users\\MoatazTarek\\SpotignetoApp\\SpotignetoApp\\Backend\\Backend.csproj",
+  "projectFilePath": "c:\\Users\\MoatazTarek\\SpotignetoApp\\SpotignetoApp\\Backend\\Backend.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\MoatazTarek\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\MoatazTarek\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

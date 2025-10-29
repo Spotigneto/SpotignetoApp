@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;         // per AsNoTracking, ToListAsync, ecc.
 using Backend.Data;
 using Backend.Models;
 
@@ -9,76 +11,86 @@ namespace Backend.Services
     public class ProfileService : IProfileService
     {
         private readonly SpotigneteDbContext _context;
-        public ProfileService(SpotigneteDbContext context) { _context = context; }
+        public ProfileService(SpotigneteDbContext context) => _context = context;
 
-        public async Task<(IReadOnlyList<AlbumItemModel> albums, IReadOnlyList<ItemModel> playlists)> SearchFiltriAsync(string? q, bool? albumPubblica, DateTime? albumFrom, DateTime? albumTo, bool? playlistPrivata)
+        public async Task<(IReadOnlyList<AlbumItemModel> albums, IReadOnlyList<ItemModel> playlists)> SearchFiltriAsync(
+            string? q,
+            bool? albumPubblica,
+            DateTime? albumFrom,
+            DateTime? albumTo,
+            bool? playlistPrivata)
         {
-            var qp = (q ?? "").Trim();
-            using var conn = _context.Database.GetDbConnection();
-            await conn.OpenAsync();
+            var qp = (q ?? string.Empty).Trim();
 
-            var albumsSql = "SELECT al_id, al_nome, al_pubblica, al_release_date FROM Album WHERE 1=1";
-            var aPars = new List<(string, object)>();
-            if (!string.IsNullOrEmpty(qp)) { albumsSql += " AND al_nome LIKE @aq + '%'"; aPars.Add(("@aq", qp)); }
-            if (albumPubblica.HasValue) { albumsSql += " AND al_pubblica = @ap"; aPars.Add(("@ap", albumPubblica.Value)); }
-            if (albumFrom.HasValue) { albumsSql += " AND al_release_date >= @af"; aPars.Add(("@af", albumFrom.Value)); }
-            if (albumTo.HasValue) { albumsSql += " AND al_release_date <= @at"; aPars.Add(("@at", albumTo.Value)); }
-            albumsSql += " ORDER BY al_nome OFFSET 0 ROWS FETCH NEXT 50 ROWS ONLY";
+            // ------- ALBUM -------
+            // Supponiamo che la tua entity si chiami "Album" con proprietà:
+            // Id (long), Nome (string), Pubblica (bool), ReleaseDate (DateTime?)
+            var albumsQuery = _context.Set<Album>().AsNoTracking().AsQueryable();
 
-            var playlistsSql = "SELECT pl_id, pl_nome FROM Playlist WHERE 1=1";
-            var pPars = new List<(string, object)>();
-            if (!string.IsNullOrEmpty(qp)) { playlistsSql += " AND pl_nome LIKE @pq + '%'"; pPars.Add(("@pq", qp)); }
-            if (playlistPrivata.HasValue) { playlistsSql += " AND pl_privata = @pp"; pPars.Add(("@pp", playlistPrivata.Value)); }
-            playlistsSql += " ORDER BY pl_nome OFFSET 0 ROWS FETCH NEXT 50 ROWS ONLY";
+            if (!string.IsNullOrEmpty(qp))
+                albumsQuery = albumsQuery.Where(a => a.Nome.StartsWith(qp));
 
-            var albums = await QueryAlbumsAsync(conn, albumsSql, aPars);
-            var playlists = await QueryItemsAsync(conn, playlistsSql, pPars);
+            if (albumPubblica.HasValue)
+                albumsQuery = albumsQuery.Where(a => a.Pubblica == albumPubblica.Value);
+
+            if (albumFrom.HasValue)
+                albumsQuery = albumsQuery.Where(a => a.ReleaseDate >= albumFrom.Value);
+
+            if (albumTo.HasValue)
+                albumsQuery = albumsQuery.Where(a => a.ReleaseDate <= albumTo.Value);
+
+            var albums = await albumsQuery
+                .OrderBy(a => a.Nome)
+                .Take(50)
+                .Select(a => new AlbumItemModel
+                {
+                    Id = a.Id,
+                    Nome = a.Nome,
+                    Pubblica = a.Pubblica,
+                    ReleaseDate = a.ReleaseDate
+                })
+                .ToListAsync();
+
+            // ------- PLAYLIST -------
+            // Supponiamo che la tua entity si chiami "Playlist" con proprietà:
+            // Id (long), Nome (string), Privata (bool)
+            var playlistsQuery = _context.Set<Playlist>().AsNoTracking().AsQueryable();
+
+            if (!string.IsNullOrEmpty(qp))
+                playlistsQuery = playlistsQuery.Where(p => p.Nome.StartsWith(qp));
+
+            if (playlistPrivata.HasValue)
+                playlistsQuery = playlistsQuery.Where(p => p.Privata == playlistPrivata.Value);
+
+            var playlists = await playlistsQuery
+                .OrderBy(p => p.Nome)
+                .Take(50)
+                .Select(p => new ItemModel
+                {
+                    Id = p.Id,
+                    Nome = p.Nome
+                })
+                .ToListAsync();
 
             return (albums, playlists);
         }
+    }
 
-        private static async Task<List<ItemModel>> QueryItemsAsync(System.Data.Common.DbConnection conn, string sql, List<(string, object)> ps)
-        {
-            using var cmd = conn.CreateCommand();
-            cmd.CommandText = sql;
-            foreach (var p in ps)
-            {
-                var par = cmd.CreateParameter();
-                par.ParameterName = p.Item1;
-                par.Value = p.Item2 ?? DBNull.Value;
-                cmd.Parameters.Add(par);
-            }
-            var list = new List<ItemModel>();
-            using var rdr = await cmd.ExecuteReaderAsync();
-            while (await rdr.ReadAsync())
-            {
-                list.Add(new ItemModel { Id = rdr.GetInt64(0), Nome = rdr.GetString(1) });
-            }
-            return list;
-        }
+    // ====== ESEMPI DI ENTITY (rimuovi se li hai già definiti altrove) ======
+    // Metti questi in un file separato o cancellali se le tue entity esistono già.
+    // Sono qui solo per mostrare le proprietà attese.
+    public class Album
+    {
+        public long Id { get; set; }
+        public string Nome { get; set; } = default!;
+        public bool Pubblica { get; set; }
+        public DateTime? ReleaseDate { get; set; }
+    }
 
-        private static async Task<List<AlbumItemModel>> QueryAlbumsAsync(System.Data.Common.DbConnection conn, string sql, List<(string, object)> ps)
-        {
-            using var cmd = conn.CreateCommand();
-            cmd.CommandText = sql;
-            foreach (var p in ps)
-            {
-                var par = cmd.CreateParameter();
-                par.ParameterName = p.Item1;
-                par.Value = p.Item2 ?? DBNull.Value;
-                cmd.Parameters.Add(par);
-            }
-            var list = new List<AlbumItemModel>();
-            using var rdr = await cmd.ExecuteReaderAsync();
-            while (await rdr.ReadAsync())
-            {
-                var id = rdr.GetInt64(0);
-                var nome = rdr.GetString(1);
-                var pub = rdr.GetBoolean(2);
-                DateTime? rd = rdr.IsDBNull(3) ? (DateTime?)null : rdr.GetDateTime(3);
-                list.Add(new AlbumItemModel { Id = id, Nome = nome, Pubblica = pub, ReleaseDate = rd });
-            }
-            return list;
-        }
+    public class Playlist
+    {
+        public long Id { get; set; }
+        public string Nome { get; set; } = default!;
+        public bool Privata { get; set; }
     }
 }
