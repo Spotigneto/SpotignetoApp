@@ -81,11 +81,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\DanieleBianchi\\Desktop\\.vscode\\SpotignetoApp\\Backend\\Backend.csproj",
+      "projectUniqueName": "C:\\Users\\DanieleBianchi\\Desktop\\.vscode\\SpotignetoApp\\SpotignetoApp\\Backend\\Backend.csproj",
       "projectName": "Backend",
-      "projectPath": "C:\\Users\\DanieleBianchi\\Desktop\\.vscode\\SpotignetoApp\\Backend\\Backend.csproj",
+      "projectPath": "C:\\Users\\DanieleBianchi\\Desktop\\.vscode\\SpotignetoApp\\SpotignetoApp\\Backend\\Backend.csproj",
       "packagesPath": "C:\\Users\\DanieleBianchi\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\DanieleBianchi\\Desktop\\.vscode\\SpotignetoApp\\Backend\\obj\\",
+      "outputPath": "C:\\Users\\DanieleBianchi\\Desktop\\.vscode\\SpotignetoApp\\SpotignetoApp\\Backend\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

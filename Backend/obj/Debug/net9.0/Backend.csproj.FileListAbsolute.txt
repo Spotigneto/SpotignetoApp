@@ -64,3 +64,15 @@ C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\Backend\obj\Debug\net9.0\r
 C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\Backend\obj\Debug\net9.0\Backend.pdb
 C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\Backend\obj\Debug\net9.0\Backend.genruntimeconfig.cache
 C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\Backend\obj\Debug\net9.0\ref\Backend.dll
+C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\SpotignetoApp\Backend\obj\Debug\net9.0\Backend.csproj.AssemblyReference.cache
+C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\SpotignetoApp\Backend\obj\Debug\net9.0\rpswa.dswa.cache.json
+C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\SpotignetoApp\Backend\obj\Debug\net9.0\Backend.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\SpotignetoApp\Backend\obj\Debug\net9.0\Backend.AssemblyInfoInputs.cache
+C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\SpotignetoApp\Backend\obj\Debug\net9.0\Backend.AssemblyInfo.cs
+C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\SpotignetoApp\Backend\obj\Debug\net9.0\Backend.csproj.CoreCompileInputs.cache
+C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\SpotignetoApp\Backend\obj\Debug\net9.0\Backend.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\SpotignetoApp\Backend\obj\Debug\net9.0\Backend.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\SpotignetoApp\Backend\obj\Debug\net9.0\Backend.sourcelink.json
+C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\SpotignetoApp\Backend\obj\Debug\net9.0\Backend.dll
+C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\SpotignetoApp\Backend\obj\Debug\net9.0\refint\Backend.dll
+C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\SpotignetoApp\Backend\obj\Debug\net9.0\Backend.pdb

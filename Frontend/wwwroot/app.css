@@ -68,34 +68,7 @@ h1:focus {
 .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
-
-/* Stile per i pulsanti di navigazione Indietro/Avanti */
-.top-nav-bar {
-  display: flex;
-  justify-content: space-between; /* Spinge l'icona utente a destra */
-  align-items: center;
-  padding: 15px 30px; /* Spazio interno */
-  background-color: #0a0a0a; /* Sfondo molto scuro per la barra superiore */
-  position: sticky; /* Per farla rimanere in alto */
-  top: 0;
-  z-index: 10;
-}
-
-.navigation-controls .nav-button {
-  background-color: #000000;
-  color: white;
-  border: none;
-  border-radius: 50%; /* Per renderli tondi */
-  width: 32px;
-  height: 32px;
-  margin-right: 10px;
-  cursor: pointer;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Stile per la barra di ricerca */
+/*css di search.razor*/
 .search-input-container {
   padding: 10px 30px;
 }
@@ -110,7 +83,6 @@ h1:focus {
   box-shadow: none;
 }
 
-/* Stile per i filtri (i menu a tendina) */
 .filters-container {
   display: flex;
   gap: 10px;

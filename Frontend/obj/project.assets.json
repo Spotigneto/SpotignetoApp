@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\DanieleBianchi\\Desktop\\.vscode\\SpotignetoApp\\Frontend\\Frontend.csproj",
+      "projectUniqueName": "C:\\Users\\DanieleBianchi\\Desktop\\.vscode\\SpotignetoApp\\SpotignetoApp\\Frontend\\Frontend.csproj",
       "projectName": "Frontend",
-      "projectPath": "C:\\Users\\DanieleBianchi\\Desktop\\.vscode\\SpotignetoApp\\Frontend\\Frontend.csproj",
+      "projectPath": "C:\\Users\\DanieleBianchi\\Desktop\\.vscode\\SpotignetoApp\\SpotignetoApp\\Frontend\\Frontend.csproj",
       "packagesPath": "C:\\Users\\DanieleBianchi\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\DanieleBianchi\\Desktop\\.vscode\\SpotignetoApp\\Frontend\\obj\\",
+      "outputPath": "C:\\Users\\DanieleBianchi\\Desktop\\.vscode\\SpotignetoApp\\SpotignetoApp\\Frontend\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
