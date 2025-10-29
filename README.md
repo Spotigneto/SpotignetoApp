@@ -38,11 +38,7 @@ CONTROLLER
 | PlaylistC
 | CanzoneC
 
-# Spotigneto DB
 
-# | SET UP DATABASE
 
-- Aprire Sql Server Management Studio
-- Aprire un nuovo Database (Nome preferibile Spotigneto)
-- Incollare le query sottostanti
+
 
