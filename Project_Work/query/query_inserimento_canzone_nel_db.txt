@@ -1,0 +1,4 @@
+UPDATE dbo.Canzone
+SET ca_file = 'C:\Users\Davide Serapiglia\Desktop\Project_Work\Monkeys-Spinning-Monkeys(chosic.com).mp3';
+
+--Ricorda di inserire il Path a te corrispondente 
