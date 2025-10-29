@@ -24,8 +24,8 @@ namespace Backend.Controllers
         }
 
         // POST: api/Queue/playlist/{id}
-        [HttpPost("playlist/{id:long}")]
-        public async Task<IActionResult> SetQueueFromPlaylist(long id)
+        [HttpPost("playlist/{id}")]
+        public async Task<IActionResult> SetQueueFromPlaylist(string id)
         {
             var success = await _queueService.SetQueueFromPlaylistAsync(id);
             if (!success)
@@ -36,8 +36,8 @@ namespace Backend.Controllers
         }
 
         // POST: api/Queue/album/{id}
-        [HttpPost("album/{id:long}")]
-        public async Task<IActionResult> SetQueueFromAlbum(long id)
+        [HttpPost("album/{id}")]
+        public async Task<IActionResult> SetQueueFromAlbum(string id)
         {
             var success = await _queueService.SetQueueFromAlbumAsync(id);
             if (!success)
@@ -48,8 +48,8 @@ namespace Backend.Controllers
         }
 
         // POST: api/Queue/add/{canzoneId}
-        [HttpPost("add/{canzoneId:long}")]
-        public async Task<IActionResult> AddToQueue(long canzoneId)
+        [HttpPost("add/{canzoneId}")]
+        public async Task<IActionResult> AddToQueue(string canzoneId)
         {
             var success = await _queueService.AddToQueueAsync(canzoneId);
             if (!success)

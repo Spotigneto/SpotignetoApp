@@ -26,19 +26,19 @@ namespace Backend.Services
             return entity != null ? MapToModel(entity) : null;
         }
 
-        public async Task<IEnumerable<AsUtenteArtistaModel>> GetByUtenteIdAsync(long utenteId)
+        public async Task<IEnumerable<AsUtenteArtistaModel>> GetByUtenteIdAsync(string utenteId)
         {
             var entities = await _repository.GetByUtenteIdAsync(utenteId);
             return entities.Select(MapToModel);
         }
 
-        public async Task<IEnumerable<AsUtenteArtistaModel>> GetByArtistaIdAsync(long artistaId)
+        public async Task<IEnumerable<AsUtenteArtistaModel>> GetByArtistaIdAsync(string artistaId)
         {
             var entities = await _repository.GetByArtistaIdAsync(artistaId);
             return entities.Select(MapToModel);
         }
 
-        public async Task<AsUtenteArtistaModel?> GetByUtenteAndArtistaAsync(long utenteId, long artistaId)
+        public async Task<AsUtenteArtistaModel?> GetByUtenteAndArtistaAsync(string utenteId, string artistaId)
         {
             var entity = await _repository.GetByUtenteAndArtistaAsync(utenteId, artistaId);
             return entity != null ? MapToModel(entity) : null;
@@ -63,17 +63,17 @@ namespace Backend.Services
             return await _repository.DeleteAsync(id);
         }
 
-        public async Task<bool> DeleteByUtenteAndArtistaAsync(long utenteId, long artistaId)
+        public async Task<bool> DeleteByUtenteAndArtistaAsync(string utenteId, string artistaId)
         {
             return await _repository.DeleteByUtenteAndArtistaAsync(utenteId, artistaId);
         }
 
-        public async Task<bool> ExistsAsync(long utenteId, long artistaId)
+        public async Task<bool> ExistsAsync(string utenteId, string artistaId)
         {
             return await _repository.ExistsAsync(utenteId, artistaId);
         }
 
-        public async Task<bool> FollowArtistaAsync(long utenteId, long artistaId)
+        public async Task<bool> FollowArtistaAsync(string utenteId, string artistaId)
         {
             // Verifica se la relazione esiste già
             if (await _repository.ExistsAsync(utenteId, artistaId))
@@ -89,12 +89,12 @@ namespace Backend.Services
             return true;
         }
 
-        public async Task<bool> UnfollowArtistaAsync(long utenteId, long artistaId)
+        public async Task<bool> UnfollowArtistaAsync(string utenteId, string artistaId)
         {
             return await _repository.DeleteByUtenteAndArtistaAsync(utenteId, artistaId);
         }
 
-        public async Task<bool> IsFollowingAsync(long utenteId, long artistaId)
+        public async Task<bool> IsFollowingAsync(string utenteId, string artistaId)
         {
             return await _repository.ExistsAsync(utenteId, artistaId);
         }

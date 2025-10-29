@@ -42,7 +42,7 @@ namespace Backend.Controllers
             using var rdr = await cmd.ExecuteReaderAsync();
             while (await rdr.ReadAsync())
             {
-                list.Add(new ItemModel { Id = rdr.GetInt64(0), Nome = rdr.GetString(1) });
+                list.Add(new ItemModel { Id = rdr.GetInt64(0).ToString(), Nome = rdr.GetString(1) });
             }
             return list;
         }

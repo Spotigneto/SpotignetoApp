@@ -8,7 +8,8 @@ namespace Backend.Entities
     {
         [Key]
         [Column("ca_id")]
-        public long CaId { get; set; }
+        [StringLength(255)]
+        public string CaId { get; set; } = string.Empty;
 
         [Required]
         [Column("ca_nome")]
@@ -18,13 +19,15 @@ namespace Backend.Entities
         [Required]
         [Column("ca_file")]
         [StringLength(500)]
-        public string CaFile { get; set; } = string.Empty;
+        public string? CaFile { get; set; }
 
-        [Column("ca_genere_fk")]
-        public long CaGenere { get; set; }
+        [Column("ca_genere")]
+        [StringLength(100)]
+        public string CaGenere { get; set; } = string.Empty;
 
-        [Column("ca_sottogenere_fk")]
-        public long CaSottogenere { get; set; }
+        [Column("ca_sottogenere")]
+        [StringLength(100)]
+        public string CaSottogenere { get; set; } = string.Empty;
 
         [Column("ca_durata")]
         [StringLength(10)]

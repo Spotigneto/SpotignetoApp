@@ -40,8 +40,8 @@ namespace Backend.Controllers
             return Ok("Associazione creata");
         }
 
-        [HttpDelete("Remove")]
-        public async Task<IActionResult> RemoveUtentePlaylist([FromQuery] long utenteId, [FromQuery] long playlistId)
+        [HttpDelete("remove")]
+        public async Task<IActionResult> RemoveUtentePlaylist([FromQuery] string utenteId, [FromQuery] string playlistId)
         {
             var entity = await _context.AsUtentePlaylist
                 .FirstOrDefaultAsync(a => a.UtenteFk == utenteId && a.PlaylistFk == playlistId);

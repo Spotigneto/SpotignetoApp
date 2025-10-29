@@ -25,12 +25,12 @@ namespace Backend.Services
         }
 
         // Gestione coda
-        public async Task<QueueModel> GetCurrentQueueAsync()
+        public Task<QueueModel> GetCurrentQueueAsync()
         {
-            return _currentQueue;
+            return Task.FromResult(_currentQueue);
         }
 
-        public async Task<bool> SetQueueFromPlaylistAsync(long playlistId)
+        public async Task<bool> SetQueueFromPlaylistAsync(string playlistId)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace Backend.Services
                     {
                         CanzoneId = c.Id,
                         Nome = c.Nome,
-                        File = c.File,
+                        File = c.File ?? string.Empty,
                         Durata = c.Durata,
                         Secondi = c.Secondi,
                         OriginalIndex = index
@@ -65,7 +65,7 @@ namespace Backend.Services
             }
         }
 
-        public async Task<bool> SetQueueFromAlbumAsync(long albumId)
+        public async Task<bool> SetQueueFromAlbumAsync(string albumId)
         {
             try
             {
@@ -86,7 +86,7 @@ namespace Backend.Services
                     {
                         CanzoneId = c.Id,
                         Nome = c.Nome,
-                        File = c.File,
+                        File = c.File ?? string.Empty,
                         Durata = c.Durata,
                         Secondi = c.Secondi,
                         OriginalIndex = index
@@ -104,7 +104,7 @@ namespace Backend.Services
             }
         }
 
-        public async Task<bool> AddToQueueAsync(long canzoneId)
+        public async Task<bool> AddToQueueAsync(string canzoneId)
         {
             try
             {
@@ -115,7 +115,7 @@ namespace Backend.Services
                 {
                     CanzoneId = canzone.Id,
                     Nome = canzone.Nome,
-                    File = canzone.File,
+                    File = canzone.File ?? string.Empty,
                     Durata = canzone.Durata,
                     Secondi = canzone.Secondi,
                     OriginalIndex = _currentQueue.Items.Count
@@ -130,9 +130,9 @@ namespace Backend.Services
             }
         }
 
-        public async Task<bool> RemoveFromQueueAsync(int index)
+        public Task<bool> RemoveFromQueueAsync(int index)
         {
-            if (index < 0 || index >= _currentQueue.Items.Count) return false;
+            if (index < 0 || index >= _currentQueue.Items.Count) return Task.FromResult(false);
 
             _currentQueue.Items.RemoveAt(index);
             
@@ -142,24 +142,24 @@ namespace Backend.Services
                 _currentQueue.CurrentIndex--;
             }
 
-            return true;
+            return Task.FromResult(true);
         }
 
-        public async Task<bool> ClearQueueAsync()
+        public Task<bool> ClearQueueAsync()
         {
             _currentQueue.Items.Clear();
             _currentQueue.CurrentIndex = 0;
             _playerState.IsPlaying = false;
             _playerState.IsPaused = false;
             _playerState.CurrentCanzoneId = null;
-            return true;
+            return Task.FromResult(true);
         }
 
-        public async Task<bool> ReorderQueueAsync(int fromIndex, int toIndex)
+        public Task<bool> ReorderQueueAsync(int fromIndex, int toIndex)
         {
             if (fromIndex < 0 || fromIndex >= _currentQueue.Items.Count ||
                 toIndex < 0 || toIndex >= _currentQueue.Items.Count)
-                return false;
+                return Task.FromResult(false);
 
             var item = _currentQueue.Items[fromIndex];
             _currentQueue.Items.RemoveAt(fromIndex);
@@ -179,18 +179,18 @@ namespace Backend.Services
                 _currentQueue.CurrentIndex++;
             }
 
-            return true;
+            return Task.FromResult(true);
         }
 
         // Controlli di riproduzione
-        public async Task<PlayerStateModel> GetPlayerStateAsync()
+        public Task<PlayerStateModel> GetPlayerStateAsync()
         {
-            return _playerState;
+            return Task.FromResult(_playerState);
         }
 
-        public async Task<bool> PlayAsync()
+        public Task<bool> PlayAsync()
         {
-            if (_currentQueue.Items.Count == 0) return false;
+            if (_currentQueue.Items.Count == 0) return Task.FromResult(false);
 
             _playerState.IsPlaying = true;
             _playerState.IsPaused = false;
@@ -200,27 +200,27 @@ namespace Backend.Services
                 _playerState.CurrentCanzoneId = _currentQueue.Items[_currentQueue.CurrentIndex].CanzoneId;
             }
 
-            return true;
+            return Task.FromResult(true);
         }
 
-        public async Task<bool> PauseAsync()
+        public Task<bool> PauseAsync()
         {
             _playerState.IsPlaying = false;
             _playerState.IsPaused = true;
-            return true;
+            return Task.FromResult(true);
         }
 
-        public async Task<bool> StopAsync()
+        public Task<bool> StopAsync()
         {
             _playerState.IsPlaying = false;
             _playerState.IsPaused = false;
             _playerState.CurrentPosition = 0;
-            return true;
+            return Task.FromResult(true);
         }
 
-        public async Task<bool> NextTrackAsync()
+        public Task<bool> NextTrackAsync()
         {
-            if (_currentQueue.Items.Count == 0) return false;
+            if (_currentQueue.Items.Count == 0) return Task.FromResult(false);
 
             switch (_currentQueue.Mode)
             {
@@ -231,7 +231,7 @@ namespace Backend.Services
                     }
                     else
                     {
-                        return false; // Fine della coda
+                        return Task.FromResult(false); // Fine della coda
                     }
                     break;
 
@@ -266,12 +266,12 @@ namespace Backend.Services
 
             _playerState.CurrentCanzoneId = _currentQueue.Items[_currentQueue.CurrentIndex].CanzoneId;
             _playerState.CurrentPosition = 0;
-            return true;
+            return Task.FromResult(true);
         }
 
-        public async Task<bool> PreviousTrackAsync()
+        public Task<bool> PreviousTrackAsync()
         {
-            if (_currentQueue.Items.Count == 0) return false;
+            if (_currentQueue.Items.Count == 0) return Task.FromResult(false);
 
             switch (_currentQueue.Mode)
             {
@@ -282,7 +282,7 @@ namespace Backend.Services
                     }
                     else
                     {
-                        return false; // Inizio della coda
+                        return Task.FromResult(false); // Inizio della coda
                     }
                     break;
 
@@ -319,23 +319,23 @@ namespace Backend.Services
 
             _playerState.CurrentCanzoneId = _currentQueue.Items[_currentQueue.CurrentIndex].CanzoneId;
             _playerState.CurrentPosition = 0;
-            return true;
+            return Task.FromResult(true);
         }
 
-        public async Task<bool> SeekToAsync(int positionSeconds)
+        public Task<bool> SeekToAsync(int positionSeconds)
         {
-            if (positionSeconds < 0) return false;
+            if (positionSeconds < 0) return Task.FromResult(false);
             
             _playerState.CurrentPosition = positionSeconds;
-            return true;
+            return Task.FromResult(true);
         }
 
-        public async Task<bool> SetVolumeAsync(float volume)
+        public Task<bool> SetVolumeAsync(float volume)
         {
-            if (volume < 0 || volume > 1) return false;
+            if (volume < 0 || volume > 1) return Task.FromResult(false);
             
             _playerState.Volume = volume;
-            return true;
+            return Task.FromResult(true);
         }
 
         // Modalità di riproduzione
@@ -353,7 +353,7 @@ namespace Backend.Services
             return true;
         }
 
-        public async Task<bool> ToggleShuffleAsync()
+        public Task<bool> ToggleShuffleAsync()
         {
             if (_currentQueue.IsShuffled)
             {
@@ -370,10 +370,10 @@ namespace Backend.Services
                     .ToList();
             }
             
-            return true;
+            return Task.FromResult(true);
         }
 
-        public async Task<bool> ToggleRepeatAsync()
+        public Task<bool> ToggleRepeatAsync()
         {
             switch (_currentQueue.Mode)
             {
@@ -392,13 +392,13 @@ namespace Backend.Services
             }
             
             _playerState.Mode = _currentQueue.Mode;
-            return true;
+            return Task.FromResult(true);
         }
 
         // Navigazione coda
-        public async Task<bool> PlayTrackAtIndexAsync(int index)
+        public Task<bool> PlayTrackAtIndexAsync(int index)
         {
-            if (index < 0 || index >= _currentQueue.Items.Count) return false;
+            if (index < 0 || index >= _currentQueue.Items.Count) return Task.FromResult(false);
 
             _currentQueue.CurrentIndex = index;
             _playerState.CurrentCanzoneId = _currentQueue.Items[index].CanzoneId;
@@ -406,7 +406,7 @@ namespace Backend.Services
             _playerState.IsPlaying = true;
             _playerState.IsPaused = false;
             
-            return true;
+            return Task.FromResult(true);
         }
 
         public async Task<CanzoneModel?> GetCurrentTrackAsync()

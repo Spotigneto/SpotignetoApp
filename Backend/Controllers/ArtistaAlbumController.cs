@@ -40,8 +40,8 @@ namespace Backend.Controllers
             return Ok("Associazione creata");
         }
 
-        [HttpDelete("Remove")]
-        public async Task<IActionResult> RemoveArtistaAlbum([FromQuery] long artistaId, [FromQuery] long albumId)
+        [HttpDelete("remove")]
+        public async Task<IActionResult> RemoveArtistaAlbum([FromQuery] string artistaId, [FromQuery] string albumId)
         {
             var entity = await _context.AsArtistaAlbum
                 .FirstOrDefaultAsync(a => a.ArtistaFk == artistaId && a.AlbumFk == albumId);

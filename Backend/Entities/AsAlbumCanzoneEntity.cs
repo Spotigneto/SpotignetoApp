@@ -12,10 +12,12 @@ namespace Backend.Entities
 
         [Required]
         [Column("asalc_canzone_fk")]
-        public long AsalcCanzoneFk { get; set; }
+        [StringLength(255)]
+        public string AsalcCanzoneFk { get; set; } = string.Empty;
 
         [Required]
         [Column("asalc_album_fk")]
-        public long AsalcAlbumFk { get; set; }
+        [StringLength(255)]
+        public string AsalcAlbumFk { get; set; } = string.Empty;
     }
 }

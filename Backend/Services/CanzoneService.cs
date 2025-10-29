@@ -19,7 +19,7 @@ namespace Backend.Services
             return items.Select(MapToModel).ToList();
         }
 
-        public async Task<CanzoneModel?> GetByIdAsync(long id)
+        public async Task<CanzoneModel?> GetByIdAsync(string id)
         {
             var entity = await _repository.GetByIdAsync(id);
             return entity == null ? null : MapToModel(entity);
@@ -38,14 +38,14 @@ namespace Backend.Services
             return MapToModel(created);
         }
 
-        public async Task<bool> UpdateAsync(long id, CanzoneModel model)
+        public async Task<bool> UpdateAsync(string id, CanzoneModel model)
         {
             var entity = MapToEntity(model);
             entity.CaId = id;
             return await _repository.UpdateAsync(entity);
         }
 
-        public async Task<bool> DeleteAsync(long id)
+        public async Task<bool> DeleteAsync(string id)
         {
             return await _repository.DeleteAsync(id);
         }
@@ -57,8 +57,8 @@ namespace Backend.Services
                 Id = e.CaId,
                 Nome = e.CaNome,
                 File = e.CaFile,
-                GenereId = e.CaGenere,
-                SottogenereId = e.CaSottogenere,
+                Genere = e.CaGenere,
+                Sottogenere = e.CaSottogenere,
                 Durata = e.CaDurata,
                 Secondi = e.CaSecondi
             };
@@ -71,8 +71,8 @@ namespace Backend.Services
                 CaId = m.Id,
                 CaNome = m.Nome,
                 CaFile = m.File,
-                CaGenere = m.GenereId,
-                CaSottogenere = m.SottogenereId,
+                CaGenere = m.Genere,
+                CaSottogenere = m.Sottogenere,
                 CaDurata = m.Durata,
                 CaSecondi = m.Secondi
             };

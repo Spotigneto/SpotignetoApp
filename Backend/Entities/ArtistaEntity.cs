@@ -8,7 +8,8 @@ namespace Backend.Entities
     {
         [Key]
         [Column("ar_id")]
-        public long ArId { get; set; }
+        [StringLength(255)]
+        public string ArId { get; set; } = string.Empty;
 
         [Required]
         [Column("ar_nome")]

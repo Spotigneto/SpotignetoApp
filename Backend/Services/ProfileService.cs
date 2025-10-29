@@ -27,7 +27,7 @@ namespace Backend.Services
             return entities.Select(MapToModel).ToList();
         }
 
-        public async Task<ProfileModel?> GetByIdAsync(long id)
+        public async Task<ProfileModel?> GetByIdAsync(string id)
         {
             var entity = await _repo.GetByIdAsync(id);
             return entity == null ? null : MapToModel(entity);
@@ -40,7 +40,7 @@ namespace Backend.Services
             return MapToModel(saved);
         }
 
-        public async Task<bool> UpdateAsync(long id, ProfileModel model)
+        public async Task<bool> UpdateAsync(string id, ProfileModel model)
         {
             var entity = new ProfileEntity
             {
@@ -50,7 +50,7 @@ namespace Backend.Services
             return await _repo.UpdateAsync(entity);
         }
 
-        public async Task<bool> DeleteAsync(long id)
+        public async Task<bool> DeleteAsync(string id)
         {
             return await _repo.DeleteAsync(id);
         }

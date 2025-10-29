@@ -23,7 +23,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ArtistaModel>> GetArtista(long id)
+        public async Task<ActionResult<ArtistaModel>> GetArtista(string id)
         {
             var item = await _service.GetByIdAsync(id);
             if (item == null) return NotFound();
@@ -38,7 +38,7 @@ namespace Backend.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutArtista(long id, ArtistaModel model)
+        public async Task<IActionResult> PutArtista(string id, ArtistaModel model)
         {
             var ok = await _service.UpdateAsync(id, model);
             if (!ok) return NotFound();
@@ -46,7 +46,7 @@ namespace Backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteArtista(long id)
+        public async Task<IActionResult> DeleteArtista(string id)
         {
             var ok = await _service.DeleteAsync(id);
             if (!ok) return NotFound();

@@ -5,10 +5,10 @@ namespace Backend.Services
     public interface IPlaylistService
     {
         Task<List<PlaylistModel>> GetAllAsync();
-        Task<PlaylistModel?> GetByIdAsync(long id);
+        Task<PlaylistModel?> GetByIdAsync(string id);
         Task<PlaylistModel?> GetByNameAsync(string name);
         Task<PlaylistModel> CreateAsync(PlaylistModel model);
-        Task<bool> UpdateAsync(long id, PlaylistModel model);
-        Task<bool> DeleteAsync(long id);
+        Task<bool> UpdateAsync(string id, PlaylistModel model);
+        Task<bool> DeleteAsync(string id);
     }
 }

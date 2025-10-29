@@ -14,7 +14,7 @@ namespace Backend.Controllers
 
 
         [HttpGet("Search_Filtri")]
-        public async Task<IActionResult> Search_Filtri([FromQuery] string? q, [FromQuery] long? genereId, [FromQuery] long? sottoGenereId, [FromQuery] bool? playlistPrivata)
+        public async Task<IActionResult> Search_Filtri([FromQuery] string? q, [FromQuery] string? genereId, [FromQuery] string? sottoGenereId, [FromQuery] bool? playlistPrivata)
         {
             var qp = (q ?? "").Trim();
             using var conn = _context.Database.GetDbConnection();
@@ -23,8 +23,8 @@ namespace Backend.Controllers
             var songsSql = "SELECT ca_id AS Id, ca_nome AS Nome FROM Canzone WHERE 1=1";
             var songsPars = new List<(string, object)>();
             if (!string.IsNullOrEmpty(qp)) { songsSql += " AND ca_nome LIKE @q + '%'"; songsPars.Add(("@q", qp)); }
-            if (genereId.HasValue) { songsSql += " AND ca_genere_fk = @g"; songsPars.Add(("@g", genereId.Value)); }
-            if (sottoGenereId.HasValue) { songsSql += " AND ca_sottogenere_fk = @sg"; songsPars.Add(("@sg", sottoGenereId.Value)); }
+            if (!string.IsNullOrEmpty(genereId)) { songsSql += " AND ca_genere_fk = @g"; songsPars.Add(("@g", genereId)); }
+            if (!string.IsNullOrEmpty(sottoGenereId)) { songsSql += " AND ca_sottogenere_fk = @sg"; songsPars.Add(("@sg", sottoGenereId)); }
             songsSql += " ORDER BY ca_nome OFFSET 0 ROWS FETCH NEXT 50 ROWS ONLY";
 
             var playlistsSql = "SELECT pl_id AS Id, pl_nome AS Nome FROM Playlist WHERE 1=1";
@@ -75,7 +75,7 @@ namespace Backend.Controllers
             using var rdr = await cmd.ExecuteReaderAsync();
             while (await rdr.ReadAsync())
             {
-                list.Add(new ItemModel { Id = rdr.GetInt64(0), Nome = rdr.GetString(1) });
+                list.Add(new ItemModel { Id = rdr.GetInt64(0).ToString(), Nome = rdr.GetString(1) });
             }
             return list;
         }

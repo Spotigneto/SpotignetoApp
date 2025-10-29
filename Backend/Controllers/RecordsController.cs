@@ -70,8 +70,8 @@ namespace Backend.Controllers
 
 
 
-        [HttpGet("playlists/{id:long}")]
-        public async Task<ActionResult<PlaylistModel>> GetPlaylist(long id)
+        [HttpGet("playlists/{id}")]
+        public async Task<ActionResult<PlaylistModel>> GetPlaylist(string id)
         {
             var playlist = await _playlistService.GetByIdAsync(id);
             if (playlist == null)
@@ -83,8 +83,8 @@ namespace Backend.Controllers
 
 
 
-        [HttpGet("albums/{id:long}")]
-        public async Task<ActionResult<AlbumModel>> GetAlbum(long id)
+        [HttpGet("albums/{id}")]
+        public async Task<ActionResult<AlbumModel>> GetAlbum(string id)
         {
             var album = await _albumService.GetByIdAsync(id);
             if (album == null)
@@ -97,7 +97,7 @@ namespace Backend.Controllers
 
 
         [HttpGet("playlists/by-name/{name}")]
-        public async Task<ActionResult<PlaylistModel>> GetPlaylist(string name)
+        public async Task<ActionResult<PlaylistModel>> GetPlaylistByName(string name)
         {
             var playlist = await _playlistService.GetByNameAsync(name);
             if (playlist == null)
@@ -110,7 +110,7 @@ namespace Backend.Controllers
 
 
         [HttpGet("albums/by-name/{name}")]
-        public async Task<ActionResult<AlbumModel>> GetAlbum(string name)
+        public async Task<ActionResult<AlbumModel>> GetAlbumByName(string name)
         {
             var album = await _albumService.GetByNameAsync(name);
             if (album == null)
@@ -121,7 +121,7 @@ namespace Backend.Controllers
         }
 
         [HttpPut("playlists/{id}")]
-        public async Task<IActionResult> PutPlaylist(long id, PlaylistModel playlist)
+        public async Task<IActionResult> PutPlaylist(string id, PlaylistModel playlist)
         {
             var ok = await _playlistService.UpdateAsync(id, playlist);
             if (!ok)
@@ -132,7 +132,7 @@ namespace Backend.Controllers
         }
 
         [HttpPut("albums/{id}")]
-        public async Task<IActionResult> PutAlbum(long id, AlbumModel album)
+        public async Task<IActionResult> PutAlbum(string id, AlbumModel album)
         {
             var ok = await _albumService.UpdateAsync(id, album);
             if (!ok)
@@ -143,7 +143,7 @@ namespace Backend.Controllers
         }
 
         [HttpDelete("playlists/{id}")]
-        public async Task<IActionResult> DeletePlaylist(long id)
+        public async Task<IActionResult> DeletePlaylist(string id)
         {
             var ok = await _playlistService.DeleteAsync(id);
             if (!ok)
@@ -154,7 +154,7 @@ namespace Backend.Controllers
         }
 
         [HttpDelete("albums/{id}")]
-        public async Task<IActionResult> DeleteAlbum(long id)
+        public async Task<IActionResult> DeleteAlbum(string id)
         {
             var ok = await _albumService.DeleteAsync(id);
             if (!ok)

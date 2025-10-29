@@ -12,10 +12,12 @@ namespace Backend.Entities
 
         [Required]
         [Column("asup_utente_fk")]
-        public long UtenteFk { get; set; }
+        [StringLength(255)]
+        public string UtenteFk { get; set; } = string.Empty;
 
         [Required]
         [Column("asup_playlist_fk")]
-        public long PlaylistFk { get; set; }
+        [StringLength(255)]
+        public string PlaylistFk { get; set; } = string.Empty;
     }
 }

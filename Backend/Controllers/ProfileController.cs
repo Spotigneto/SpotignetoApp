@@ -29,7 +29,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(long id)
+        public async Task<IActionResult> GetById(string id)
         {
             var item = await _service.GetByIdAsync(id);
             if (item == null) return NotFound();
@@ -44,7 +44,7 @@ namespace Backend.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(long id, [FromBody] Backend.Models.ProfileModel model)
+        public async Task<IActionResult> Update(string id, [FromBody] Backend.Models.ProfileModel model)
         {
             var ok = await _service.UpdateAsync(id, model);
             if (!ok) return NotFound();
@@ -52,7 +52,7 @@ namespace Backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(long id)
+        public async Task<IActionResult> Delete(string id)
         {
             var ok = await _service.DeleteAsync(id);
             if (!ok) return NotFound();

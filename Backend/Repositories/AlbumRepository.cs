@@ -18,7 +18,7 @@ namespace Backend.Repositories
             return await _context.Albums.AsNoTracking().ToListAsync();
         }
 
-        public async Task<AlbumEntity?> GetByIdAsync(long id)
+        public async Task<AlbumEntity?> GetByIdAsync(string id)
         {
             return await _context.Albums.AsNoTracking()
                 .FirstOrDefaultAsync(a => a.AlId == id);
@@ -51,7 +51,7 @@ namespace Backend.Repositories
             return true;
         }
 
-        public async Task<bool> DeleteAsync(long id)
+        public async Task<bool> DeleteAsync(string id)
         {
             var entity = await _context.Albums.FindAsync(id);
             if (entity == null) return false;

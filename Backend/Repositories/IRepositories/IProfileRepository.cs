@@ -5,9 +5,9 @@ namespace Backend.Repositories
     public interface IProfileRepository
     {
         Task<List<ProfileEntity>> GetAllAsync();
-        Task<ProfileEntity?> GetByIdAsync(long id);
+        Task<ProfileEntity?> GetByIdAsync(string id);
         Task<ProfileEntity> AddAsync(ProfileEntity entity);
         Task<bool> UpdateAsync(ProfileEntity entity);
-        Task<bool> DeleteAsync(long id);
+        Task<bool> DeleteAsync(string id);
     }
 }

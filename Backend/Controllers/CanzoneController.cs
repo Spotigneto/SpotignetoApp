@@ -32,8 +32,8 @@ namespace Backend.Controllers
             return Ok(items);
         }
 
-        [HttpGet("canzone/{id:long}")]
-        public async Task<ActionResult<CanzoneModel>> GetCanzone(long id)
+        [HttpGet("canzone/{id}")]
+        public async Task<ActionResult<CanzoneModel>> GetCanzone(string id)
         {
             var canzone = await _service.GetByIdAsync(id);
             if (canzone == null)
@@ -55,7 +55,7 @@ namespace Backend.Controllers
         }
 
         [HttpPut("canzone/{id}")]
-        public async Task<IActionResult> PutCanzone(long id, CanzoneModel canzone)
+        public async Task<IActionResult> PutCanzone(string id, CanzoneModel canzone)
         {
             var ok = await _service.UpdateAsync(id, canzone);
             if (!ok)
@@ -66,7 +66,7 @@ namespace Backend.Controllers
         }
 
         [HttpDelete("canzone/{id}")]
-        public async Task<IActionResult> DeleteCanzone(long id)
+        public async Task<IActionResult> DeleteCanzone(string id)
         {
             var ok = await _service.DeleteAsync(id);
             if (!ok)
@@ -77,8 +77,8 @@ namespace Backend.Controllers
         }
 
         // POST: api/Canzone/upload/{id}
-        [HttpPost("upload/{id:long}")]
-        public async Task<IActionResult> UploadMp3File(long id, IFormFile file)
+        [HttpPost("upload/{id}")]
+        public async Task<IActionResult> UploadMp3File(string id, IFormFile file)
         {
             try
             {
@@ -121,8 +121,8 @@ namespace Backend.Controllers
         }
 
         // GET: api/Canzone/stream/{id}
-        [HttpGet("stream/{id:long}")]
-        public async Task<IActionResult> StreamMp3(long id)
+        [HttpGet("stream/{id}")]
+        public async Task<IActionResult> StreamMp3(string id)
         {
             try
             {
@@ -153,8 +153,8 @@ namespace Backend.Controllers
         }
 
         // GET: api/Canzone/download/{id}
-        [HttpGet("download/{id:long}")]
-        public async Task<IActionResult> DownloadMp3(long id)
+        [HttpGet("download/{id}")]
+        public async Task<IActionResult> DownloadMp3(string id)
         {
             try
             {

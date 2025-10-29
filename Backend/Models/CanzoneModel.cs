@@ -2,11 +2,11 @@ namespace Backend.Models
 {
     public class CanzoneModel
     {
-        public long Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         public string Nome { get; set; } = string.Empty;
-        public string File { get; set; } = string.Empty;
-        public long GenereId { get; set; }
-        public long SottogenereId { get; set; }
+        public string? File { get; set; }
+        public string Genere { get; set; } = string.Empty;
+        public string Sottogenere { get; set; } = string.Empty;
         public string Durata { get; set; } = string.Empty;
         public int Secondi { get; set; }
     }

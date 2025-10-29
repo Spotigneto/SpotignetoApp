@@ -23,14 +23,14 @@ namespace Backend.Repositories
             return await _context.AsAlbumCanzone.AsNoTracking().FirstOrDefaultAsync(a => a.AsalcId == id);
         }
 
-        public async Task<List<AsAlbumCanzoneEntity>> GetByAlbumIdAsync(long albumId)
+        public async Task<List<AsAlbumCanzoneEntity>> GetByAlbumIdAsync(string albumId)
         {
             return await _context.AsAlbumCanzone.AsNoTracking()
                 .Where(a => a.AsalcAlbumFk == albumId)
                 .ToListAsync();
         }
 
-        public async Task<List<AsAlbumCanzoneEntity>> GetByCanzoneIdAsync(long canzoneId)
+        public async Task<List<AsAlbumCanzoneEntity>> GetByCanzoneIdAsync(string canzoneId)
         {
             return await _context.AsAlbumCanzone.AsNoTracking()
                 .Where(a => a.AsalcCanzoneFk == canzoneId)

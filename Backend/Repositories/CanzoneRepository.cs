@@ -18,7 +18,7 @@ namespace Backend.Repositories
             return await _context.Canzoni.AsNoTracking().ToListAsync();
         }
 
-        public async Task<CanzoneEntity?> GetByIdAsync(long id)
+        public async Task<CanzoneEntity?> GetByIdAsync(string id)
         {
             return await _context.Canzoni.AsNoTracking()
                 .FirstOrDefaultAsync(c => c.CaId == id);
@@ -54,7 +54,7 @@ namespace Backend.Repositories
             return true;
         }
 
-        public async Task<bool> DeleteAsync(long id)
+        public async Task<bool> DeleteAsync(string id)
         {
             var entity = await _context.Canzoni.FindAsync(id);
             if (entity == null) return false;

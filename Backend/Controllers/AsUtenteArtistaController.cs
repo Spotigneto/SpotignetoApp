@@ -52,115 +52,63 @@ namespace Backend.Controllers
             }
         }
 
-        /// <summary>
-        /// Ottiene tutti gli artisti seguiti da un utente
-        /// </summary>
         [HttpGet("utente/{utenteId}")]
-        public async Task<ActionResult<IEnumerable<AsUtenteArtistaModel>>> GetByUtenteId(long utenteId)
+        public async Task<ActionResult<IEnumerable<AsUtenteArtistaModel>>> GetByUtenteId(string utenteId)
         {
-            try
-            {
-                var relations = await _service.GetByUtenteIdAsync(utenteId);
-                return Ok(relations);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Errore interno del server: {ex.Message}");
-            }
+            var result = await _service.GetByUtenteIdAsync(utenteId);
+            return Ok(result);
         }
 
-        /// <summary>
-        /// Ottiene tutti i follower di un artista
-        /// </summary>
+        // GET: api/AsUtenteArtista/artista/{artistaId}
         [HttpGet("artista/{artistaId}")]
-        public async Task<ActionResult<IEnumerable<AsUtenteArtistaModel>>> GetByArtistaId(long artistaId)
+        public async Task<ActionResult<IEnumerable<AsUtenteArtistaModel>>> GetByArtistaId(string artistaId)
         {
-            try
-            {
-                var relations = await _service.GetByArtistaIdAsync(artistaId);
-                return Ok(relations);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Errore interno del server: {ex.Message}");
-            }
+            var result = await _service.GetByArtistaIdAsync(artistaId);
+            return Ok(result);
         }
 
-        /// <summary>
-        /// Verifica se un utente segue un artista
-        /// </summary>
-        [HttpGet("utente/{utenteId}/artista/{artistaId}")]
-        public async Task<ActionResult<AsUtenteArtistaModel>> GetByUtenteAndArtista(long utenteId, long artistaId)
+        // GET: api/AsUtenteArtista/{utenteId}/{artistaId}
+        [HttpGet("{utenteId}/{artistaId}")]
+        public async Task<ActionResult<AsUtenteArtistaModel>> GetByUtenteAndArtista(string utenteId, string artistaId)
         {
-            try
+            var result = await _service.GetByUtenteAndArtistaAsync(utenteId, artistaId);
+            if (result == null)
             {
-                var relation = await _service.GetByUtenteAndArtistaAsync(utenteId, artistaId);
-                if (relation == null)
-                    return NotFound($"L'utente {utenteId} non segue l'artista {artistaId}");
-
-                return Ok(relation);
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Errore interno del server: {ex.Message}");
-            }
+            return Ok(result);
         }
 
-        /// <summary>
-        /// Verifica se un utente segue un artista (restituisce solo true/false)
-        /// </summary>
-        [HttpGet("utente/{utenteId}/artista/{artistaId}/following")]
-        public async Task<ActionResult<bool>> IsFollowing(long utenteId, long artistaId)
+        // GET: api/AsUtenteArtista/isFollowing/{utenteId}/{artistaId}
+        [HttpGet("isFollowing/{utenteId}/{artistaId}")]
+        public async Task<ActionResult<bool>> IsFollowing(string utenteId, string artistaId)
         {
-            try
-            {
-                var isFollowing = await _service.IsFollowingAsync(utenteId, artistaId);
-                return Ok(isFollowing);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Errore interno del server: {ex.Message}");
-            }
+            var result = await _service.IsFollowingAsync(utenteId, artistaId);
+            return Ok(result);
         }
 
-        /// <summary>
-        /// Fa seguire un artista a un utente
-        /// </summary>
-        [HttpPost("utente/{utenteId}/artista/{artistaId}/follow")]
-        public async Task<ActionResult> FollowArtista(long utenteId, long artistaId)
+        // POST: api/AsUtenteArtista/follow/{utenteId}/{artistaId}
+        [HttpPost("follow/{utenteId}/{artistaId}")]
+        public async Task<ActionResult> FollowArtista(string utenteId, string artistaId)
         {
-            try
+            var result = await _service.FollowArtistaAsync(utenteId, artistaId);
+            if (!result)
             {
-                var success = await _service.FollowArtistaAsync(utenteId, artistaId);
-                if (!success)
-                    return BadRequest("L'utente segue già questo artista");
-
-                return Ok("Artista seguito con successo");
+                return BadRequest("Unable to follow artist");
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Errore interno del server: {ex.Message}");
-            }
+            return Ok();
         }
 
-        /// <summary>
-        /// Fa smettere di seguire un artista a un utente
-        /// </summary>
-        [HttpDelete("utente/{utenteId}/artista/{artistaId}/unfollow")]
-        public async Task<ActionResult> UnfollowArtista(long utenteId, long artistaId)
+        // DELETE: api/AsUtenteArtista/unfollow/{utenteId}/{artistaId}
+        [HttpDelete("unfollow/{utenteId}/{artistaId}")]
+        public async Task<ActionResult> UnfollowArtista(string utenteId, string artistaId)
         {
-            try
+            var result = await _service.UnfollowArtistaAsync(utenteId, artistaId);
+            if (!result)
             {
-                var success = await _service.UnfollowArtistaAsync(utenteId, artistaId);
-                if (!success)
-                    return NotFound("L'utente non segue questo artista");
-
-                return Ok("Artista non più seguito");
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Errore interno del server: {ex.Message}");
-            }
+            return Ok();
         }
 
         /// <summary>

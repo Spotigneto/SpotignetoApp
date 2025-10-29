@@ -18,7 +18,7 @@ namespace Backend.Repositories
             return await _context.Utenti.AsNoTracking().ToListAsync();
         }
 
-        public async Task<ProfileEntity?> GetByIdAsync(long id)
+        public async Task<ProfileEntity?> GetByIdAsync(string id)
         {
             return await _context.Utenti.AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Id == id);
@@ -43,7 +43,7 @@ namespace Backend.Repositories
             return true;
         }
 
-        public async Task<bool> DeleteAsync(long id)
+        public async Task<bool> DeleteAsync(string id)
         {
             var entity = await _context.Utenti.FindAsync(id);
             if (entity == null) return false;

@@ -18,7 +18,7 @@ namespace Backend.Repositories
             return await _context.Playlists.AsNoTracking().ToListAsync();
         }
 
-        public async Task<PlaylistEntity?> GetByIdAsync(long id)
+        public async Task<PlaylistEntity?> GetByIdAsync(string id)
         {
             return await _context.Playlists.AsNoTracking()
                 .FirstOrDefaultAsync(p => p.PlId == id);
@@ -50,7 +50,7 @@ namespace Backend.Repositories
             return true;
         }
 
-        public async Task<bool> DeleteAsync(long id)
+        public async Task<bool> DeleteAsync(string id)
         {
             var entity = await _context.Playlists.FindAsync(id);
             if (entity == null) return false;

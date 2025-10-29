@@ -14,7 +14,7 @@ namespace Backend.Services
             Directory.CreateDirectory(_audioDirectory);
         }
 
-        public async Task<string> SaveMp3FileAsync(IFormFile file, long canzoneId)
+        public async Task<string> SaveMp3FileAsync(IFormFile file, string canzoneId)
         {
             try
             {

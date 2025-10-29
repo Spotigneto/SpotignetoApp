@@ -11,9 +11,9 @@ namespace Backend.Services
             string? q, bool? albumPubblica, DateTime? albumFrom, DateTime? albumTo, bool? playlistPrivata);
 
         Task<List<ProfileModel>> GetAllAsync();
-        Task<ProfileModel?> GetByIdAsync(long id);
+        Task<ProfileModel?> GetByIdAsync(string id);
         Task<ProfileModel> CreateAsync(ProfileModel model);
-        Task<bool> UpdateAsync(long id, ProfileModel model);
-        Task<bool> DeleteAsync(long id);
+        Task<bool> UpdateAsync(string id, ProfileModel model);
+        Task<bool> DeleteAsync(string id);
     }
 }

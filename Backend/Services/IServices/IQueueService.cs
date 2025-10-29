@@ -6,9 +6,9 @@ namespace Backend.Services
     {
         // Gestione coda
         Task<QueueModel> GetCurrentQueueAsync();
-        Task<bool> SetQueueFromPlaylistAsync(long playlistId);
-        Task<bool> SetQueueFromAlbumAsync(long albumId);
-        Task<bool> AddToQueueAsync(long canzoneId);
+        Task<bool> SetQueueFromPlaylistAsync(string playlistId);
+        Task<bool> SetQueueFromAlbumAsync(string albumId);
+        Task<bool> AddToQueueAsync(string canzoneId);
         Task<bool> RemoveFromQueueAsync(int index);
         Task<bool> ClearQueueAsync();
         Task<bool> ReorderQueueAsync(int fromIndex, int toIndex);

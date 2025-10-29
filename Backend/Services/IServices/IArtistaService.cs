@@ -5,10 +5,10 @@ namespace Backend.Services
     public interface IArtistaService
     {
         Task<List<ArtistaModel>> GetAllAsync();
-        Task<ArtistaModel?> GetByIdAsync(long id);
+        Task<ArtistaModel?> GetByIdAsync(string id);
         Task<ArtistaModel?> GetByNameAsync(string name);
         Task<ArtistaModel> CreateAsync(ArtistaModel model);
-        Task<bool> UpdateAsync(long id, ArtistaModel model);
-        Task<bool> DeleteAsync(long id);
+        Task<bool> UpdateAsync(string id, ArtistaModel model);
+        Task<bool> DeleteAsync(string id);
     }
 }

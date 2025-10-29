@@ -25,7 +25,7 @@ namespace Backend.Controllers
 
         // GET: api/AsAlbumCanzone/GetTracksInAlbum
         [HttpGet("GetTracksInAlbum")]
-        public async Task<ActionResult<IEnumerable<AsAlbumCanzoneModel>>> GetTracksInAlbum([FromQuery] long albumId)
+        public async Task<ActionResult<IEnumerable<AsAlbumCanzoneModel>>> GetTracksInAlbum([FromQuery] string albumId)
         {
             var items = await _service.GetByAlbumIdAsync(albumId);
             return Ok(items);
@@ -33,7 +33,7 @@ namespace Backend.Controllers
 
         // GET: api/AsAlbumCanzone/GetTrackInAlbum/{albumId}/{canzoneId}
         [HttpGet("GetTrackInAlbum/{albumId}/{canzoneId}")]
-        public async Task<ActionResult<AsAlbumCanzoneModel>> GetTrackInAlbum(long albumId, long canzoneId)
+        public async Task<ActionResult<AsAlbumCanzoneModel>> GetTrackInAlbum(string albumId, string canzoneId)
         {
             var items = await _service.GetByAlbumIdAsync(albumId);
             var track = items.FirstOrDefault(t => t.CanzoneId == canzoneId);
@@ -46,28 +46,36 @@ namespace Backend.Controllers
             return Ok(track);
         }
 
-        // PUT: api/AsAlbumCanzone/UpdateTrackInAlbum/{id}
-        [HttpPut("UpdateTrackInAlbum/{id}")]
-        public async Task<IActionResult> UpdateTrackInAlbum(long id, AsAlbumCanzoneModel model)
+        [HttpPut("{albumId}/{canzoneId}")]
+        public async Task<IActionResult> UpdateTrackInAlbum(string albumId, string canzoneId, [FromBody] AsAlbumCanzoneModel model)
         {
-            var ok = await _service.UpdateAsync(id, model);
-            if (!ok)
+            // Find the existing relationship
+            var allRelations = await _service.GetAllAsync();
+            var existingRelation = allRelations.FirstOrDefault(r => r.AlbumId == albumId && r.CanzoneId == canzoneId);
+            
+            if (existingRelation == null)
             {
-                return NotFound();
+                return NotFound("Track not found in album");
             }
-            return NoContent();
+
+            var result = await _service.UpdateAsync(existingRelation.Id, model);
+            return result ? Ok() : BadRequest();
         }
 
-        // DELETE: api/AsAlbumCanzone/RemoveTrackFromAlbum/{id}
-        [HttpDelete("RemoveTrackFromAlbum/{id}")]
-        public async Task<IActionResult> RemoveTrackFromAlbum(long id)
+        [HttpDelete("{albumId}/{canzoneId}")]
+        public async Task<IActionResult> RemoveTrackFromAlbum(string albumId, string canzoneId)
         {
-            var ok = await _service.DeleteAsync(id);
-            if (!ok)
+            // Find the existing relationship
+            var allRelations = await _service.GetAllAsync();
+            var existingRelation = allRelations.FirstOrDefault(r => r.AlbumId == albumId && r.CanzoneId == canzoneId);
+            
+            if (existingRelation == null)
             {
-                return NotFound();
+                return NotFound("Track not found in album");
             }
-            return NoContent();
+
+            var result = await _service.DeleteAsync(existingRelation.Id);
+            return result ? Ok() : NotFound();
         }
     }
 }

@@ -6,13 +6,13 @@ namespace Backend.Repositories.IRepositories
     {
         Task<IEnumerable<AsUtenteArtistaEntity>> GetAllAsync();
         Task<AsUtenteArtistaEntity?> GetByIdAsync(long id);
-        Task<IEnumerable<AsUtenteArtistaEntity>> GetByUtenteIdAsync(long utenteId);
-        Task<IEnumerable<AsUtenteArtistaEntity>> GetByArtistaIdAsync(long artistaId);
-        Task<AsUtenteArtistaEntity?> GetByUtenteAndArtistaAsync(long utenteId, long artistaId);
+        Task<IEnumerable<AsUtenteArtistaEntity>> GetByUtenteIdAsync(string utenteId);
+        Task<IEnumerable<AsUtenteArtistaEntity>> GetByArtistaIdAsync(string artistaId);
+        Task<AsUtenteArtistaEntity?> GetByUtenteAndArtistaAsync(string utenteId, string artistaId);
         Task<AsUtenteArtistaEntity> CreateAsync(AsUtenteArtistaEntity entity);
         Task<AsUtenteArtistaEntity> UpdateAsync(AsUtenteArtistaEntity entity);
         Task<bool> DeleteAsync(long id);
-        Task<bool> DeleteByUtenteAndArtistaAsync(long utenteId, long artistaId);
-        Task<bool> ExistsAsync(long utenteId, long artistaId);
+        Task<bool> DeleteByUtenteAndArtistaAsync(string utenteId, string artistaId);
+        Task<bool> ExistsAsync(string utenteId, string artistaId);
     }
 }

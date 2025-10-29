@@ -2,7 +2,7 @@ namespace Backend.Models
 {
     public class AsArtistaCanzoneModel
     {
-        public long ArtistaId { get; set; }
-        public long CanzoneId { get; set; }
+        public string ArtistaId { get; set; } = string.Empty;
+        public string CanzoneId { get; set; } = string.Empty;
     }
 }

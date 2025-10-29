@@ -25,13 +25,13 @@ namespace Backend.Services
             return entity == null ? null : MapToModel(entity);
         }
 
-        public async Task<List<AsAlbumCanzoneModel>> GetByAlbumIdAsync(long albumId)
+        public async Task<List<AsAlbumCanzoneModel>> GetByAlbumIdAsync(string albumId)
         {
             var items = await _repository.GetByAlbumIdAsync(albumId);
             return items.Select(MapToModel).ToList();
         }
 
-        public async Task<List<AsAlbumCanzoneModel>> GetByCanzoneIdAsync(long canzoneId)
+        public async Task<List<AsAlbumCanzoneModel>> GetByCanzoneIdAsync(string canzoneId)
         {
             var items = await _repository.GetByCanzoneIdAsync(canzoneId);
             return items.Select(MapToModel).ToList();

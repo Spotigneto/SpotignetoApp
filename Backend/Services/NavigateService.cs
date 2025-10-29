@@ -15,7 +15,7 @@ namespace Backend.Services
         public NavigateService(SpotigneteDbContext context) { _context = context; }
 
         public async Task<(IReadOnlyList<ItemModel> songs, IReadOnlyList<ItemModel> playlists, IReadOnlyList<ItemModel> artists)>
-            SearchFiltriAsync(string? q, long? genereId, long? sottoGenereId, bool? playlistPrivata)
+            SearchFiltriAsync(string? q, string? genereId, string? sottoGenereId, bool? playlistPrivata)
         {
             var qp = (q ?? "").Trim();
             var songsQuery = _context.Canzoni.AsNoTracking().AsQueryable();
@@ -23,11 +23,11 @@ namespace Backend.Services
             if (!string.IsNullOrEmpty(qp))
                 songsQuery = songsQuery.Where(s => s.CaNome.StartsWith(qp));
 
-            if (genereId.HasValue)
-                songsQuery = songsQuery.Where(s => s.CaGenere == genereId.Value);
+            if (genereId != null)
+                songsQuery = songsQuery.Where(s => s.CaGenere == genereId);
 
-            if (sottoGenereId.HasValue)
-                songsQuery = songsQuery.Where(s => s.CaSottogenere == sottoGenereId.Value);
+            if (sottoGenereId != null)
+                songsQuery = songsQuery.Where(s => s.CaSottogenere == sottoGenereId);
 
             var songs = await songsQuery.OrderBy(s => s.CaNome).Take(50)
                 .Select(s => new ItemModel { Id = s.CaId, Nome = s.CaNome }).ToListAsync();

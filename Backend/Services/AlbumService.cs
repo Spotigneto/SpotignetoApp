@@ -19,7 +19,7 @@ namespace Backend.Services
             return items.Select(MapToModel).ToList();
         }
 
-        public async Task<AlbumModel?> GetByIdAsync(long id)
+        public async Task<AlbumModel?> GetByIdAsync(string id)
         {
             var entity = await _repo.GetByIdAsync(id);
             return entity == null ? null : MapToModel(entity);
@@ -43,7 +43,7 @@ namespace Backend.Services
             return MapToModel(saved);
         }
 
-        public async Task<bool> UpdateAsync(long id, AlbumModel model)
+        public async Task<bool> UpdateAsync(string id, AlbumModel model)
         {
             var entity = new AlbumEntity
             {
@@ -55,7 +55,7 @@ namespace Backend.Services
             return await _repo.UpdateAsync(entity);
         }
 
-        public async Task<bool> DeleteAsync(long id)
+        public async Task<bool> DeleteAsync(string id)
         {
             return await _repo.DeleteAsync(id);
         }

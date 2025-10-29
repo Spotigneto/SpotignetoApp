@@ -3,22 +3,24 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Backend.Entities
 {
-    [Table("AsCanzonePlaylist")]
+    [Table("as_canzone_playlist")]
     public class AsCanzonePlaylistEntity
     {
         [Key]
-        [Column("ac_id")]
-        public long AcId { get; set; }
+        [Column("ascp_id")]
+        public long AscpId { get; set; }
 
         [Required]
-        [Column("ac_playlist_id")]
-        public long AcPlaylistId { get; set; }
+        [Column("ascp_playlist_fk")]
+        [StringLength(255)]
+        public string AscpPlaylistFk { get; set; } = string.Empty;
 
         [Required]
-        [Column("ac_canzone_id")]
-        public long AcCanzoneId { get; set; }
+        [Column("ascp_canzone_fk")]
+        [StringLength(255)]
+        public string AscpCanzoneFk { get; set; } = string.Empty;
 
-        [Column("ac_track_order")]
-        public int? AcTrackOrder { get; set; }
+        [Column("ascp_track_order")]
+        public int? AscpTrackOrder { get; set; }
     }
 }

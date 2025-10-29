@@ -2,10 +2,10 @@ namespace Backend.Models
 {
     public class AsCanzonePlaylistModel
     {
-        public long AcPlaylistId { get; set; }
-        public long AcCanzoneId { get; set; }
-        public long OldCanzoneId { get; set; }
-        public long NewCanzoneId { get; set; }
+        public string AcPlaylistId { get; set; } = string.Empty;
+        public string AcCanzoneId { get; set; } = string.Empty;
+        public string OldCanzoneId { get; set; } = string.Empty;
+        public string NewCanzoneId { get; set; } = string.Empty;
         public int? TrackOrder { get; set; }
     }
 }

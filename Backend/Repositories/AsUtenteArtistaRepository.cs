@@ -24,21 +24,21 @@ namespace Backend.Repositories
             return await _context.AsUtenteArtista.FindAsync(id);
         }
 
-        public async Task<IEnumerable<AsUtenteArtistaEntity>> GetByUtenteIdAsync(long utenteId)
+        public async Task<IEnumerable<AsUtenteArtistaEntity>> GetByUtenteIdAsync(string utenteId)
         {
             return await _context.AsUtenteArtista
                 .Where(ua => ua.AsuaUtenteFk == utenteId)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<AsUtenteArtistaEntity>> GetByArtistaIdAsync(long artistaId)
+        public async Task<IEnumerable<AsUtenteArtistaEntity>> GetByArtistaIdAsync(string artistaId)
         {
             return await _context.AsUtenteArtista
                 .Where(ua => ua.AsuaArtistaFk == artistaId)
                 .ToListAsync();
         }
 
-        public async Task<AsUtenteArtistaEntity?> GetByUtenteAndArtistaAsync(long utenteId, long artistaId)
+        public async Task<AsUtenteArtistaEntity?> GetByUtenteAndArtistaAsync(string utenteId, string artistaId)
         {
             return await _context.AsUtenteArtista
                 .FirstOrDefaultAsync(ua => ua.AsuaUtenteFk == utenteId && ua.AsuaArtistaFk == artistaId);
@@ -69,7 +69,7 @@ namespace Backend.Repositories
             return true;
         }
 
-        public async Task<bool> DeleteByUtenteAndArtistaAsync(long utenteId, long artistaId)
+        public async Task<bool> DeleteByUtenteAndArtistaAsync(string utenteId, string artistaId)
         {
             var entity = await GetByUtenteAndArtistaAsync(utenteId, artistaId);
             if (entity == null)
@@ -80,7 +80,7 @@ namespace Backend.Repositories
             return true;
         }
 
-        public async Task<bool> ExistsAsync(long utenteId, long artistaId)
+        public async Task<bool> ExistsAsync(string utenteId, string artistaId)
         {
             return await _context.AsUtenteArtista
                 .AnyAsync(ua => ua.AsuaUtenteFk == utenteId && ua.AsuaArtistaFk == artistaId);

@@ -30,16 +30,16 @@ namespace Backend.Controllers
             if (!model.TrackOrder.HasValue)
             {
                 var maxOrder = _context.AsCanzonePlaylist
-                    .Where(ac => ac.AcPlaylistId == model.AcPlaylistId)
-                    .Max(ac => (int?)ac.AcTrackOrder) ?? 0;
+                    .Where(ac => ac.AscpPlaylistFk == model.AcPlaylistId)
+                    .Max(ac => (int?)ac.AscpTrackOrder) ?? 0;
                 model.TrackOrder = maxOrder + 1;
             }
 
             var asCanzonePlaylistEntity = new AsCanzonePlaylistEntity
             {
-                AcPlaylistId = model.AcPlaylistId,
-                AcCanzoneId = model.AcCanzoneId,
-                AcTrackOrder = model.TrackOrder
+                AscpPlaylistFk = model.AcPlaylistId,
+                AscpCanzoneFk = model.AcCanzoneId,
+                AscpTrackOrder = model.TrackOrder
             };
 
             _context.AsCanzonePlaylist.Add(asCanzonePlaylistEntity);
@@ -50,14 +50,14 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("GetTracksInPlaylist")]
-        public IActionResult GetTracksInPlaylist([FromQuery] long playlistId)
+        public IActionResult GetTracksInPlaylist([FromQuery] string playlistId)
         {
             var tracks = _context.AsCanzonePlaylist
-                .Where(ac => ac.AcPlaylistId == playlistId)
-                .OrderBy(ac => ac.AcTrackOrder)
+                .Where(ac => ac.AscpPlaylistFk == playlistId)
+                .OrderBy(ac => ac.AscpTrackOrder)
                 .Select(ac => new { 
-                    CanzoneId = ac.AcCanzoneId, 
-                    TrackOrder = ac.AcTrackOrder 
+                    CanzoneId = ac.AscpCanzoneFk, 
+                    TrackOrder = ac.AscpTrackOrder 
                 })
                 .ToList();
 
@@ -66,10 +66,10 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("GetTrackInPlaylist/{playlistId}/{canzoneId}")]
-        public IActionResult GetTrackInPlaylist(long playlistId, long canzoneId)
+        public IActionResult GetTrackInPlaylist(string playlistId, string canzoneId)
         {
             var relation = _context.AsCanzonePlaylist
-                .FirstOrDefault(ac => ac.AcPlaylistId == playlistId && ac.AcCanzoneId == canzoneId);
+                .FirstOrDefault(ac => ac.AscpPlaylistFk == playlistId && ac.AscpCanzoneFk == canzoneId);
 
             if (relation == null)
             {
@@ -81,7 +81,7 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("GetTracksInPlaylist/{id}/{trackname}")]
-        public IActionResult GetTracksInPlaylist([FromRoute] long id, [FromRoute] string trackname)
+        public IActionResult GetTracksInPlaylist([FromRoute] string id, [FromRoute] string trackname)
         {
             // First find the playlist by name
             var playlist = _context.Playlists.FirstOrDefault(p => p.PlId == id);
@@ -92,9 +92,9 @@ namespace Backend.Controllers
 
             // Then get all tracks in that playlist
             var tracks = _context.AsCanzonePlaylist
-                .Where(ac => ac.AcPlaylistId == playlist.PlId)
+                .Where(ac => ac.AscpPlaylistFk == playlist.PlId)
                 .Join(_context.Canzoni,
-                      ac => ac.AcCanzoneId,
+                      ac => ac.AscpCanzoneFk,
                       c => c.CaId,
                       (ac, c) => c)
                 .Where(c => c.CaNome.Contains(trackname))       
@@ -113,14 +113,14 @@ namespace Backend.Controllers
             }
 
             var existingEntity = _context.AsCanzonePlaylist
-                .FirstOrDefault(ac => ac.AcPlaylistId == model.AcPlaylistId && ac.AcCanzoneId == model.OldCanzoneId);
+                .FirstOrDefault(ac => ac.AscpPlaylistFk == model.AcPlaylistId && ac.AscpCanzoneFk == model.OldCanzoneId);
 
             if (existingEntity == null)
             {
                 return NotFound("Track not found in playlist");
             }
 
-            existingEntity.AcCanzoneId = model.NewCanzoneId;
+            existingEntity.AscpCanzoneFk = model.NewCanzoneId;
             _context.SaveChanges();
 
             return Ok();
@@ -136,7 +136,7 @@ namespace Backend.Controllers
             }
 
             var asCanzonePlaylistEntity = _context.AsCanzonePlaylist
-                .FirstOrDefault(ac => ac.AcPlaylistId == model.AcPlaylistId && ac.AcCanzoneId == model.AcCanzoneId);
+                .FirstOrDefault(ac => ac.AscpPlaylistFk == model.AcPlaylistId && ac.AscpCanzoneFk == model.AcCanzoneId);
 
             if (asCanzonePlaylistEntity == null)
             {
@@ -159,14 +159,14 @@ namespace Backend.Controllers
             }
 
             var trackToMove = _context.AsCanzonePlaylist
-                .FirstOrDefault(ac => ac.AcPlaylistId == model.PlaylistId && ac.AcCanzoneId == model.CanzoneId);
+                .FirstOrDefault(ac => ac.AscpPlaylistFk == model.PlaylistId && ac.AscpCanzoneFk == model.CanzoneId);
 
             if (trackToMove == null)
             {
                 return NotFound("Track not found in playlist");
             }
 
-            var oldOrder = trackToMove.AcTrackOrder ?? 0;
+            var oldOrder = trackToMove.AscpTrackOrder ?? 0;
             var newOrder = model.NewOrder;
 
             // Aggiorna l'ordine delle altre tracce
@@ -174,33 +174,33 @@ namespace Backend.Controllers
             {
                 // Sposta verso il basso: decrementa l'ordine delle tracce tra oldOrder e newOrder
                 var tracksToUpdate = _context.AsCanzonePlaylist
-                    .Where(ac => ac.AcPlaylistId == model.PlaylistId && 
-                                ac.AcTrackOrder > oldOrder && 
-                                ac.AcTrackOrder <= newOrder)
+                    .Where(ac => ac.AscpPlaylistFk == model.PlaylistId && 
+                                ac.AscpTrackOrder > oldOrder && 
+                                ac.AscpTrackOrder <= newOrder)
                     .ToList();
 
                 foreach (var track in tracksToUpdate)
                 {
-                    track.AcTrackOrder = (track.AcTrackOrder ?? 0) - 1;
+                    track.AscpTrackOrder = (track.AscpTrackOrder ?? 0) - 1;
                 }
             }
             else if (newOrder < oldOrder)
             {
                 // Sposta verso l'alto: incrementa l'ordine delle tracce tra newOrder e oldOrder
                 var tracksToUpdate = _context.AsCanzonePlaylist
-                    .Where(ac => ac.AcPlaylistId == model.PlaylistId && 
-                                ac.AcTrackOrder >= newOrder && 
-                                ac.AcTrackOrder < oldOrder)
+                    .Where(ac => ac.AscpPlaylistFk == model.PlaylistId && 
+                                ac.AscpTrackOrder >= newOrder && 
+                                ac.AscpTrackOrder < oldOrder)
                     .ToList();
 
                 foreach (var track in tracksToUpdate)
                 {
-                    track.AcTrackOrder = (track.AcTrackOrder ?? 0) + 1;
+                    track.AscpTrackOrder = (track.AscpTrackOrder ?? 0) + 1;
                 }
             }
 
             // Aggiorna l'ordine della traccia spostata
-            trackToMove.AcTrackOrder = newOrder;
+            trackToMove.AscpTrackOrder = newOrder;
             _context.SaveChanges();
 
             return Ok();
@@ -208,15 +208,15 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("GetTracksInPlaylistOrdered")]
-        public IActionResult GetTracksInPlaylistOrdered([FromQuery] long playlistId)
+        public IActionResult GetTracksInPlaylistOrdered([FromQuery] string playlistId)
         {
             var tracks = _context.AsCanzonePlaylist
-                .Where(ac => ac.AcPlaylistId == playlistId)
+                .Where(ac => ac.AscpPlaylistFk == playlistId)
                 .Join(_context.Canzoni,
-                      ac => ac.AcCanzoneId,
+                      ac => ac.AscpCanzoneFk,
                       c => c.CaId,
                       (ac, c) => new { 
-                          TrackOrder = ac.AcTrackOrder ?? 0,
+                          TrackOrder = ac.AscpTrackOrder ?? 0,
                           Canzone = c 
                       })
                 .OrderBy(x => x.TrackOrder)
@@ -228,10 +228,10 @@ namespace Backend.Controllers
 
         [HttpPost]
         [Route("ShufflePlaylistTracks")]
-        public IActionResult ShufflePlaylistTracks([FromQuery] long playlistId)
+        public IActionResult ShufflePlaylistTracks([FromQuery] string playlistId)
         {
             var tracks = _context.AsCanzonePlaylist
-                .Where(ac => ac.AcPlaylistId == playlistId)
+                .Where(ac => ac.AscpPlaylistFk == playlistId)
                 .ToList();
 
             if (!tracks.Any())
@@ -245,7 +245,7 @@ namespace Backend.Controllers
 
             for (int i = 0; i < tracks.Count; i++)
             {
-                tracks[i].AcTrackOrder = shuffledOrders[i];
+                tracks[i].AscpTrackOrder = shuffledOrders[i];
             }
 
             _context.SaveChanges();
@@ -255,8 +255,8 @@ namespace Backend.Controllers
 
     public class ReorderTrackModel
     {
-        public long PlaylistId { get; set; }
-        public long CanzoneId { get; set; }
+        public required string PlaylistId { get; set; }
+        public required string CanzoneId { get; set; }
         public int NewOrder { get; set; }
     }
 }
