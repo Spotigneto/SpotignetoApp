@@ -3,6 +3,8 @@
 @using System.Text.Json
 @using System.Text
 @inject HttpClient Http
+@inject IJSRuntime JS
+@implements IDisposable
 
 <PageTitle>Playlist - SpotignetoApp</PageTitle>
 
@@ -15,7 +17,7 @@
     <path d="M32 8c-1.1 0-2 .9-2 2v28.3c-1.2-.8-2.6-1.3-4-1.3-4.4 0-8 3.6-8 8s3.6 8 8 8 8-3.6 8-8V16h8c1.1 0 2-.9 2-2s-.9-2-2-2h-10z" fill="currentColor"/>
   </svg>
   </div>
-      <button class="create-playlist-btn" @onclick="CreatePlaylist">
+      <button class="create-playlist-btn" @onclick="CreatePlaylist" disabled="@isCreating">
      <span>Create Playlist</span>
    </button>
 
@@ -98,7 +100,7 @@
      </div>
 
          <div class="song-list">
-  @foreach (var song in filteredSongs)
+  @foreach (var song in PageSongs)
          {
   var isSelected = selectedSongs.Contains(song);
                    <div class="song-row @(isSelected ? "selected" : "")" @onclick="() => ToggleSongSelection(song)">
@@ -129,6 +131,13 @@
             </div>
    }
       </div>
+
+      <!-- Pagination Controls -->
+      <div class="pagination">
+          <button class="page-button" @onclick="PrevPage" disabled="@(currentPage == 1)">Prev</button>
+          <span class="page-info">Page @currentPage of @TotalPages</span>
+          <button class="page-button" @onclick="NextPage" disabled="@(currentPage == TotalPages)">Next</button>
+      </div>
                 </div>
     </div>
         </div>
@@ -147,60 +156,175 @@
     private string searchQuery = string.Empty;
     private string successMessage = string.Empty;
     private bool showSuccessMessage = false;
+    private bool isCreating = false;
     
     private List<Song> allSongs = new();
     private List<Song> filteredSongs = new();
     private HashSet<Song> selectedSongs = new();
 
-    protected override void OnInitialized()
+    // Stato paginazione
+    private int currentPage = 1;
+    private int songsPerPage = 12;
+    private int TotalPages => Math.Max(1, (int)Math.Ceiling((double)filteredSongs.Count / songsPerPage));
+    private IEnumerable<Song> PageSongs => filteredSongs.Skip((currentPage - 1) * songsPerPage).Take(songsPerPage);
+
+    // Interop JS per viewport/resize
+    private DotNetObjectReference<Playlist>? dotNetRef;
+
+    protected override async Task OnInitializedAsync()
     {
-        // Copertine SVG migliorate con gradienti e design professionale
-        var inReturnCover = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cdefs%3E%3ClinearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%238B5CF6;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%236366F1;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23grad1)' width='300' height='300'/%3E%3Ccircle cx='150' cy='120' r='50' fill='rgba(255,255,255,0.1)'/%3E%3Cpath d='M 130 110 L 130 150 L 165 130 Z' fill='white' opacity='0.8'/%3E%3Ctext x='50%25' y='85%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial,sans-serif' font-size='28' font-weight='bold' fill='white'%3EIn Return%3C/text%3E%3Ctext x='50%25' y='92%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial,sans-serif' font-size='16' fill='rgba(255,255,255,0.7)'%3EODESZA%3C/text%3E%3C/svg%3E";
-        
-    var momentApartCover = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cdefs%3E%3ClinearGradient id='grad2' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%233B82F6;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%230EA5E9;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23grad2)' width='300' height='300'/%3E%3Ccircle cx='150' cy='120' r='60' fill='none' stroke='white' stroke-width='4' opacity='0.3'/%3E%3Ccircle cx='150' cy='120' r='40' fill='none' stroke='white' stroke-width='3' opacity='0.5'/%3E%3Ccircle cx='150' cy='120' r='20' fill='white' opacity='0.7'/%3E%3Ctext x='50%25' y='80%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial,sans-serif' font-size='22' font-weight='bold' fill='white'%3EA Moment Apart%3C/text%3E%3Ctext x='50%25' y='88%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial,sans-serif' font-size='16' fill='rgba(255,255,255,0.7)'%3EODESZA%3C/text%3E%3C/svg%3E";
-  
-      allSongs = new List<Song>
-{
-            new Song { Id = 1, Title = "Say My Name", Artist = "ODESZA, Zyra", Album = "In Return", Duration = "3:59", DurationSeconds = 239, CoverUrl = inReturnCover },
-    new Song { Id = 2, Title = "A Moment Apart", Artist = "ODESZA", Album = "A Moment Apart", Duration = "3:33", DurationSeconds = 213, CoverUrl = momentApartCover },
-            new Song { Id = 3, Title = "It's Only", Artist = "ODESZA, Zyra", Album = "In Return", Duration = "4:47", DurationSeconds = 287, CoverUrl = inReturnCover },
-      new Song { Id = 4, Title = "Line of Sight", Artist = "ODESZA, Wynne, Mansionair", Album = "A Moment Apart", Duration = "4:29", DurationSeconds = 269, CoverUrl = momentApartCover },
-            new Song { Id = 5, Title = "Bloom", Artist = "ODESZA", Album = "In Return", Duration = "4:34", DurationSeconds = 274, CoverUrl = inReturnCover }
-        };
-      
-        filteredSongs = allSongs;
+        try
+        {
+            var data = await Http.GetFromJsonAsync<RandomViewResponse>("api/Home/Random_View?songs=200&albums=0&artists=0&playlists=0");
+            var gradients = new[]
+            {
+                "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+                "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+                "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+                "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+                "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
+            };
+
+            allSongs = (data?.Songs ?? new List<ItemModel>())
+                .Select((s, i) => new Song
+                {
+                    Id = s.Id,
+                    Title = s.Nome,
+                    Artist = s.Artista,
+                    Album = string.Empty,
+                    Duration = "—",
+                    DurationSeconds = 0,
+                    CoverUrl = GenerateCoverSvg(gradients[i % gradients.Length], s.Nome, s.Artista)
+                })
+                .ToList();
+
+            filteredSongs = allSongs;
+        }
+        catch
+        {
+            filteredSongs = new List<Song>();
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var width = await JS.InvokeAsync<int>("spotignete.getViewportWidth");
+            RecalculateSongsPerPage(width);
+            dotNetRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("spotignete.registerResize", dotNetRef);
+        }
     }
 
     private async Task CreatePlaylist()
     {
-        if (selectedSongs.Count == 0)
+        // Validazioni base
+        if (string.IsNullOrWhiteSpace(playlistName))
         {
-         // Mostra messaggio di errore
-            successMessage = "Please select at least one song";
+            successMessage = "Il nome della playlist è obbligatorio";
             showSuccessMessage = true;
-     await Task.Delay(3000);
+            await Task.Delay(3000);
             showSuccessMessage = false;
-         StateHasChanged();
-     return;
+            StateHasChanged();
+            return;
         }
 
-        // Qui salveresti la playlist (in futuro con un service)
-   playlistCreated = true;
-        successMessage = $"Playlist '{playlistName}' created successfully with {selectedSongs.Count} songs!";
-        showSuccessMessage = true;
-    
-      // Nascondi il messaggio dopo 3 secondi
-        await Task.Delay(3000);
-        showSuccessMessage = false;
-        
-   // Reset form
-        selectedSongs.Clear();
-        playlistName = "My Playlist";
-        isPrivate = false;
-     playlistCreated = false;
-        
+        if (selectedSongs.Count == 0)
+        {
+            successMessage = "Seleziona almeno una canzone";
+            showSuccessMessage = true;
+            await Task.Delay(3000);
+            showSuccessMessage = false;
+            StateHasChanged();
+            return;
+        }
+
+        // Imposta stato di caricamento
+        isCreating = true;
         StateHasChanged();
- }
+
+        try
+        {
+            // Prepara i dati per l'API (camelCase compatibile)
+            var playlistData = new
+            {
+                Nome = playlistName.Trim(),
+                Privata = isPrivate
+            };
+
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            var jsonContent = JsonSerializer.Serialize(playlistData, jsonOptions);
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            // Esegue la chiamata POST funzionante
+            var response = await Http.PostAsync("api/Records/playlist", httpContent);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Deserializza la playlist creata per ottenere l'ID
+                var body = await response.Content.ReadAsStringAsync();
+                var createdPlaylist = JsonSerializer.Deserialize<PlaylistModel>(body, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var playlistId = createdPlaylist?.Id ?? string.Empty;
+
+                // Se abbiamo un ID playlist valido, aggancia automaticamente i brani selezionati
+                if (!string.IsNullOrEmpty(playlistId))
+                {
+                    foreach (var song in selectedSongs)
+                    {
+                        var trackPayload = new { AcPlaylistId = playlistId, AcCanzoneId = song.Id };
+                        var trackJson = JsonSerializer.Serialize(trackPayload);
+                        var trackContent = new StringContent(trackJson, Encoding.UTF8, "application/json");
+                        var trackResp = await Http.PostAsync("api/AsCanzonePlaylist/AddTrackToPlaylist", trackContent);
+                        if (!trackResp.IsSuccessStatusCode)
+                        {
+                            var err = await trackResp.Content.ReadAsStringAsync();
+                            successMessage = $"Brano non agganciato: {(int)trackResp.StatusCode} - {err}";
+                            showSuccessMessage = true;
+                            await Task.Delay(3000);
+                            showSuccessMessage = false;
+                        }
+                    }
+                }
+
+                playlistCreated = true;
+                successMessage = $"Playlist '{playlistName}' creata e brani agganciati ({selectedSongs.Count}).";
+                showSuccessMessage = true;
+
+                // Reset form dopo 3s
+                await Task.Delay(3000);
+                showSuccessMessage = false;
+                selectedSongs.Clear();
+                playlistName = "My Playlist";
+                isPrivate = false;
+                playlistCreated = false;
+            }
+            else
+            {
+                var errorBody = await response.Content.ReadAsStringAsync();
+                successMessage = $"Errore creazione playlist ({(int)response.StatusCode}): {errorBody}";
+                showSuccessMessage = true;
+                await Task.Delay(4000);
+                showSuccessMessage = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            successMessage = $"Errore di rete: {ex.Message}";
+            showSuccessMessage = true;
+            await Task.Delay(4000);
+            showSuccessMessage = false;
+        }
+        finally
+        {
+            isCreating = false;
+            StateHasChanged();
+        }
+    }
 
 private void OnPrivacyChanged()
     {
@@ -221,6 +345,7 @@ private void OnSearchKeyUp(KeyboardEventArgs e)
    s.Album.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
     .ToList();
       }
+        currentPage = 1;
         StateHasChanged();
     }
 
@@ -256,8 +381,8 @@ var minutes = totalSeconds / 60;
 
 public class Song
     {
-        public int Id { get; set; }
-   public string Title { get; set; } = string.Empty;
+        public string Id { get; set; } = string.Empty;
+       public string Title { get; set; } = string.Empty;
         public string Artist { get; set; } = string.Empty;
 public string Album { get; set; } = string.Empty;
         public string Duration { get; set; } = string.Empty;
@@ -271,6 +396,85 @@ public string CoverUrl { get; set; } = string.Empty;
         public string Id { get; set; } = string.Empty;
         public string Nome { get; set; } = string.Empty;
         public bool Privata { get; set; }
+    }
+
+    private class RandomViewResponse
+    {
+        public List<ItemModel> Songs { get; set; } = new();
+    }
+
+    private class ItemModel
+    {
+        public string Id { get; set; } = string.Empty;
+        public string Nome { get; set; } = string.Empty;
+        public string Artista { get; set; } = string.Empty;
+    }
+
+    private string GenerateCoverSvg(string gradient, string title, string artist)
+    {
+        var safeTitle = System.Web.HttpUtility.HtmlEncode(title);
+        var safeArtist = System.Web.HttpUtility.HtmlEncode(artist);
+        var svg = $"<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'>" +
+                  "<defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'>" +
+                  "<stop offset='0%' style='stop-color:#667eea;stop-opacity:1' />" +
+                  "<stop offset='100%' style='stop-color:#764ba2;stop-opacity:1' />" +
+                  "</linearGradient></defs>" +
+                  "<rect fill='url(#g)' width='300' height='300'/><circle cx='150' cy='120' r='50' fill='rgba(255,255,255,0.1)'/>" +
+                  $"<text x='50%' y='85%' dominant-baseline='middle' text-anchor='middle' font-family='Arial,sans-serif' font-size='22' font-weight='bold' fill='white'>{safeTitle}</text>" +
+                  $"<text x='50%' y='92%' dominant-baseline='middle' text-anchor='middle' font-family='Arial,sans-serif' font-size='14' fill='rgba(255,255,255,0.7)'>{safeArtist}</text>" +
+                  "</svg>";
+        return "data:image/svg+xml," + Uri.EscapeDataString(svg);
+    }
+
+    private void GoToPage(int page)
+    {
+        currentPage = Math.Min(Math.Max(page, 1), TotalPages);
+        StateHasChanged();
+    }
+
+    private void PrevPage()
+    {
+        if (currentPage > 1)
+        {
+            currentPage--;
+            StateHasChanged();
+        }
+    }
+
+    private void NextPage()
+    {
+        if (currentPage < TotalPages)
+        {
+            currentPage++;
+            StateHasChanged();
+        }
+    }
+
+    private void RecalculateSongsPerPage(int width)
+    {
+        songsPerPage = width switch
+        {
+            >= 1400 => 20,
+            >= 1200 => 16,
+            >= 992 => 12,
+            >= 768 => 8,
+            _ => 5
+        };
+        currentPage = Math.Min(currentPage, TotalPages);
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public Task OnClientResized(int width)
+    {
+        RecalculateSongsPerPage(width);
+        return Task.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+        dotNetRef?.Dispose();
+        _ = JS.InvokeVoidAsync("spotignete.unregisterResize");
     }
 }
 
@@ -751,6 +955,30 @@ flex: 1;
     .playlist-content::-webkit-scrollbar-thumb:hover {
         background-color: #3e3e3e;
     }
+
+    /* Pagination */
+    .pagination {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        justify-content: flex-end;
+        padding: 12px 16px;
+        border-top: 1px solid #282828;
+        margin-top: 8px;
+    }
+    .page-button {
+        padding: 6px 12px;
+        background: #242424;
+        color: #fff;
+        border: 1px solid #333;
+        border-radius: 16px;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .page-button:hover { background: #2a2a2a; }
+    .page-button:disabled { opacity: 0.5; cursor: default; }
+    .page-info { font-size: 13px; color: #b3b3b3; }
 
  /* RESPONSIVE */
     @@media (max-width: 1024px) {

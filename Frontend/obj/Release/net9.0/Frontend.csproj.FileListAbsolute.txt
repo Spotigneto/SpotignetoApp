@@ -72,3 +72,5 @@ D:\ProjectWork\SpotignetoApp\SpotignetoApp\Frontend\obj\Release\net9.0\refint\Fr
 D:\ProjectWork\SpotignetoApp\SpotignetoApp\Frontend\obj\Release\net9.0\Frontend.pdb
 D:\ProjectWork\SpotignetoApp\SpotignetoApp\Frontend\obj\Release\net9.0\Frontend.genruntimeconfig.cache
 D:\ProjectWork\SpotignetoApp\SpotignetoApp\Frontend\obj\Release\net9.0\ref\Frontend.dll
+D:\ProjectWork\SpotignetoApp\SpotignetoApp\Frontend\obj\Release\net9.0\compressed\vuhpgz7h03-fkg7qbqzxl.gz
+D:\ProjectWork\SpotignetoApp\SpotignetoApp\Frontend\obj\Release\net9.0\compressed\mv3z38k65a-jnc99wzh3f.gz

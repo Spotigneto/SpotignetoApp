@@ -1,0 +1,601 @@
+@page "/playlistOld"
+@rendermode InteractiveServer
+@using System.Text.Json
+@using System.Text
+@inject HttpClient Http
+
+<PageTitle>SpotignetoApp</PageTitle>
+
+<div class="playlist-page">
+    <!-- Header Section -->
+    <section class="playlist-header">
+        <h1 class="playlist-title">Create Playlist</h1>
+    </section>
+
+    <!-- Create Playlist Form -->
+    <section class="playlist-form-section">
+        <div class="playlist-form-card">
+            <h2 class="form-title">➕ Nuova Playlist</h2>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Name Playlist</label>
+                    <input @bind="nomePlaylist" type="text" placeholder="Inserisci il nome" class="form-input" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Private</label>
+                    <div class="checkbox-container">
+                        <input type="checkbox" @bind="isPrivata" id="private-checkbox" class="custom-checkbox" />
+                        <label for="private-checkbox" class="checkbox-label">Make this playlist private</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="create-playlist-btn" @onclick="CreaPlaylist" disabled="@isCreating">
+                    @if (isCreating)
+                    {
+                        <span>Creating...</span>
+                    }
+                    else
+                    {
+                        <span>Create Playlist (0 songs)</span>
+                    }
+                </button>
+                <div class="selection-info">0 selected</div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="error-message">@errorMessage</div>
+            }
+            @if (!string.IsNullOrEmpty(successMessage))
+            {
+                <div class="success-message">@successMessage</div>
+            }
+        </div>
+    </section>
+
+    @if (playlistCreata != null)
+    {
+        <!-- Add Songs Section -->
+        <section class="add-songs-section">
+            <div class="add-songs-card">
+                <h3 class="section-title">
+                    ➕ Aggiungi brani a <span class="playlist-name">@playlistCreata.Nome</span>
+                </h3>
+
+                <div class="search-songs">
+                    <input type="text" placeholder="Cerca brani da aggiungere" class="search-input" />
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Titolo Brano</label>
+                        <input type="text" placeholder="Inserisci titolo" class="form-input" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Artista</label>
+                        <input type="text" placeholder="Inserisci artista" class="form-input" />
+                    </div>
+                </div>
+
+                <button class="add-song-btn">
+                    Aggiungi Brano
+                </button>
+            </div>
+        </section>
+    }
+
+    <!-- New Releases Section -->
+    <section class="playlist-content-section">
+        <h2 class="section-title">NEW RELEASES</h2>
+        <div class="releases-grid">
+            <div class="release-card">
+                <div class="release-cover" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                <div class="release-info">
+                    <div class="release-name">Looking back</div>
+                    <div class="release-artist">Maro</div>
+                </div>
+                <div class="release-duration">3:45</div>
+            </div>
+            <div class="release-card">
+                <div class="release-cover" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+                <div class="release-info">
+                    <div class="release-name">High On Life</div>
+                    <div class="release-artist">Martin Garrix, Bonn</div>
+                </div>
+                <div class="release-duration">2:41</div>
+            </div>
+            <div class="release-card">
+                <div class="release-cover" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);"></div>
+                <div class="release-info">
+                    <div class="release-name">Bad Guy</div>
+                    <div class="release-artist">Billie Eilish</div>
+                </div>
+                <div class="release-duration">3:11</div>
+            </div>
+        </div>
+        <button class="see-more-btn">See More</button>
+    </section>
+</div>
+
+@code {
+    private PlaylistModel? playlistCreata;
+    private string nomePlaylist = string.Empty;
+    private bool isCreating = false;
+    private string errorMessage = string.Empty;
+    private bool isPrivata = false;
+    private string successMessage = string.Empty;
+
+    private async Task CreaPlaylist()
+    {
+        try
+        {
+            // Log immediato per verificare che il metodo venga chiamato
+            Console.WriteLine("=== METODO CREAPLAYLIST CHIAMATO ===");
+            await Task.Delay(100); // Piccolo delay per assicurarsi che il log appaia
+            
+            // Reset messaggi
+            errorMessage = string.Empty;
+            successMessage = string.Empty;
+            StateHasChanged(); // Forza il re-rendering
+            
+            Console.WriteLine($"Nome playlist inserito: '{nomePlaylist}'");
+            Console.WriteLine($"Playlist privata: {isPrivata}");
+            
+            // Validazione
+            if (string.IsNullOrWhiteSpace(nomePlaylist))
+            {
+                errorMessage = "Il nome della playlist è obbligatorio";
+                Console.WriteLine("ERRORE: Nome playlist vuoto");
+                StateHasChanged();
+                return;
+            }
+
+            // Imposta stato di caricamento
+            isCreating = true;
+            StateHasChanged();
+            Console.WriteLine("Stato isCreating impostato a true");
+
+            // Prepara i dati per l'API
+            var playlistData = new
+            {
+                Nome = nomePlaylist.Trim(),
+                Privata = isPrivata
+            };
+
+            Console.WriteLine($"Dati da inviare: Nome='{playlistData.Nome}', Privata={playlistData.Privata}");
+
+            // Serializza i dati
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            var jsonContent = JsonSerializer.Serialize(playlistData, jsonOptions);
+            Console.WriteLine($"JSON da inviare: {jsonContent}");
+
+            // Prepara la richiesta HTTP
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            Console.WriteLine("Invio richiesta POST a api/Records/playlist...");
+
+            // Invia la richiesta
+            var response = await Http.PostAsync("api/Records/playlist", httpContent);
+            Console.WriteLine($"Risposta ricevuta - Status Code: {response.StatusCode}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Contenuto risposta: {responseContent}");
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                
+                playlistCreata = JsonSerializer.Deserialize<PlaylistModel>(responseContent, options);
+                
+                successMessage = $"Playlist '{playlistCreata?.Nome}' creata con successo!";
+                Console.WriteLine($"SUCCESS: Playlist creata con ID {playlistCreata?.Id}");
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                errorMessage = $"Errore nella creazione: {response.StatusCode} - {errorContent}";
+                Console.WriteLine($"ERRORE API: {response.StatusCode} - {errorContent}");
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Errore imprevisto: {ex.Message}";
+            Console.WriteLine($"ECCEZIONE: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
+        }
+        finally
+        {
+            isCreating = false;
+            StateHasChanged(); // Assicura che l'UI si aggiorni
+            Console.WriteLine("=== FINE METODO CREAPLAYLIST ===");
+        }
+    }
+
+    public class PlaylistModel
+    {
+        public string Id { get; set; } = string.Empty;
+        public string Nome { get; set; } = string.Empty;
+        public bool Privata { get; set; }
+    }
+}
+
+<style>
+    /* Playlist Page Styles */
+    .playlist-page {
+        color: #fff;
+        padding: 0;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .playlist-header {
+        padding: 24px 24px 16px 24px;
+    }
+
+    .playlist-title {
+        font-size: 32px;
+        font-weight: 900;
+        margin: 0;
+        color: #fff;
+        letter-spacing: -0.04em;
+    }
+
+    .playlist-form-section {
+        padding: 0 24px 24px 24px;
+    }
+
+    .playlist-form-card {
+        background: rgba(40, 40, 40, 0.8);
+        border-radius: 12px;
+        padding: 24px;
+        backdrop-filter: blur(10px);
+    }
+
+    .form-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0 0 20px 0;
+        color: #fff;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #b3b3b3;
+        margin-bottom: 8px;
+    }
+
+    .form-input {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 12px 16px;
+        color: #fff;
+        font-size: 14px;
+        transition: all 0.2s ease;
+    }
+
+    .form-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: #1db954;
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Custom Checkbox Styles */
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 4px;
+    }
+
+    .custom-checkbox {
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        position: relative;
+        transition: all 0.2s ease;
+    }
+
+    .custom-checkbox:hover {
+        border-color: rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .custom-checkbox:checked {
+        background: #1db954;
+        border-color: #1db954;
+    }
+
+    .custom-checkbox:checked::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #000;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .checkbox-label {
+        font-size: 13px;
+        color: #b3b3b3;
+        cursor: pointer;
+        user-select: none;
+        transition: color 0.2s ease;
+    }
+
+    .checkbox-label:hover {
+        color: #fff;
+    }
+
+    .form-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .create-playlist-btn {
+        background: #1db954;
+        color: #000;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .create-playlist-btn:hover:not(:disabled) {
+        background: #1ed760;
+        transform: scale(1.02);
+    }
+
+    .create-playlist-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .selection-info {
+        font-size: 12px;
+        color: #b3b3b3;
+        font-weight: 500;
+    }
+
+    .error-message {
+        color: #ff6b6b;
+        font-size: 14px;
+        margin-top: 12px;
+        padding: 8px 12px;
+        background: rgba(255, 107, 107, 0.1);
+        border-radius: 6px;
+        border: 1px solid rgba(255, 107, 107, 0.3);
+    }
+
+    .success-message {
+        color: #1db954;
+        font-size: 14px;
+        margin-top: 12px;
+        padding: 8px 12px;
+        background: rgba(29, 185, 84, 0.1);
+        border-radius: 6px;
+        border: 1px solid rgba(29, 185, 84, 0.3);
+    }
+
+    /* Add Songs Section */
+    .add-songs-section {
+        padding: 0 24px 24px 24px;
+    }
+
+    .add-songs-card {
+        background: rgba(40, 40, 40, 0.8);
+        border-radius: 12px;
+        padding: 24px;
+        backdrop-filter: blur(10px);
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0 0 20px 0;
+        color: #fff;
+    }
+
+    .playlist-name {
+        color: #1db954;
+    }
+
+    .search-songs {
+        margin-bottom: 20px;
+    }
+
+    .search-input {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 12px 16px;
+        color: #fff;
+        font-size: 14px;
+    }
+
+    .search-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .add-song-btn {
+        background: transparent;
+        border: 1px solid #535353;
+        border-radius: 8px;
+        padding: 12px 24px;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .add-song-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: #727272;
+    }
+
+    /* Releases Section */
+    .playlist-content-section {
+        padding: 0 24px 24px 24px;
+    }
+
+    .releases-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .release-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .release-card:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .release-cover {
+        width: 48px;
+        height: 48px;
+        border-radius: 6px;
+        flex-shrink: 0;
+    }
+
+    .release-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .release-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #fff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 4px;
+    }
+
+    .release-artist {
+        font-size: 12px;
+        color: #b3b3b3;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .release-duration {
+        font-size: 12px;
+        color: #b3b3b3;
+        flex-shrink: 0;
+    }
+
+    .see-more-btn {
+        width: 100%;
+        padding: 12px;
+        background: transparent;
+        border: 1px solid #535353;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .see-more-btn:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: #727272;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .playlist-container {
+            padding: 16px;
+        }
+
+        .playlist-title {
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-input {
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            font-size: 14px;
+            padding: 10px 20px;
+        }
+
+        .song-addition-section {
+            padding: 16px;
+        }
+
+        .releases-grid {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .release-card {
+            padding: 12px;
+        }
+
+        .release-image {
+            width: 50px;
+            height: 50px;
+        }
+
+        .release-title {
+            font-size: 14px;
+        }
+
+        .release-artist {
+            font-size: 12px;
+        }
+    }
+</style>

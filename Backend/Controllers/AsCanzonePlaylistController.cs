@@ -26,20 +26,10 @@ namespace Backend.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Se non è specificato un ordine, usa il prossimo numero disponibile
-            if (!model.TrackOrder.HasValue)
-            {
-                var maxOrder = _context.AsCanzonePlaylist
-                    .Where(ac => ac.AscpPlaylistFk == model.AcPlaylistId)
-                    .Max(ac => (int?)ac.AscpTrackOrder) ?? 0;
-                model.TrackOrder = maxOrder + 1;
-            }
-
             var asCanzonePlaylistEntity = new AsCanzonePlaylistEntity
             {
                 AscpPlaylistFk = model.AcPlaylistId,
-                AscpCanzoneFk = model.AcCanzoneId,
-                AscpTrackOrder = model.TrackOrder
+                AscpCanzoneFk = model.AcCanzoneId
             };
 
             _context.AsCanzonePlaylist.Add(asCanzonePlaylistEntity);
@@ -54,10 +44,8 @@ namespace Backend.Controllers
         {
             var tracks = _context.AsCanzonePlaylist
                 .Where(ac => ac.AscpPlaylistFk == playlistId)
-                .OrderBy(ac => ac.AscpTrackOrder)
                 .Select(ac => new { 
-                    CanzoneId = ac.AscpCanzoneFk, 
-                    TrackOrder = ac.AscpTrackOrder 
+                    CanzoneId = ac.AscpCanzoneFk
                 })
                 .ToList();
 
@@ -153,103 +141,24 @@ namespace Backend.Controllers
         [Route("ReorderTrackInPlaylist")]
         public IActionResult ReorderTrackInPlaylist([FromBody] ReorderTrackModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var trackToMove = _context.AsCanzonePlaylist
-                .FirstOrDefault(ac => ac.AscpPlaylistFk == model.PlaylistId && ac.AscpCanzoneFk == model.CanzoneId);
-
-            if (trackToMove == null)
-            {
-                return NotFound("Track not found in playlist");
-            }
-
-            var oldOrder = trackToMove.AscpTrackOrder ?? 0;
-            var newOrder = model.NewOrder;
-
-            // Aggiorna l'ordine delle altre tracce
-            if (newOrder > oldOrder)
-            {
-                // Sposta verso il basso: decrementa l'ordine delle tracce tra oldOrder e newOrder
-                var tracksToUpdate = _context.AsCanzonePlaylist
-                    .Where(ac => ac.AscpPlaylistFk == model.PlaylistId && 
-                                ac.AscpTrackOrder > oldOrder && 
-                                ac.AscpTrackOrder <= newOrder)
-                    .ToList();
-
-                foreach (var track in tracksToUpdate)
-                {
-                    track.AscpTrackOrder = (track.AscpTrackOrder ?? 0) - 1;
-                }
-            }
-            else if (newOrder < oldOrder)
-            {
-                // Sposta verso l'alto: incrementa l'ordine delle tracce tra newOrder e oldOrder
-                var tracksToUpdate = _context.AsCanzonePlaylist
-                    .Where(ac => ac.AscpPlaylistFk == model.PlaylistId && 
-                                ac.AscpTrackOrder >= newOrder && 
-                                ac.AscpTrackOrder < oldOrder)
-                    .ToList();
-
-                foreach (var track in tracksToUpdate)
-                {
-                    track.AscpTrackOrder = (track.AscpTrackOrder ?? 0) + 1;
-                }
-            }
-
-            // Aggiorna l'ordine della traccia spostata
-            trackToMove.AscpTrackOrder = newOrder;
-            _context.SaveChanges();
-
-            return Ok();
+            // La colonna TrackOrder non esiste nel DB corrente
+            return StatusCode(501, "Track order non supportato: colonna mancante nel database.");
         }
 
         [HttpGet]
         [Route("GetTracksInPlaylistOrdered")]
         public IActionResult GetTracksInPlaylistOrdered([FromQuery] string playlistId)
         {
-            var tracks = _context.AsCanzonePlaylist
-                .Where(ac => ac.AscpPlaylistFk == playlistId)
-                .Join(_context.Canzoni,
-                      ac => ac.AscpCanzoneFk,
-                      c => c.CaId,
-                      (ac, c) => new { 
-                          TrackOrder = ac.AscpTrackOrder ?? 0,
-                          Canzone = c 
-                      })
-                .OrderBy(x => x.TrackOrder)
-                .Select(x => x.Canzone)
-                .ToList();
-
-            return Ok(tracks);
+            // La colonna TrackOrder non esiste nel DB corrente
+            return StatusCode(501, "Track order non supportato: colonna mancante nel database.");
         }
 
         [HttpPost]
         [Route("ShufflePlaylistTracks")]
         public IActionResult ShufflePlaylistTracks([FromQuery] string playlistId)
         {
-            var tracks = _context.AsCanzonePlaylist
-                .Where(ac => ac.AscpPlaylistFk == playlistId)
-                .ToList();
-
-            if (!tracks.Any())
-            {
-                return NotFound("No tracks found in playlist");
-            }
-
-            // Mescola l'ordine delle tracce
-            var random = new Random();
-            var shuffledOrders = Enumerable.Range(1, tracks.Count).OrderBy(x => random.Next()).ToList();
-
-            for (int i = 0; i < tracks.Count; i++)
-            {
-                tracks[i].AscpTrackOrder = shuffledOrders[i];
-            }
-
-            _context.SaveChanges();
-            return Ok();
+            // La colonna TrackOrder non esiste nel DB corrente
+            return StatusCode(501, "Track order non supportato: colonna mancante nel database.");
         }
     }
 

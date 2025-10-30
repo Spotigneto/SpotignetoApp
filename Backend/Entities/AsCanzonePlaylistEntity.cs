@@ -19,8 +19,5 @@ namespace Backend.Entities
         [Column("ascp_canzone_fk")]
         [StringLength(255)]
         public string AscpCanzoneFk { get; set; } = string.Empty;
-
-        [Column("ascp_track_order")]
-        public int? AscpTrackOrder { get; set; }
     }
 }
