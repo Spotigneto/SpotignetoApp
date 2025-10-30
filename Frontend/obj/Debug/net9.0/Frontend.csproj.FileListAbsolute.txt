@@ -303,4 +303,4 @@ C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\SpotignetoApp\Frontend\obj
 C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\SpotignetoApp\Frontend\obj\Debug\net9.0\Frontend.pdb
 C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\SpotignetoApp\Frontend\obj\Debug\net9.0\Frontend.genruntimeconfig.cache
 C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\SpotignetoApp\Frontend\obj\Debug\net9.0\ref\Frontend.dll
-C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\SpotignetoApp\Frontend\obj\Debug\net9.0\compressed\tel0g54dgw-89x5aoxvzy.gz
+C:\Users\DanieleBianchi\Desktop\.vscode\SpotignetoApp\SpotignetoApp\Frontend\obj\Debug\net9.0\compressed\tel0g54dgw-zq9pyeymrc.gz
