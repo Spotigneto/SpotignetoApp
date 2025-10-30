@@ -2,13 +2,17 @@
 
 <PageTitle>Queue - Spotigneto</PageTitle>
 
+@inject Frontend.Services.Playback.PlaybackService Playback
+@inject IJSRuntime JS
+@inject HttpClient Http
+
 <div class="queue-page">
     <!-- Header Section -->
     <section class="queue-header">
       <h1 class="queue-title">Queue</h1>
       <div class="queue-stats">
         <span class="queue-count">@queueTracks.Count tracks in queue</span>
-            <span class="queue-separator">•</span>
+            <span class="queue-separator">ï¿½</span>
 <span class="queue-duration">@totalDuration total</span>
     </div>
       <div class="queue-actions">
@@ -26,6 +30,21 @@
          </svg>
               Clear Queue
       </button>
+        <button class="action-btn" @onclick="CycleRepeat" aria-label="Repeat Mode">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor">
+            <path d="M4 4h6a3 3 0 013 3v1" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M12 12H6a3 3 0 01-3-3V8" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M4 2l-2 2 2 2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 10l2 2-2 2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Repeat: @repeatLabel
+        </button>
+        <button class="action-btn" @onclick="PlayAll" aria-label="Play All">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M5 3v10l8-5z" />
+          </svg>
+          Play All
+        </button>
         </div>
     </section>
 
@@ -46,7 +65,7 @@
   <div class="track-title-large">@nowPlaying.Title</div>
             <div class="track-metadata">
    <span class="track-artist-large">@nowPlaying.Artist</span>
-           <span class="metadata-separator">•</span>
+           <span class="metadata-separator">ï¿½</span>
       <span class="track-album-large">@nowPlaying.Album</span>
       </div>
 <div class="playback-controls">
@@ -57,7 +76,7 @@
     <div class="progress-bar-fill" style="width: @progressPercent%;"></div>
         </div>
             </div>
-          <div class="time-total">@nowPlaying.Duration</div>
+          <div class="time-total">@totalTime</div>
    </div>
   <div class="control-buttons">
   <button class="control-btn play-btn-large" @onclick="TogglePlay" aria-label="Play/Pause">
@@ -66,6 +85,11 @@
         <path d="M8 6v8l6-4z" fill="#000" />
           </svg>
             </button>
+              <button class="control-btn icon-btn" @onclick="SkipPrevious" aria-label="Previous">
+     <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+       <path d="M15 4v12L7 10l8-6zM4 4h2v12H4V4z" />
+     </svg>
+       </button>
               <button class="control-btn skip-btn" @onclick="SkipNext" aria-label="Skip">
      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
      <path d="M5 4v12l8-6-8-6zM14 4h2v12h-2V4z" />
@@ -117,7 +141,7 @@
  {
       <div class="queue-track-row @(track.Id == hoveredTrackId ? "hovered" : "")" 
  @onmouseenter="() => hoveredTrackId = track.Id"
-             @onmouseleave="() => hoveredTrackId = null">
+             @onmouseleave="() => hoveredTrackId = null" @ondblclick="() => PlayTrack(track)">
         <div class="track-number">
             @if (hoveredTrackId == track.Id)
    {
@@ -210,20 +234,42 @@
 </div>
 
 @code {
+
     private Track? nowPlaying;
     private List<Track> queueTracks = new();
     private List<Track> recentlyPlayedTracks = new();
     private int? hoveredTrackId;
     private string totalDuration = "21min total";
     private string currentTime = "1:42";
+    private string totalTime = "0:00";
     private int progressPercent = 48;
     private bool isPlaying = true;
 
     protected override void OnInitialized()
     {
+        // Hook service state changes to refresh UI
+        Playback.StateChanged += OnPlaybackStateChanged;
+
         InitializeNowPlaying();
-InitializeQueue();
+        InitializeQueue();
         InitializeRecentlyPlayed();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Load real songs from backend to allow playing any track
+        await LoadSongsFromBackend();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Playback.Initialize(JS);
+            // Attach JS audio events to this component
+            var mod = await JS.InvokeAsync<IJSObjectReference>("import", "/js/audio.js");
+            await mod.InvokeVoidAsync("attach", DotNetObjectReference.Create(this));
+        }
     }
 
     private void InitializeNowPlaying()
@@ -250,6 +296,84 @@ InitializeQueue();
             new Track { Id = 3, Position = 3, Title = "Line of Sight", Artist = "ODESZA, Wynne, Mansionair", Album = "A Moment Apart", Duration = "4:29", ImageUrl = "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)" },
             new Track { Id = 4, Position = 4, Title = "Bloom", Artist = "ODESZA", Album = "In Return", Duration = "4:34", ImageUrl = "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop", Gradient = "linear-gradient(135deg, #4158d0 0%, #c850c0 100%)" }
         };
+
+        // Seed PlaybackService with current queue if empty (client-side only)
+        if (Playback.Queue.Count == 0)
+        {
+            foreach (var t in queueTracks)
+            {
+                var ti = new Frontend.Services.Playback.TrackItem
+                {
+                    Id = string.IsNullOrEmpty(t.IdString) ? t.Id.ToString() : t.IdString,
+                    Title = t.Title,
+                    Artist = t.Artist,
+                    Album = t.Album,
+                    DurationSeconds = ParseDurationSeconds(t.Duration),
+                    ImageUrl = t.ImageUrl,
+                    Gradient = t.Gradient
+                };
+                Playback.AddToQueue(ti);
+            }
+        }
+    }
+
+    private async Task LoadSongsFromBackend()
+    {
+        try
+        {
+            var items = await Http.GetFromJsonAsync<List<CanzoneDto>>("api/Canzone/canzoni");
+            if (items == null || items.Count == 0) return;
+
+            // Map backend songs to existing UI Track model without changing markup
+            queueTracks = items.Select((s, idx) => new Track
+            {
+                IdString = s.Id,
+                Id = idx + 1,
+                Position = idx + 1,
+                Title = s.Nome,
+                Artist = string.Empty,
+                Album = string.Empty,
+                Duration = string.IsNullOrWhiteSpace(s.Durata) ? Frontend.Services.Playback.TrackItem.FormatDuration(s.Secondi) : s.Durata,
+                ImageUrl = string.Empty,
+                Gradient = "linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%)"
+            }).ToList();
+
+            // Seed playback service with backend data
+            Playback.ClearQueue();
+            foreach (var t in queueTracks)
+            {
+                var ti = new Frontend.Services.Playback.TrackItem
+                {
+                    Id = t.IdString,
+                    Title = t.Title,
+                    Artist = t.Artist,
+                    Album = t.Album,
+                    DurationSeconds = ParseDurationSeconds(t.Duration),
+                    ImageUrl = t.ImageUrl,
+                    Gradient = t.Gradient
+                };
+                Playback.AddToQueue(ti);
+            }
+
+            UpdateTotalDuration();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Errore caricando canzoni dal backend: {ex.Message}");
+        }
+    }
+
+    // DTO locale per evitare dipendenze dal progetto Backend
+    private class CanzoneDto
+    {
+        public string Id { get; set; } = string.Empty;
+        public string Nome { get; set; } = string.Empty;
+        public string? File { get; set; }
+        public string Genere { get; set; } = string.Empty;
+        public string Sottogenere { get; set; } = string.Empty;
+        public string Durata { get; set; } = string.Empty;
+        public int Secondi { get; set; }
     }
 
     private void InitializeRecentlyPlayed()
@@ -261,44 +385,113 @@ InitializeQueue();
    };
     }
 
-    private void PlayTrack(Track track)
+    private async Task PlayTrack(Track track)
     {
         Console.WriteLine($"Playing: {track.Title} by {track.Artist}");
         nowPlaying = track;
+        // Use in-memory queue and audio service; avoid backend until streaming is needed
+        var item = new Frontend.Services.Playback.TrackItem
+        {
+            Id = string.IsNullOrEmpty(track.IdString) ? track.Id.ToString() : track.IdString,
+            Title = track.Title,
+            Artist = track.Artist,
+            Album = track.Album,
+            DurationSeconds = ParseDurationSeconds(track.Duration),
+            ImageUrl = track.ImageUrl,
+            Gradient = track.Gradient
+        };
+        await Playback.PlayAsync(item);
+        isPlaying = true;
+        UpdateProgressFromService();
         StateHasChanged();
+    }
+
+    private void PlayAll()
+    {
+        // Play the first track in the queue using the service
+        var first = Playback.Queue.FirstOrDefault();
+        if (first != null)
+        {
+            _ = Playback.PlayAsync(first);
+            isPlaying = true;
+        }
     }
 
     private void ShuffleQueue()
     {
-        var random = new Random();
-      queueTracks = queueTracks.OrderBy(x => random.Next()).ToList();
-    for (int i = 0; i < queueTracks.Count; i++)
-      {
- queueTracks[i].Position = i + 1;
-        }
+        Playback.ShuffleQueue();
+        // Mirror service state locally from Playback.Queue without changing styles
+        queueTracks = Playback.Queue.Select((ti, idx) => new Track
+        {
+            IdString = ti.Id,
+            Id = idx + 1,
+            Position = idx + 1,
+            Title = ti.Title,
+            Artist = ti.Artist,
+            Album = ti.Album,
+            Duration = Frontend.Services.Playback.TrackItem.FormatDuration(ti.DurationSeconds),
+            ImageUrl = ti.ImageUrl,
+            Gradient = ti.Gradient
+        }).ToList();
         Console.WriteLine("Queue shuffled");
         StateHasChanged();
     }
 
     private void ClearQueue()
     {
-      queueTracks.Clear();
+        Playback.ClearQueue();
+        queueTracks.Clear();
         Console.WriteLine("Queue cleared");
-      StateHasChanged();
+        StateHasChanged();
     }
 
-    private void TogglePlay()
+    private async Task TogglePlay()
     {
-        isPlaying = !isPlaying;
+        await Playback.TogglePlayAsync();
+        isPlaying = Playback.IsPlaying;
         Console.WriteLine(isPlaying ? "Playing" : "Paused");
-  }
+    }
 
-    private void SkipNext()
+    private async Task SkipNext()
     {
-        if (queueTracks.Any())
+        await Playback.SkipNextAsync();
+        // Update local nowPlaying from service
+        var np = Playback.NowPlaying;
+        if (np != null)
         {
-      PlayTrack(queueTracks.First());
-      }
+            nowPlaying = new Track
+            {
+                IdString = np.Id,
+                Title = np.Title,
+                Artist = np.Artist,
+                Album = np.Album,
+                Duration = Frontend.Services.Playback.TrackItem.FormatDuration(np.DurationSeconds),
+                ImageUrl = np.ImageUrl,
+                Gradient = np.Gradient
+            };
+            isPlaying = Playback.IsPlaying;
+            UpdateProgressFromService();
+        }
+    }
+
+    private async Task SkipPrevious()
+    {
+        if (Playback.Queue.Count == 0) return;
+        var idx = Playback.NowIndex;
+        if (idx > 0)
+        {
+            var prev = Playback.Queue[idx - 1];
+            await Playback.PlayAsync(prev);
+            isPlaying = true;
+            UpdateProgressFromService();
+        }
+        else if (Playback.Repeat == Frontend.Services.Playback.RepeatMode.All && Playback.Queue.Count > 0)
+        {
+            var prev = Playback.Queue.Last();
+            await Playback.PlayAsync(prev);
+            isPlaying = true;
+            UpdateProgressFromService();
+        }
     }
 
     private void ToggleLike()
@@ -311,17 +504,89 @@ InitializeQueue();
         Console.WriteLine("Add to playlist");
     }
 
+    private void OnPlaybackStateChanged()
+    {
+        isPlaying = Playback.IsPlaying;
+        UpdateProgressFromService();
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void UpdateProgressFromService()
+    {
+        currentTime = Playback.CurrentTimeText;
+        progressPercent = Playback.ProgressPercent;
+        totalTime = Playback.TotalTimeText;
+        // Keep totalDuration label text as-is to avoid layout changes
+    }
+
+    private void CycleRepeat()
+    {
+        // Cycle through None -> All -> One -> None
+        var next = Playback.Repeat switch
+        {
+            Frontend.Services.Playback.RepeatMode.None => Frontend.Services.Playback.RepeatMode.All,
+            Frontend.Services.Playback.RepeatMode.All => Frontend.Services.Playback.RepeatMode.One,
+            _ => Frontend.Services.Playback.RepeatMode.None
+        };
+        Playback.SetRepeat(next);
+        repeatLabel = next switch
+        {
+            Frontend.Services.Playback.RepeatMode.None => "Off",
+            Frontend.Services.Playback.RepeatMode.All => "All",
+            Frontend.Services.Playback.RepeatMode.One => "One",
+            _ => "Off"
+        };
+    }
+
+    [JSInvokable]
+    public void OnAudioTimeUpdate(double current, double total)
+    {
+        Playback.UpdateProgress(current, total);
+    }
+
+    [JSInvokable]
+    public async Task OnAudioEnded()
+    {
+        await Playback.SkipNextAsync();
+    }
+
+    private static int ParseDurationSeconds(string duration)
+    {
+        // Expect MM:SS; fallback to 0
+        var parts = duration.Split(':');
+        if (parts.Length == 2 && int.TryParse(parts[0], out var m) && int.TryParse(parts[1], out var s))
+        {
+            return m * 60 + s;
+        }
+        return 0;
+    }
+
+    public void Dispose()
+    {
+        Playback.StateChanged -= OnPlaybackStateChanged;
+    }
+
     private class Track
     {
         public int Id { get; set; }
+        public string IdString { get; set; } = string.Empty;
         public int Position { get; set; }
         public string Title { get; set; } = string.Empty;
-     public string Artist { get; set; } = string.Empty;
+        public string Artist { get; set; } = string.Empty;
         public string Album { get; set; } = string.Empty;
         public string Duration { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
         public string Gradient { get; set; } = string.Empty;
     }
+
+    private void UpdateTotalDuration()
+    {
+        var totalSeconds = queueTracks.Sum(t => ParseDurationSeconds(t.Duration));
+        var mins = totalSeconds / 60;
+        totalDuration = $"{mins}min total";
+    }
+
+    private string repeatLabel = "Off";
 }
 
 <style>

@@ -166,3 +166,4 @@ D:\ProjectWork\SpotignetoApp\SpotignetoApp\Backend\obj\Debug\net9.0\refint\Backe
 D:\ProjectWork\SpotignetoApp\SpotignetoApp\Backend\obj\Debug\net9.0\Backend.pdb
 D:\ProjectWork\SpotignetoApp\SpotignetoApp\Backend\obj\Debug\net9.0\Backend.genruntimeconfig.cache
 D:\ProjectWork\SpotignetoApp\SpotignetoApp\Backend\obj\Debug\net9.0\ref\Backend.dll
+D:\ProjectWork\SpotignetoApp\SpotignetoApp\Backend\bin\Debug\net9.0\Backend.staticwebassets.runtime.json

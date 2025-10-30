@@ -34,6 +34,9 @@ builder.Services.AddHttpClient("ApiClient", client =>
 // Register HttpClient for dependency injection
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("ApiClient"));
 
+// Playback service as singleton for shared queue and state
+builder.Services.AddSingleton<Frontend.Services.Playback.PlaybackService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
