@@ -15,6 +15,7 @@ namespace Frontend.Services.Playback
         public int DurationSeconds { get; set; }
         public string ImageUrl { get; set; } = string.Empty;
         public string Gradient { get; set; } = string.Empty;
+        public string? File { get; set; }
 
         [JsonIgnore]
         public string DurationText => FormatDuration(DurationSeconds);
@@ -33,6 +34,7 @@ namespace Frontend.Services.Playback
         private readonly IConfiguration _config;
         private IJSRuntime? _js;
         private IJSObjectReference? _module;
+        private bool _attached;
         private string _apiBase;
 
         public PlaybackService(IConfiguration config)
@@ -68,6 +70,15 @@ namespace Frontend.Services.Playback
             if (_module == null)
             {
                 _module = await _js.InvokeAsync<IJSObjectReference>("import", "/js/audio.js");
+                if (!_attached)
+                {
+                    try
+                    {
+                        await _module.InvokeVoidAsync("attach", DotNetObjectReference.Create(this));
+                        _attached = true;
+                    }
+                    catch { }
+                }
             }
         }
 
@@ -140,8 +151,16 @@ namespace Frontend.Services.Playback
         {
             NowPlaying = item;
             NowIndex = Queue.FindIndex(t => t.Id == item.Id);
-            await StartAudioAsync(item.Id);
+            await StartAudioAsync(item);
             IsPlaying = true;
+            Notify();
+        }
+
+        public void SetNowPlayingInfo(TrackItem item)
+        {
+            NowPlaying = item;
+            NowIndex = Queue.FindIndex(t => t.Id == item.Id);
+            IsPlaying = false;
             Notify();
         }
 
@@ -203,11 +222,22 @@ namespace Frontend.Services.Playback
             }
         }
 
-        private async Task StartAudioAsync(string id)
+        private async Task StartAudioAsync(TrackItem item)
         {
             await EnsureModuleAsync();
             if (_module == null) return;
-            var url = $"{_apiBase}/api/Canzone/stream/{id}";
+            string url;
+            if (!string.IsNullOrWhiteSpace(item.File))
+            {
+                // Combine base URL with relative file path from DB (e.g. "/audio/songs/..")
+                var path = item.File!.StartsWith("/") ? item.File : "/" + item.File;
+                url = _apiBase.TrimEnd('/') + path;
+            }
+            else
+            {
+                // Fallback to streaming endpoint by id
+                url = $"{_apiBase}/api/Canzone/stream/{item.Id}";
+            }
             await _module.InvokeVoidAsync("setSource", url);
             await _module.InvokeVoidAsync("play");
         }
@@ -232,6 +262,62 @@ namespace Frontend.Services.Playback
             TotalTimeText = TrackItem.FormatDuration((int)Math.Floor(totalSeconds));
             ProgressPercent = totalSeconds > 0 ? (int)Math.Round(currentSeconds / totalSeconds * 100) : 0;
             Notify();
+        }
+
+        [JSInvokable]
+        public void OnAudioTimeUpdate(double currentSeconds, double totalSeconds)
+        {
+            UpdateProgress(currentSeconds, totalSeconds);
+        }
+
+        [JSInvokable]
+        public async Task OnAudioEnded()
+        {
+            await SkipNextAsync();
+        }
+
+        public async Task SkipPreviousAsync()
+        {
+            if (Queue.Count == 0) return;
+            if (Shuffle)
+            {
+                var rnd = new Random();
+                var prev = Queue[rnd.Next(Queue.Count)];
+                await PlayAsync(prev);
+                return;
+            }
+
+            if (NowIndex <= 0)
+            {
+                if (Repeat == RepeatMode.All && Queue.Count > 0)
+                {
+                    NowIndex = Queue.Count - 1;
+                    await PlayAsync(Queue[NowIndex]);
+                }
+                else
+                {
+                    await StopAsync();
+                }
+            }
+            else
+            {
+                NowIndex--;
+                await PlayAsync(Queue[NowIndex]);
+            }
+        }
+
+        public async Task SeekAsync(int seconds)
+        {
+            await EnsureModuleAsync();
+            if (_module == null) return;
+            await _module.InvokeVoidAsync("seek", seconds);
+        }
+
+        public async Task SetVolumeAsync(float volume)
+        {
+            await EnsureModuleAsync();
+            if (_module == null) return;
+            await _module.InvokeVoidAsync("setVolume", volume);
         }
 
         public ValueTask DisposeAsync()

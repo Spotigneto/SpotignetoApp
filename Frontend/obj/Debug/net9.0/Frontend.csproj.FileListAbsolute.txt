@@ -74,3 +74,4 @@ D:\ProjectWork\SpotignetoApp\SpotignetoApp\Frontend\obj\Debug\net9.0\Frontend.ge
 D:\ProjectWork\SpotignetoApp\SpotignetoApp\Frontend\obj\Debug\net9.0\ref\Frontend.dll
 D:\ProjectWork\SpotignetoApp\SpotignetoApp\Frontend\obj\Debug\net9.0\compressed\vuhpgz7h03-fkg7qbqzxl.gz
 D:\ProjectWork\SpotignetoApp\SpotignetoApp\Frontend\obj\Debug\net9.0\compressed\mv3z38k65a-jnc99wzh3f.gz
+D:\ProjectWork\SpotignetoApp\SpotignetoApp\Frontend\obj\Debug\net9.0\compressed\yf668ep4vk-dhb7w9zgj2.gz

@@ -1,4 +1,7 @@
-﻿@inherits LayoutComponentBase
+@inherits LayoutComponentBase
+@inject Frontend.Services.Playback.PlaybackService Player
+@inject IJSRuntime JS
+@implements IDisposable
 
 <div class="page-wrapper">
     <div class="page">
@@ -123,8 +126,8 @@
         <div class="player-left">
             <div class="now-playing-cover" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
             <div class="now-playing-info">
-                <div class="now-playing-title">Late Night</div>
-                <div class="now-playing-artist">ODESZA</div>
+                <div class="now-playing-title">@(Player.NowPlaying?.Title ?? "—")</div>
+                <div class="now-playing-artist">@(Player.NowPlaying?.Artist ?? "—")</div>
             </div>
             <button class="player-action-btn liked">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
@@ -179,7 +182,7 @@
                         </div>
                     </div>
                 </div>
-                <span class="time-total">3:52</span>
+                <span class="time-total">@DurationBreakdown</span>
             </div>
         </div>
 
@@ -735,3 +738,26 @@
         background-color: rgba(255, 255, 255, 0.3);
     }
 </style>
+
+@code {
+    private string DurationBreakdown
+        => Player.NowPlaying != null && Player.NowPlaying.DurationSeconds > 0
+            ? $"secondi: {Player.NowPlaying.DurationSeconds}"
+            : string.Empty;
+
+    protected override void OnInitialized()
+    {
+        Player.Initialize(JS);
+        Player.StateChanged += OnPlayerStateChanged;
+    }
+
+    private void OnPlayerStateChanged()
+    {
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        Player.StateChanged -= OnPlayerStateChanged;
+    }
+}

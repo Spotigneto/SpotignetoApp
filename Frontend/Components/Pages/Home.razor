@@ -1,11 +1,16 @@
 @page "/"
+@rendermode InteractiveServer
 @using System.Net.Http.Json
 @using System.Text.Json
 @inject HttpClient Http
+@inject IJSRuntime JS
+@inject IConfiguration Config
+@inject Frontend.Services.Playback.PlaybackService Player
 
 <PageTitle>SpotignetoApp</PageTitle>
 
 <div class="home-page">
+    <!-- Click su canzone avvia riproduzione tramite PlaybackService -->
     <!-- Hero Section -->
     <section class="hero-section">
       <h1 class="hero-title">
@@ -16,7 +21,7 @@
         <div class="hero-carousel">
       @foreach (var album in heroAlbums)
 {
-   <div class="hero-album" @onclick="() => PlayAlbum(album)">
+   <div class="hero-album" @onclick="async () => await TogglePlay(album)">
    <div class="hero-album-cover">
         @if (!string.IsNullOrEmpty(album.ImageUrl))
      {
@@ -27,7 +32,7 @@
      <div class="album-placeholder" style="background: @album.Gradient;"></div>
              }
      <div class="hero-album-overlay">
-  <button class="hero-play-btn" @onclick:stopPropagation="true" @onclick="() => PlayAlbum(album)" aria-label="Play @album.Title">
+  <button class="hero-play-btn" @onclick:stopPropagation="true" @onclick="async () => await TogglePlay(album)" aria-label="Play @album.Title">
   <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
            <path d="M8 5v14l11-7z" />
   </svg>
@@ -50,7 +55,7 @@
         <div class="albums-row">
             @foreach (var album in recentlyPlayed)
             {
-  <div class="album-item" @onclick="() => SelectAlbum(album)">
+  <div class="album-item" @onclick="async () => await TogglePlay(album)">
  <div class="album-cover">
          @if (!string.IsNullOrEmpty(album.ImageUrl))
              {
@@ -63,7 +68,7 @@
          <div class="album-hover">
         <button class="play-button @(album.IsPlaying ? "play-button-visible" : "")" 
   @onclick:stopPropagation="true"
-     @onclick="() => TogglePlay(album)"
+     @onclick="async () => await TogglePlay(album)"
  aria-label="@(album.IsPlaying ? "Pause" : "Play") @album.Title">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
   @if (album.IsPlaying)
@@ -106,8 +111,8 @@
       <div class="album-hover">
        <button class="play-button" 
       @onclick:stopPropagation="true"
-    @onclick="() => PlayAlbum(album)"
-       aria-label="Play @album.Title">
+    @onclick="() => SelectAlbum(album)"
+       aria-label="Apri artista @album.Title">
      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
        <path d="M8 5v14l11-7z" />
          </svg>
@@ -129,6 +134,7 @@
     private List<Album> recentlyPlayed = new();
     private List<Album> discoverAlbums = new();
     private Album? currentlyPlaying;
+    private string apiBase = string.Empty;
 
     // Simple model matching the backend Home random payload
     private class ItemModel
@@ -145,8 +151,17 @@
         public List<ItemModel> Artists { get; set; } = new();
     }
 
+    private class CanzoneDetail
+    {
+        public string Id { get; set; } = string.Empty;
+        public string Nome { get; set; } = string.Empty;
+        public int Secondi { get; set; }
+        public string? File { get; set; }
+    }
+
     protected override async Task OnInitializedAsync()
     {
+        apiBase = Config["ApiSettings:BaseUrl"] ?? "http://localhost:5232";
         await LoadRandomHomeAsync();
     }
 
@@ -228,24 +243,64 @@
 Console.WriteLine($"Playing: {album.Title} by {album.Artist}");
     }
 
-    private void TogglePlay(Album album)
+    private async Task TogglePlay(Album album)
     {
-        if (album.IsPlaying)
-    {
-            album.IsPlaying = false;
-            currentlyPlaying = null;
-        }
-        else
+        // Recupera i dettagli della canzone (inclusi i secondi) dal backend
+        CanzoneDetail? detail = null;
+        try
         {
-     if (currentlyPlaying != null)
-     {
-    currentlyPlaying.IsPlaying = false;
-            }
-            album.IsPlaying = true;
- currentlyPlaying = album;
+            // Usa le stesse modalità della pagina Playlist: chiamate Http relative con HttpClient configurato
+            detail = await Http.GetFromJsonAsync<CanzoneDetail>($"api/Canzone/canzone/{album.Id}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Errore nel recupero dettagli canzone: {ex}");
         }
 
-     Console.WriteLine($"{(album.IsPlaying ? "Playing" : "Paused")}: {album.Title}");
+        // Mappa i dati in TrackItem e avvia la riproduzione tramite PlaybackService
+        var item = new Frontend.Services.Playback.TrackItem
+        {
+            Id = album.Id,
+            Title = album.Title,
+            Artist = album.Artist,
+            Album = string.Empty,
+            DurationSeconds = detail?.Secondi ?? 0,
+            ImageUrl = album.ImageUrl,
+            Gradient = album.Gradient,
+            File = detail?.File
+        };
+
+        // Invia i dati al server come fa la pagina Playlist (QueueController)
+        try
+        {
+            var addResp = await Http.PostAsync($"api/Queue/add/{album.Id}", content: null);
+            if (!addResp.IsSuccessStatusCode)
+            {
+                var msg = await addResp.Content.ReadAsStringAsync();
+                Console.WriteLine($"AddToQueue fallita: {(int)addResp.StatusCode} - {msg}");
+            }
+            else
+            {
+                // Aggiorna anche la coda locale per riflettere lo stato
+                Player.AddToQueue(item);
+                // Avvia play sul server per coerenza di stato
+                var playResp = await Http.PostAsync("api/Queue/player/play", content: null);
+                if (!playResp.IsSuccessStatusCode)
+                {
+                    var pmsg = await playResp.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Play server fallito: {(int)playResp.StatusCode} - {pmsg}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Errore chiamate QueueController: {ex.Message}");
+        }
+
+        // Avvia la riproduzione lato client usando l'URL MP3 salvato (fallback allo stream se assente)
+        await Player.PlayAsync(item);
+
+        Console.WriteLine($"Riproduzione avviata: {album.Title} - {album.Artist}, secondi: {item.DurationSeconds}");
     }
 
     private void SelectAlbum(Album album)

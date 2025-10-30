@@ -1,4 +1,7 @@
 @page "/nowplaying"
+@rendermode InteractiveServer
+@inject Frontend.Services.Playback.PlaybackService Player
+@inject HttpClient Http
 
 <PageTitle>Now Playing - Spotigneto</PageTitle>
 
@@ -17,19 +20,19 @@
     <div class="content-container">
         <!-- Album Art -->
         <div class="album-art-wrapper">
-    <div class="album-art" style="background: @currentTrack.Gradient;">
-  @if (!string.IsNullOrEmpty(currentTrack.ImageUrl))
-    {
-         <img src="@currentTrack.ImageUrl" alt="@currentTrack.Title" />
-     }
-      </div>
- </div>
+            <div class="album-art" style="background: @(Player.NowPlaying?.Gradient ?? "linear-gradient(135deg, #333 0%, #111 100%)");">
+                @if (!string.IsNullOrEmpty(Player.NowPlaying?.ImageUrl))
+                {
+                    <img src="@Player.NowPlaying.ImageUrl" alt="@Player.NowPlaying.Title" />
+                }
+            </div>
+        </div>
 
         <!-- Track Title -->
-        <h1 class="track-title">@currentTrack.Title</h1>
+        <h1 class="track-title">@(Player.NowPlaying?.Title ?? "—")</h1>
 
    <!-- Artist Name -->
-  <p class="track-artist">@currentTrack.Artist</p>
+        <p class="track-artist">@(Player.NowPlaying?.Artist ?? "—")</p>
 
         <!-- Progress Bar Section -->
         <div class="progress-section">
@@ -37,8 +40,8 @@
       <div class="progress-fill" style="width: @progressPercent%;"></div>
     </div>
             <div class="time-info">
-       <span class="time-current">@currentTime</span>
-      <span class="time-total">@currentTrack.Duration</span>
+                <span class="time-current">@Player.CurrentTimeText</span>
+                <span class="time-total">@Player.TotalTimeText</span>
             </div>
    </div>
 
@@ -95,7 +98,7 @@
               </svg>
       </button>
 
-            <button class="bottom-btn volume-btn" aria-label="Volume">
+            <button class="bottom-btn volume-btn" aria-label="Volume" @onclick="ToggleVolume">
   <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                  <path d="M8 3L5 6H2v4h3l3 3V3zM11 8c0-1.2-0.8-2.2-2-2.5M13 8c0-2-1.2-3.5-3-4.5"/>
     </svg>
@@ -117,10 +120,8 @@
 </div>
 
 @code {
-    private Track currentTrack = new();
-    private string currentTime = "1:44";
-    private int progressPercent = 31;
-    private bool isPlaying = true;
+    private int progressPercent = 0;
+    private bool isPlaying = false;
     private bool isShuffled = false;
     private bool isLiked = false;
     private string repeatMode = "off";
@@ -128,49 +129,78 @@
 
     protected override void OnInitialized()
     {
-        InitializeCurrentTrack();
+        Player.StateChanged += OnPlayerStateChanged;
+        SyncFromPlayer();
     }
 
-    private void InitializeCurrentTrack()
+    private void OnPlayerStateChanged()
     {
-        currentTrack = new Track
-   {
-          Title = "Late Night",
-          Artist = "ODESZA",
-            Album = "In Return",
-  Duration = "3:52",
-   ImageUrl = "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=400&h=400&fit=crop",
-Gradient = "linear-gradient(135deg, #6b46c1 0%, #9333ea 50%, #ec4899 100%)"
-   };
+        SyncFromPlayer();
+        StateHasChanged();
+    }
+
+    private void SyncFromPlayer()
+    {
+        isPlaying = Player.IsPlaying;
+        progressPercent = Player.ProgressPercent;
     }
 
     private void GoBack() => Console.WriteLine("Go back");
     
-    private void TogglePlay()
+    private async Task TogglePlay()
     {
-        isPlaying = !isPlaying;
-        Console.WriteLine(isPlaying ? "Playing" : "Paused");
+        var wasPlaying = isPlaying;
+        await Player.TogglePlayAsync();
+        try
+        {
+            if (wasPlaying)
+            {
+                await Http.PostAsync("api/Queue/player/pause", content: null);
+            }
+            else
+            {
+                await Http.PostAsync("api/Queue/player/play", content: null);
+            }
+        }
+        catch { }
     }
 
-    private void PreviousTrack() => Console.WriteLine("Previous track");
-    private void NextTrack() => Console.WriteLine("Next track");
+    private async Task PreviousTrack()
+    {
+        await Player.SkipPreviousAsync();
+        try { await Http.PostAsync("api/Queue/player/previous", content: null); } catch { }
+    }
+    private async Task NextTrack()
+    {
+        await Player.SkipNextAsync();
+        try { await Http.PostAsync("api/Queue/player/next", content: null); } catch { }
+    }
     
-    private void ToggleShuffle()
+    private async Task ToggleShuffle()
     {
         isShuffled = !isShuffled;
-        Console.WriteLine($"Shuffle: {isShuffled}");
+        Player.SetShuffle(isShuffled);
+        try { await Http.PostAsync("api/Queue/shuffle/toggle", content: null); } catch { }
     }
 
-    private void ToggleRepeat()
+    private async Task ToggleRepeat()
     {
-   repeatMode = repeatMode switch
+        repeatMode = repeatMode switch
         {
-"off" => "all",
-     "all" => "one",
-       "one" => "off",
-     _ => "off"
-    };
-        Console.WriteLine($"Repeat: {repeatMode}");
+            "off" => "all",
+            "all" => "one",
+            "one" => "off",
+            _ => "off"
+        };
+        var mode = repeatMode switch
+        {
+            "off" => Frontend.Services.Playback.RepeatMode.None,
+            "all" => Frontend.Services.Playback.RepeatMode.All,
+            "one" => Frontend.Services.Playback.RepeatMode.One,
+            _ => Frontend.Services.Playback.RepeatMode.None
+        };
+        Player.SetRepeat(mode);
+        try { await Http.PostAsync("api/Queue/repeat/toggle", content: null); } catch { }
     }
 
     private void ToggleLike()
@@ -181,14 +211,23 @@ Gradient = "linear-gradient(135deg, #6b46c1 0%, #9333ea 50%, #ec4899 100%)"
 
     private void OpenQueue() => Console.WriteLine("Opening queue");
 
-    private class Track
+    private async Task ToggleVolume()
     {
-        public string Title { get; set; } = string.Empty;
-    public string Artist { get; set; } = string.Empty;
-        public string Album { get; set; } = string.Empty;
-    public string Duration { get; set; } = string.Empty;
-        public string ImageUrl { get; set; } = string.Empty;
-        public string Gradient { get; set; } = string.Empty;
+        // Cycle through 0, 60, 100 for simplicity
+        volume = volume switch { 0 => 60, 60 => 100, _ => 0 };
+        var v = Math.Clamp(volume, 0, 100) / 100.0f;
+        await Player.SetVolumeAsync(v);
+        try
+        {
+            var payload = new StringContent($"{System.Text.Json.JsonSerializer.Serialize(new { volume = v })}", System.Text.Encoding.UTF8, "application/json");
+            await Http.PostAsync("api/Queue/player/volume", payload);
+        }
+        catch { }
+    }
+
+    public void Dispose()
+    {
+        Player.StateChanged -= OnPlayerStateChanged;
     }
 }
 

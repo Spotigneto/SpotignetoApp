@@ -119,6 +119,43 @@
         }
       },
       {
+        "HashCode": -1235024703,
+        "Kind": "Components.Component",
+        "Name": "Frontend.Components.Layout.NavMenu",
+        "AssemblyName": "Frontend",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "NavMenu"
+          }
+        ],
+        "Metadata": {
+          "Common.TypeName": "Frontend.Components.Layout.NavMenu",
+          "Common.TypeNameIdentifier": "NavMenu",
+          "Common.TypeNamespace": "Frontend.Components.Layout",
+          "Runtime.Name": "Components.IComponent"
+        }
+      },
+      {
+        "HashCode": -793296203,
+        "Kind": "Components.Component",
+        "Name": "Frontend.Components.Layout.NavMenu",
+        "AssemblyName": "Frontend",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "Frontend.Components.Layout.NavMenu"
+          }
+        ],
+        "Metadata": {
+          "Common.TypeName": "Frontend.Components.Layout.NavMenu",
+          "Common.TypeNameIdentifier": "NavMenu",
+          "Common.TypeNamespace": "Frontend.Components.Layout",
+          "Components.NameMatch": "Components.FullyQualifiedNameMatch",
+          "Runtime.Name": "Components.IComponent"
+        }
+      },
+      {
         "HashCode": 110611685,
         "Kind": "Components.Component",
         "Name": "Frontend.Components.Layout.MainLayout",
@@ -222,43 +259,6 @@
           "Components.IsSpecialKind": "Components.ChildContent",
           "Components.NameMatch": "Components.FullyQualifiedNameMatch",
           "Runtime.Name": "Components.None"
-        }
-      },
-      {
-        "HashCode": -1235024703,
-        "Kind": "Components.Component",
-        "Name": "Frontend.Components.Layout.NavMenu",
-        "AssemblyName": "Frontend",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "NavMenu"
-          }
-        ],
-        "Metadata": {
-          "Common.TypeName": "Frontend.Components.Layout.NavMenu",
-          "Common.TypeNameIdentifier": "NavMenu",
-          "Common.TypeNamespace": "Frontend.Components.Layout",
-          "Runtime.Name": "Components.IComponent"
-        }
-      },
-      {
-        "HashCode": -793296203,
-        "Kind": "Components.Component",
-        "Name": "Frontend.Components.Layout.NavMenu",
-        "AssemblyName": "Frontend",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "Frontend.Components.Layout.NavMenu"
-          }
-        ],
-        "Metadata": {
-          "Common.TypeName": "Frontend.Components.Layout.NavMenu",
-          "Common.TypeNameIdentifier": "NavMenu",
-          "Common.TypeNamespace": "Frontend.Components.Layout",
-          "Components.NameMatch": "Components.FullyQualifiedNameMatch",
-          "Runtime.Name": "Components.IComponent"
         }
       },
       {
@@ -595,80 +595,6 @@
         }
       },
       {
-        "HashCode": -92082371,
-        "Kind": "Components.Component",
-        "Name": "Frontend.Components.Pages.Home",
-        "AssemblyName": "Frontend",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "Home"
-          }
-        ],
-        "Metadata": {
-          "Common.TypeName": "Frontend.Components.Pages.Home",
-          "Common.TypeNameIdentifier": "Home",
-          "Common.TypeNamespace": "Frontend.Components.Pages",
-          "Runtime.Name": "Components.IComponent"
-        }
-      },
-      {
-        "HashCode": -2009848336,
-        "Kind": "Components.Component",
-        "Name": "Frontend.Components.Pages.Home",
-        "AssemblyName": "Frontend",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "Frontend.Components.Pages.Home"
-          }
-        ],
-        "Metadata": {
-          "Common.TypeName": "Frontend.Components.Pages.Home",
-          "Common.TypeNameIdentifier": "Home",
-          "Common.TypeNamespace": "Frontend.Components.Pages",
-          "Components.NameMatch": "Components.FullyQualifiedNameMatch",
-          "Runtime.Name": "Components.IComponent"
-        }
-      },
-      {
-        "HashCode": 270435404,
-        "Kind": "Components.Component",
-        "Name": "Frontend.Components.Pages.PlaylistOld",
-        "AssemblyName": "Frontend",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "PlaylistOld"
-          }
-        ],
-        "Metadata": {
-          "Common.TypeName": "Frontend.Components.Pages.PlaylistOld",
-          "Common.TypeNameIdentifier": "PlaylistOld",
-          "Common.TypeNamespace": "Frontend.Components.Pages",
-          "Runtime.Name": "Components.IComponent"
-        }
-      },
-      {
-        "HashCode": -470888017,
-        "Kind": "Components.Component",
-        "Name": "Frontend.Components.Pages.PlaylistOld",
-        "AssemblyName": "Frontend",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "Frontend.Components.Pages.PlaylistOld"
-          }
-        ],
-        "Metadata": {
-          "Common.TypeName": "Frontend.Components.Pages.PlaylistOld",
-          "Common.TypeNameIdentifier": "PlaylistOld",
-          "Common.TypeNamespace": "Frontend.Components.Pages",
-          "Components.NameMatch": "Components.FullyQualifiedNameMatch",
-          "Runtime.Name": "Components.IComponent"
-        }
-      },
-      {
         "HashCode": 850842205,
         "Kind": "Components.Component",
         "Name": "Frontend.Components.Pages.Playlist",
@@ -700,6 +626,43 @@
         "Metadata": {
           "Common.TypeName": "Frontend.Components.Pages.Playlist",
           "Common.TypeNameIdentifier": "Playlist",
+          "Common.TypeNamespace": "Frontend.Components.Pages",
+          "Components.NameMatch": "Components.FullyQualifiedNameMatch",
+          "Runtime.Name": "Components.IComponent"
+        }
+      },
+      {
+        "HashCode": -92082371,
+        "Kind": "Components.Component",
+        "Name": "Frontend.Components.Pages.Home",
+        "AssemblyName": "Frontend",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "Home"
+          }
+        ],
+        "Metadata": {
+          "Common.TypeName": "Frontend.Components.Pages.Home",
+          "Common.TypeNameIdentifier": "Home",
+          "Common.TypeNamespace": "Frontend.Components.Pages",
+          "Runtime.Name": "Components.IComponent"
+        }
+      },
+      {
+        "HashCode": -2009848336,
+        "Kind": "Components.Component",
+        "Name": "Frontend.Components.Pages.Home",
+        "AssemblyName": "Frontend",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "Frontend.Components.Pages.Home"
+          }
+        ],
+        "Metadata": {
+          "Common.TypeName": "Frontend.Components.Pages.Home",
+          "Common.TypeNameIdentifier": "Home",
           "Common.TypeNamespace": "Frontend.Components.Pages",
           "Components.NameMatch": "Components.FullyQualifiedNameMatch",
           "Runtime.Name": "Components.IComponent"
@@ -20250,11 +20213,6 @@
     {
       "FilePath": "d:\\ProjectWork\\SpotignetoApp\\SpotignetoApp\\Frontend\\Components\\Pages\\Home.razor",
       "TargetPath": "Components\\Pages\\Home.razor",
-      "FileKind": "component"
-    },
-    {
-      "FilePath": "d:\\ProjectWork\\SpotignetoApp\\SpotignetoApp\\Frontend\\Components\\Pages\\PlaylistOld.razor",
-      "TargetPath": "Components\\Pages\\PlaylistOld.razor",
       "FileKind": "component"
     },
     {
